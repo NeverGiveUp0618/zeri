@@ -1,7 +1,7 @@
 {
-  "name": "中观择日",
-  "short_name": "择日",
-  "description": "中观择日知识库 · 查 · 学 · 算",
+  "name": "择日学习",
+  "short_name": "择日学习",
+  "description": "择日学习 · 查 · 学 · 算",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

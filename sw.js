@@ -1,5 +1,5 @@
 /* 中观择日 Service Worker —— 离线缓存 */
-const CACHE = 'zeri-v3';          // 改内容后升版本号即可刷新缓存
+const CACHE = 'zeri-v4';          // 改内容后升版本号即可刷新缓存
 const ASSETS = [
   './',
   './index.html',

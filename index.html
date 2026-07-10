@@ -115,7 +115,7 @@ body{
 .detail .body{background:linear-gradient(160deg,var(--card2),var(--card));
   border:1px solid var(--line);border-radius:16px;padding:20px 18px;white-space:pre-wrap;
   font-size:15.5px;line-height:2;color:var(--ink);box-shadow:0 6px 20px rgba(0,0,0,.35);
-  letter-spacing:.4px}
+  letter-spacing:.4px;white-space:normal}
 .chips{display:flex;gap:9px;margin-bottom:20px;flex-wrap:wrap}
 .chip{font-size:13px;padding:7px 15px;border-radius:22px;border:1px solid var(--line);
   color:var(--ink2);cursor:pointer;letter-spacing:1px;transition:.2s}
@@ -194,6 +194,34 @@ body{
 .res .rv small{color:var(--ink3);font-size:12px}
 .res-hint{text-align:center;color:var(--ink3);padding:36px 0;font-size:13px;letter-spacing:2px;line-height:2}
 .calc-note{font-size:11px;color:var(--ink3);text-align:center;margin-top:16px;line-height:1.8;letter-spacing:.5px}
+/* ===== 收藏 / 常用 ===== */
+.dtop{display:flex;align-items:flex-start;gap:12px;justify-content:space-between;margin-bottom:8px}
+.dtop .dt{flex:1;margin-bottom:0}
+.dacts{display:flex;gap:16px;align-items:center;padding-top:6px;flex:none}
+.dacts .ic{cursor:pointer;font-size:21px;color:var(--ink3);transition:.2s;user-select:none;line-height:1}
+.dacts .ic.txt{font-size:13px;letter-spacing:1px}
+.dacts .ic:active{transform:scale(.9)}
+.dacts .ic.on{color:var(--gold-br);text-shadow:0 0 14px rgba(201,164,92,.5)}
+/* ===== 详情正文排版 ===== */
+.body .bh{color:var(--gold-br);font-weight:600;font-size:15px;letter-spacing:1px;
+  margin:17px 0 7px;padding-left:11px;border-left:2px solid var(--gold-dim)}
+.body .bh:first-child{margin-top:0}
+.body .bl{padding-left:15px;text-indent:-15px;margin:3px 0}
+.body .bp{margin:3px 0}
+.body .sp{height:7px}
+/* ===== 学习统计 / 重置 ===== */
+.lstat{display:flex;gap:15px;justify-content:center;font-size:12px;color:var(--ink2);
+  letter-spacing:1px;margin-bottom:16px}
+.lstat b{color:var(--gold-br);font-weight:600}
+.reset{margin-top:18px;font-size:12px;color:var(--ink3);letter-spacing:1px;cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px}
+/* ===== toast ===== */
+#toast{position:fixed;left:50%;bottom:calc(78px + env(safe-area-inset-bottom));
+  transform:translateX(-50%) translateY(10px);background:rgba(20,22,31,.96);
+  border:1px solid var(--line-br);color:var(--gold-br);padding:9px 20px;border-radius:20px;
+  font-size:13px;letter-spacing:1px;opacity:0;pointer-events:none;transition:.25s;z-index:50;
+  box-shadow:0 6px 22px rgba(0,0,0,.5)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 ::-webkit-scrollbar{width:0;height:0}
 </style>
 </head>
@@ -205,6 +233,7 @@ body{
       <svg class="si" viewBox="0 0 24 24" fill="none" stroke="#c9a45c" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
       <input id="q" placeholder="搜索  嫁娶 · 戊己都天 · 三煞" autocomplete="off">
     </div>
+    <div id="fav-wrap"></div>
     <div class="sec"><span class="t" id="sec-t">六 类 择 要</span><span class="l"></span></div>
     <div class="cats" id="cats"></div>
   </div>
@@ -217,6 +246,7 @@ body{
     <div class="detail" id="detail"></div>
   </div>
   <div class="view" id="v-learn">
+    <div class="lstat" id="learn-stat"></div>
     <div class="chips" id="learn-chips"></div>
     <div id="learn-body"></div>
   </div>
@@ -253,15 +283,15 @@ function show(s){
   else if(s.v==='detail'){renderDetail(s.id);$('#v-detail').classList.add('on');}
   else if(s.v==='learn'){$('#v-learn').classList.add('on');}
   else if(s.v==='calc'){initCalc();$('#v-calc').classList.add('on');}
-  else{$('#v-home').classList.add('on');}
+  else{if(!$('#q').value.trim())renderFavs();$('#v-home').classList.add('on');}
   $('#app').scrollTop=0;
 }
 function goState(s){show(s);history.pushState(s,'');}
 window.addEventListener('popstate',e=>show(e.state||{v:'home'}));
 function tab(t){
-  if(t==='cha'){$('#q').value='';$('#sec-t').textContent='六 类 择 要';renderCats();goState({v:'home'});}
+  if(t==='cha'){$('#q').value='';$('#sec-t').textContent='六 类 择 要';renderFavs();renderCats();goState({v:'home'});}
   else if(t==='suan'){goState({v:'calc'});}
-  else{renderChips();goState({v:'learn'});}
+  else{renderChips();renderStat();goState({v:'learn'});}
 }
 
 function renderCats(){
@@ -281,6 +311,37 @@ function itemHTML(d){
     <div class="tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>`;
 }
 function openCat(k){goState({v:'list',cat:k});}
+
+/* ===== 收藏 / 常用 ===== */
+var FKEY='zeri_fav_v1';
+var FAV=JSON.parse(localStorage.getItem(FKEY)||'[]');
+function isFav(id){return FAV.includes(id);}
+function saveFav(){localStorage.setItem(FKEY,JSON.stringify(FAV));}
+function toggleFav(id){const i=FAV.indexOf(id);if(i<0)FAV.unshift(id);else FAV.splice(i,1);saveFav();}
+function favDetail(id){toggleFav(id);renderDetail(id);}
+function renderFavs(){
+  const w=$('#fav-wrap');if(!w)return;w.style.display='';
+  const items=FAV.map(byId).filter(Boolean);
+  w.innerHTML=items.length
+    ?`<div class="sec"><span class="t">常 用 收 藏</span><span class="l"></span></div>${items.map(itemHTML).join('')}`
+    :'';
+}
+/* ===== toast / 复制 ===== */
+function toast(m){let t=$('#toast');if(!t){t=document.createElement('div');t.id='toast';document.body.appendChild(t);}
+  t.textContent=m;t.className='show';clearTimeout(t._h);t._h=setTimeout(()=>t.className='',1400);}
+function copyDetail(id){const d=byId(id);const txt=d.title+'\n\n'+d.body+'\n\n——《中观择日合集》P'+d.pages;
+  if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>toast('已复制')).catch(()=>toast('复制失败'));
+  else toast('浏览器不支持复制');}
+/* ===== 详情正文排版：【】小标题 · 项目符号 ===== */
+function fmtBody(body){
+  return body.split('\n').map(line=>{
+    const t=line.trim();
+    if(!t)return '<div class="sp"></div>';
+    if(/^【.+?】/.test(t))return `<div class="bh">${t}</div>`;
+    if(/^[•·]/.test(t)||/^[①②③④⑤⑥⑦⑧⑨⑩⑪⑫]/.test(t))return `<div class="bl">${t}</div>`;
+    return `<div class="bp">${t}</div>`;
+  }).join('');
+}
 
 /* 别名 + 拼音映射：口语词/拼音 → 教材正名 */
 const ALIAS={
@@ -328,7 +389,8 @@ function expandKw(kw){
 }
 $('#q').addEventListener('input',e=>{
   const kw=e.target.value.trim();
-  if(!kw){$('#sec-t').textContent='六 类 择 要';renderCats();return;}
+  const fw=$('#fav-wrap');if(fw)fw.style.display=kw?'none':'';
+  if(!kw){$('#sec-t').textContent='六 类 择 要';renderFavs();renderCats();return;}
   const extra=expandKw(kw);
   const r=DATA.filter(d=>{
     const hay=d.title+d.body+d.tags.join('')+catName(d.cat);
@@ -342,10 +404,16 @@ $('#q').addEventListener('input',e=>{
 function renderDetail(id){
   const d=byId(id);
   $('#detail').innerHTML=`
-    <div class="dt">${d.title}</div>
+    <div class="dtop">
+      <div class="dt">${d.title}</div>
+      <div class="dacts">
+        <span class="ic star ${isFav(id)?'on':''}" onclick="favDetail('${id}')">${isFav(id)?'★':'☆'}</span>
+        <span class="ic txt" onclick="copyDetail('${id}')">复制</span>
+      </div>
+    </div>
     <div class="meta"><span class="lvl lvl${d.level}">${LV[d.level]}</span>
       <span>${catName(d.cat)}</span><span class="dot"></span><span>教材 P${d.pages}</span></div>
-    <div class="body">${d.body}</div>
+    <div class="body">${fmtBody(d.body)}</div>
     <div class="tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
 }
 function openDetail(id){goState({v:'detail',id});}
@@ -377,10 +445,13 @@ function renderCard(){
     box.innerHTML=`<div class="done"><div class="sym">✦ ✦ ✦</div>
       <div class="msg">此 组 已 毕</div>
       <div class="sub">${curCat==='all'?'全部':catName(curCat)} · 暂无到期卡片<br>换个分类，或稍后再来温习</div>
-      <button onclick="pickCat('all')">回到全部</button></div>`;
-    renderChips();return;
+      <button onclick="pickCat('all')">回到全部</button>
+      <div class="reset" onclick="resetSrs()">重置全部学习进度</div></div>`;
+    renderChips();renderStat();return;
   }
   const d=queue[idx];$('#app').scrollTop=0;
+  const cur=srs[d.id];
+  const lA=fmtIvl(schedule(cur,0).ivl),lH=fmtIvl(schedule(cur,1).ivl),lG=fmtIvl(schedule(cur,2).ivl);
   const pct=Math.round(idx/queue.length*100);
   box.innerHTML=`
     <div class="pbar"><span class="lab">${catOrd(d.cat)} ${catName(d.cat)}</span>
@@ -393,9 +464,9 @@ function renderCard(){
       <div class="hint" id="hint">轻 触 翻 面</div>
     </div>
     <div class="grade" id="grade" style="display:none">
-      <button class="gbtn g-again" onclick="grade(0)">再来<small>&lt;10分</small></button>
-      <button class="gbtn g-hard" onclick="grade(1)">有点难<small>1天</small></button>
-      <button class="gbtn g-good" onclick="grade(2)">记住了<small>4天</small></button>
+      <button class="gbtn g-again" onclick="grade(0)">再来<small>${lA}</small></button>
+      <button class="gbtn g-hard" onclick="grade(1)">有点难<small>${lH}</small></button>
+      <button class="gbtn g-good" onclick="grade(2)">记住了<small>${lG}</small></button>
     </div>`;
   flipped=false;
 }
@@ -406,12 +477,35 @@ function flip(){
   $('#flash').querySelector('.fc-q').style.cssText='margin:0 0 12px;font-size:20px';
   $('#hint').style.display='none';$('#grade').style.display='flex';
 }
+/* 间隔递增：再来→8分重来；有点难→缩短；记住了→按熟练度成倍拉长(4天→约9→约21…) */
+function schedule(card,g){
+  let ease=(card&&card.ease)||2.3, reps=(card&&card.reps)||0, pIvl=(card&&card.ivl)||0;
+  const MIN=8/1440;
+  if(g===0)return{reps:0,ease:Math.max(1.6,ease-0.2),ivl:MIN};
+  if(g===1)return{reps:reps,ease:Math.max(1.7,ease-0.05),ivl:pIvl?Math.max(1,pIvl*0.6):1};
+  const r=reps+1;
+  return{reps:r,ease:Math.min(2.8,ease+0.03),ivl:r<=1?4:Math.max(4,pIvl)*ease};
+}
+function fmtIvl(iv){
+  if(iv<1)return '&lt;'+Math.max(10,Math.round(iv*1440))+'分';
+  if(iv<30)return Math.round(iv)+'天';
+  return (Math.round(iv/30*10)/10)+'月';
+}
 function grade(g){
-  const d=queue[idx];const now=Date.now();const day=864e5;
-  let due=g===0?now+8*6e4:g===1?now+day:now+4*day;
-  srs[d.id]={due,last:now,g};saveSrs();
+  const d=queue[idx];const now=Date.now();
+  const r=schedule(srs[d.id],g);
+  srs[d.id]={due:now+r.ivl*864e5,last:now,g,reps:r.reps,ease:r.ease,ivl:r.ivl};saveSrs();
   if(g===0)queue.push(d);
-  idx++;renderCard();
+  idx++;renderCard();renderStat();
+}
+function renderStat(){
+  const el=$('#learn-stat');if(!el)return;
+  let mastered=0,seen=0,due=0;
+  DATA.forEach(d=>{const s=srs[d.id];if(s){seen++;if((s.ivl||0)>=21)mastered++;}if(isDue(d))due++;});
+  el.innerHTML=`已掌握 <b>${mastered}</b> · 到期 <b>${due}</b> · 新 <b>${DATA.length-seen}</b> / ${DATA.length}`;
+}
+function resetSrs(){
+  if(confirm('确定清空全部学习进度？（收藏不受影响）')){srs={};saveSrs();renderStat();curCat='all';buildQueue();renderChips();renderCard();}
 }
 
 /* ===== 速查（算）：全部按确定口诀精确推算 ===== */
@@ -496,7 +590,7 @@ function gzRes(){
 
 /* ===== 初始化 ===== */
 history.replaceState({v:'home'},'');
-renderCats();renderChips();buildQueue();renderCard();
+renderFavs();renderCats();renderStat();renderChips();buildQueue();renderCard();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
 </script>
 </body>

@@ -361,7 +361,7 @@ function renderFavs(){
 /* ===== toast / 复制 ===== */
 function toast(m){let t=$('#toast');if(!t){t=document.createElement('div');t.id='toast';document.body.appendChild(t);}
   t.textContent=m;t.className='show';clearTimeout(t._h);t._h=setTimeout(()=>t.className='',1400);}
-function copyDetail(id){const d=byId(id);const txt=d.title+'\n\n'+d.body+'\n\n——《中观择日合集》P'+d.pages;
+function copyDetail(id){const d=byId(id);const txt=d.title+'\n\n'+d.body+'\n\n——《择日合集》P'+d.pages;
   if(navigator.clipboard)navigator.clipboard.writeText(txt).then(()=>toast('已复制')).catch(()=>toast('复制失败'));
   else toast('浏览器不支持复制');}
 /* ===== 详情正文排版：【】小标题 · 项目符号 ===== */

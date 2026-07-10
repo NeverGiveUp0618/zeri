@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0d0e13">
+<title>中观择日</title>
+<style>
+:root{
+  --bg:#0c0d12; --bg-soft:#12131b; --card:#14161f; --card2:#191c27;
+  --gold:#c9a45c; --gold-br:#e6cd8e; --gold-dim:#8a7441;
+  --ink:#e9e0cd; --ink2:#9c927c; --ink3:#6d6555;
+  --line:rgba(201,164,92,.20); --line-br:rgba(230,205,142,.55);
+  --red:#b0655a; --amber:#c99a4e; --green:#7d9a66;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Serif SC",serif;
+  color:var(--ink);line-height:1.7;overflow:hidden;position:fixed;width:100%;
+  background:var(--bg);
+  background-image:
+    radial-gradient(120% 60% at 50% -8%, rgba(201,164,92,.14), transparent 60%),
+    radial-gradient(90% 50% at 50% 108%, rgba(201,164,92,.07), transparent 55%),
+    radial-gradient(1px 1px at 18% 22%, rgba(230,205,142,.55), transparent),
+    radial-gradient(1px 1px at 72% 15%, rgba(230,205,142,.40), transparent),
+    radial-gradient(1px 1px at 86% 40%, rgba(230,205,142,.30), transparent),
+    radial-gradient(1px 1px at 32% 62%, rgba(230,205,142,.25), transparent),
+    radial-gradient(1px 1px at 60% 82%, rgba(230,205,142,.30), transparent),
+    radial-gradient(1px 1px at 12% 88%, rgba(230,205,142,.22), transparent);
+}
+.top{
+  height:calc(58px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;z-index:20;flex:none;gap:1px;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(12,13,18,.4),transparent);
+}
+.top .zh{font-size:19px;letter-spacing:8px;font-weight:600;color:var(--gold-br);
+  text-indent:8px;text-shadow:0 0 18px rgba(201,164,92,.35)}
+.top .en{font-size:9.5px;letter-spacing:5px;color:var(--ink3);text-indent:5px}
+.top::before,.top::after{content:"";position:absolute;top:calc(50% + env(safe-area-inset-top)/2);
+  width:26px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim))}
+.top::before{left:26px}
+.top::after{right:26px;transform:scaleX(-1)}
+#app{position:absolute;top:calc(58px + env(safe-area-inset-top));
+  bottom:calc(60px + env(safe-area-inset-bottom));left:0;right:0;
+  overflow-y:auto;-webkit-overflow-scrolling:touch}
+.view{display:none;padding:18px 16px 34px;animation:fade .35s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.search{position:relative;margin-bottom:20px}
+.search input{
+  width:100%;padding:13px 16px 13px 42px;border:1px solid var(--line);border-radius:14px;
+  background:var(--card);font-size:15px;color:var(--ink);font-family:inherit;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
+.search input::placeholder{color:var(--ink3)}
+.search input:focus{outline:none;border-color:var(--line-br);
+  box-shadow:0 0 0 3px rgba(201,164,92,.08)}
+.search .si{position:absolute;left:15px;top:50%;transform:translateY(-50%);
+  width:16px;height:16px;opacity:.6}
+.sec{display:flex;align-items:center;gap:12px;margin:2px 2px 16px}
+.sec .t{font-size:13px;letter-spacing:3px;color:var(--gold);white-space:nowrap}
+.sec .l{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.catcard{
+  position:relative;background:linear-gradient(158deg,var(--card2),var(--card));
+  border:1px solid var(--line);border-radius:16px;padding:20px 15px 16px;
+  cursor:pointer;transition:transform .15s,border-color .2s,box-shadow .2s;
+  box-shadow:0 6px 20px rgba(0,0,0,.35);overflow:hidden}
+.catcard::before{content:"";position:absolute;inset:0;border-radius:16px;padding:1px;
+  background:linear-gradient(158deg,rgba(230,205,142,.35),transparent 42%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;opacity:.7;pointer-events:none}
+.catcard:active{transform:scale(.975);border-color:var(--line-br);
+  box-shadow:0 0 24px rgba(201,164,92,.18)}
+.catcard .ord{width:34px;height:34px;border-radius:50%;border:1px solid var(--gold-dim);
+  display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--gold-br);
+  background:radial-gradient(circle,rgba(201,164,92,.14),transparent);margin-bottom:12px}
+.catcard .nm{font-weight:600;font-size:17px;color:var(--gold-br);letter-spacing:2px}
+.catcard .ds{font-size:11px;color:var(--ink2);margin-top:5px;line-height:1.6;letter-spacing:.3px}
+.catcard .ct{position:absolute;top:16px;right:15px;font-size:12px;color:var(--gold-dim);
+  font-variant-numeric:tabular-nums;letter-spacing:1px}
+.crumb{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.crumb .back{display:inline-flex;align-items:center;gap:5px;color:var(--gold);
+  font-size:14px;cursor:pointer;padding:4px 2px;letter-spacing:1px}
+.crumb .ttl{font-size:16px;color:var(--gold-br);letter-spacing:3px;font-weight:600}
+.item{position:relative;background:linear-gradient(158deg,var(--card2),var(--card));
+  border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin-bottom:11px;
+  cursor:pointer;transition:transform .12s,border-color .2s;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.item:active{transform:scale(.99);border-color:var(--line-br)}
+.item .t{font-weight:600;font-size:16px;color:var(--ink);display:flex;align-items:center;
+  gap:9px;letter-spacing:1px}
+.item .t .nmtxt{flex:1}
+.item .t::after{content:"›";color:var(--gold-dim);font-size:20px;font-weight:400}
+.lvl{font-size:10px;padding:2px 8px;border-radius:20px;flex:none;letter-spacing:1px;
+  border:1px solid;font-weight:400}
+.lvl1{color:var(--green);border-color:rgba(125,154,102,.5)}
+.lvl2{color:var(--amber);border-color:rgba(201,154,78,.5)}
+.lvl3{color:var(--red);border-color:rgba(176,101,90,.5)}
+.tags{margin-top:9px;display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:11px;color:var(--ink2);border:1px solid var(--line);border-radius:8px;
+  padding:2px 9px;letter-spacing:.5px}
+.empty{text-align:center;color:var(--ink3);padding:50px 0;font-size:14px;line-height:2;letter-spacing:1px}
+.detail .dt{font-size:23px;font-weight:700;color:var(--gold-br);letter-spacing:2px;
+  margin-bottom:8px;text-shadow:0 0 20px rgba(201,164,92,.2)}
+.detail .meta{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink3);
+  margin-bottom:18px;letter-spacing:1px;flex-wrap:wrap}
+.detail .meta .dot{width:3px;height:3px;border-radius:50%;background:var(--gold-dim)}
+.detail .body{background:linear-gradient(160deg,var(--card2),var(--card));
+  border:1px solid var(--line);border-radius:16px;padding:20px 18px;white-space:pre-wrap;
+  font-size:15.5px;line-height:2;color:var(--ink);box-shadow:0 6px 20px rgba(0,0,0,.35);
+  letter-spacing:.4px}
+.chips{display:flex;gap:9px;margin-bottom:20px;flex-wrap:wrap}
+.chip{font-size:13px;padding:7px 15px;border-radius:22px;border:1px solid var(--line);
+  color:var(--ink2);cursor:pointer;letter-spacing:1px;transition:.2s}
+.chip.on{border-color:var(--gold);color:var(--gold-br);
+  background:radial-gradient(circle,rgba(201,164,92,.12),transparent);
+  box-shadow:0 0 16px rgba(201,164,92,.12)}
+.chip .n{color:var(--gold-dim);margin-left:3px}
+.pbar{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.pbar .lab{font-size:12px;color:var(--ink3);letter-spacing:2px;white-space:nowrap}
+.pbar .track{flex:1;height:2px;background:var(--line);border-radius:2px;overflow:hidden}
+.pbar .fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold-br));
+  transition:width .3s}
+.flash{position:relative;background:linear-gradient(160deg,var(--card2),var(--card));
+  border:1px solid var(--line);border-radius:20px;min-height:360px;padding:26px 22px;
+  display:flex;flex-direction:column;cursor:pointer;user-select:none;
+  box-shadow:0 10px 34px rgba(0,0,0,.45);overflow:hidden}
+.flash::before{content:"";position:absolute;inset:0;border-radius:20px;padding:1px;
+  background:linear-gradient(160deg,rgba(230,205,142,.4),transparent 45%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.flash .fc-cat{font-size:12px;color:var(--gold);letter-spacing:3px;margin-bottom:auto}
+.flash .fc-q{font-size:26px;font-weight:700;text-align:center;margin:auto 0;
+  color:var(--gold-br);letter-spacing:3px;line-height:1.5;
+  text-shadow:0 0 22px rgba(201,164,92,.25)}
+.flash .fc-a{white-space:pre-wrap;font-size:15px;line-height:1.95;color:var(--ink);
+  margin-top:10px;overflow-y:auto;letter-spacing:.4px}
+.flash .hint{position:absolute;bottom:14px;left:0;right:0;text-align:center;
+  font-size:12px;color:var(--ink3);letter-spacing:2px}
+.grade{display:flex;gap:11px;margin-top:16px}
+.gbtn{flex:1;padding:13px 0;border-radius:13px;border:1px solid;font-size:15px;
+  font-family:inherit;cursor:pointer;background:transparent;letter-spacing:2px;transition:.15s}
+.gbtn small{display:block;font-size:10px;letter-spacing:1px;opacity:.7;margin-top:2px}
+.gbtn:active{transform:scale(.96)}
+.g-again{color:var(--red);border-color:rgba(176,101,90,.5)}
+.g-hard{color:var(--amber);border-color:rgba(201,154,78,.5)}
+.g-good{color:var(--green);border-color:rgba(125,154,102,.6)}
+.done{text-align:center;padding:60px 20px}
+.done .sym{font-size:30px;color:var(--gold-br);letter-spacing:6px;text-shadow:0 0 24px rgba(201,164,92,.4)}
+.done .msg{font-size:18px;margin-top:18px;color:var(--gold-br);font-weight:600;letter-spacing:3px}
+.done .sub{font-size:13px;color:var(--ink2);margin-top:12px;line-height:2;letter-spacing:1px}
+.done button{margin-top:24px;padding:11px 28px;border-radius:13px;border:1px solid var(--gold-dim);
+  background:transparent;color:var(--gold);font-size:14px;font-family:inherit;cursor:pointer;letter-spacing:2px}
+.nav{position:absolute;bottom:0;left:0;right:0;
+  height:calc(60px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);
+  display:flex;z-index:20;border-top:1px solid var(--line);
+  background:linear-gradient(0deg,var(--bg),rgba(12,13,18,.7));backdrop-filter:blur(8px)}
+.nav div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:5px;color:var(--ink3);font-size:11px;letter-spacing:4px;cursor:pointer;transition:.2s}
+.nav div .ni{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.5}
+.nav div.on{color:var(--gold-br)}
+.nav div.on .ni{opacity:1;box-shadow:0 0 10px var(--gold-br)}
+::-webkit-scrollbar{width:0;height:0}
+</style>
+</head>
+<body>
+<div class="top"><div class="zh">中观择日</div><div class="en">Z E R I</div></div>
+<div id="app">
+  <div class="view on" id="v-home">
+    <div class="search">
+      <svg class="si" viewBox="0 0 24 24" fill="none" stroke="#c9a45c" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+      <input id="q" placeholder="搜索  嫁娶 · 戊己都天 · 三煞" autocomplete="off">
+    </div>
+    <div class="sec"><span class="t" id="sec-t">六 类 择 要</span><span class="l"></span></div>
+    <div class="cats" id="cats"></div>
+  </div>
+  <div class="view" id="v-list">
+    <div class="crumb"><span class="back" onclick="go('home')">‹ 返回</span><span class="ttl" id="list-title"></span></div>
+    <div id="list"></div>
+  </div>
+  <div class="view" id="v-detail">
+    <div class="crumb"><span class="back" id="d-back">‹ 返回</span></div>
+    <div class="detail" id="detail"></div>
+  </div>
+  <div class="view" id="v-learn">
+    <div class="chips" id="learn-chips"></div>
+    <div id="learn-body"></div>
+  </div>
+</div>
+<div class="nav">
+  <div class="on" id="n-cha" onclick="tab('cha')"><span class="ni"></span>查</div>
+  <div id="n-xue" onclick="tab('xue')"><span class="ni"></span>学</div>
+</div>
+
+<script src="data.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+const byId=id=>DATA.find(d=>d.id===id);
+const catName=k=>(CATS.find(c=>c.key===k)||{}).name||k;
+const ORD=['','壹','贰','叁','肆','伍','陆','柒','捌'];
+const catOrd=k=>ORD[CATS.findIndex(c=>c.key===k)+1]||'';
+const LV=['','入门','基础','进阶'];
+let detailFrom='home';
+
+function go(v){document.querySelectorAll('#v-home,#v-list,#v-detail').forEach(e=>e.classList.remove('on'));
+  $('#v-'+v).classList.add('on');$('#app').scrollTop=0;}
+function tab(t){
+  $('#n-cha').classList.toggle('on',t==='cha');
+  $('#n-xue').classList.toggle('on',t==='xue');
+  if(t==='cha'){$('#v-learn').classList.remove('on');go('home');}
+  else{document.querySelectorAll('#v-home,#v-list,#v-detail').forEach(e=>e.classList.remove('on'));
+    $('#v-learn').classList.add('on');$('#app').scrollTop=0;}
+}
+
+function renderCats(){
+  $('#cats').className='cats';
+  $('#cats').innerHTML=CATS.map(c=>{
+    const n=DATA.filter(d=>d.cat===c.key).length;
+    return `<div class="catcard" onclick="openCat('${c.key}')">
+      <span class="ct">${n} 条</span>
+      <div class="ord">${catOrd(c.key)}</div>
+      <div class="nm">${c.name}</div><div class="ds">${c.desc}</div></div>`;
+  }).join('');
+}
+
+function itemHTML(d){
+  return `<div class="item" onclick="openDetail('${d.id}')">
+    <div class="t"><span class="lvl lvl${d.level}">${LV[d.level]}</span><span class="nmtxt">${d.title}</span></div>
+    <div class="tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>`;
+}
+function openCat(k){$('#list-title').textContent=catName(k);
+  $('#list').innerHTML=DATA.filter(d=>d.cat===k).map(itemHTML).join('');go('list');}
+
+$('#q').addEventListener('input',e=>{
+  const kw=e.target.value.trim();
+  if(!kw){$('#sec-t').textContent='六 类 择 要';renderCats();return;}
+  const r=DATA.filter(d=>(d.title+d.body+d.tags.join('')+catName(d.cat)).includes(kw));
+  $('#sec-t').textContent='命 中 '+r.length+' 条';
+  const box=$('#cats');box.className='';   // 搜索结果用列表排版
+  box.innerHTML=r.length?r.map(itemHTML).join(''):'<div class="empty">未找到相关知识点<br>换个关键词试试</div>';
+});
+
+function openDetail(id){
+  detailFrom=$('#v-list').classList.contains('on')?'list':'home';
+  const d=byId(id);
+  $('#detail').innerHTML=`
+    <div class="dt">${d.title}</div>
+    <div class="meta"><span class="lvl lvl${d.level}">${LV[d.level]}</span>
+      <span>${catName(d.cat)}</span><span class="dot"></span><span>教材 P${d.pages}</span></div>
+    <div class="body">${d.body}</div>
+    <div class="tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
+  $('#d-back').onclick=()=>go(detailFrom);
+  go('detail');
+}
+
+/* ===== 学习：翻卡 + 轻量SRS ===== */
+var SKEY='zeri_srs_v1';
+var srs=JSON.parse(localStorage.getItem(SKEY)||'{}');
+var curCat='all', queue=[], idx=0, flipped=false;
+function saveSrs(){localStorage.setItem(SKEY,JSON.stringify(srs));}
+function isDue(d){const s=srs[d.id];return !s||!s.due||s.due<=Date.now();}
+function renderChips(){
+  const chips=[{k:'all',n:'全部'}].concat(CATS.map(c=>({k:c.key,n:c.name})));
+  $('#learn-chips').innerHTML=chips.map(c=>{
+    const pool=c.k==='all'?DATA:DATA.filter(d=>d.cat===c.k);
+    const due=pool.filter(isDue).length;
+    return `<div class="chip ${c.k===curCat?'on':''}" onclick="pickCat('${c.k}')">${c.n}${due?`<span class="n">${due}</span>`:''}</div>`;
+  }).join('');
+}
+function pickCat(k){curCat=k;buildQueue();renderChips();renderCard();}
+function buildQueue(){
+  let pool=curCat==='all'?DATA:DATA.filter(d=>d.cat===curCat);
+  queue=pool.filter(isDue);
+  queue.sort((a,b)=>(srs[a.id]?.due||0)-(srs[b.id]?.due||0));
+  idx=0;flipped=false;
+}
+function renderCard(){
+  const box=$('#learn-body');
+  if(idx>=queue.length){
+    box.innerHTML=`<div class="done"><div class="sym">✦ ✦ ✦</div>
+      <div class="msg">此 组 已 毕</div>
+      <div class="sub">${curCat==='all'?'全部':catName(curCat)} · 暂无到期卡片<br>换个分类，或稍后再来温习</div>
+      <button onclick="pickCat('all')">回到全部</button></div>`;
+    renderChips();return;
+  }
+  const d=queue[idx];$('#app').scrollTop=0;
+  const pct=Math.round(idx/queue.length*100);
+  box.innerHTML=`
+    <div class="pbar"><span class="lab">${catOrd(d.cat)} ${catName(d.cat)}</span>
+      <span class="track"><span class="fill" style="width:${pct}%"></span></span>
+      <span class="lab">${idx+1}/${queue.length}</span></div>
+    <div class="flash" id="flash" onclick="flip()">
+      <div class="fc-cat">${catName(d.cat)} · ${LV[d.level]}</div>
+      <div class="fc-q">${d.title}</div>
+      <div class="fc-a" id="fc-a" style="display:none"></div>
+      <div class="hint" id="hint">轻 触 翻 面</div>
+    </div>
+    <div class="grade" id="grade" style="display:none">
+      <button class="gbtn g-again" onclick="grade(0)">再来<small>&lt;10分</small></button>
+      <button class="gbtn g-hard" onclick="grade(1)">有点难<small>1天</small></button>
+      <button class="gbtn g-good" onclick="grade(2)">记住了<small>4天</small></button>
+    </div>`;
+  flipped=false;
+}
+function flip(){
+  if(flipped)return;flipped=true;
+  const d=queue[idx];const a=$('#fc-a');
+  a.textContent=d.body;a.style.display='block';
+  $('#flash').querySelector('.fc-q').style.cssText='margin:0 0 12px;font-size:20px';
+  $('#hint').style.display='none';$('#grade').style.display='flex';
+}
+function grade(g){
+  const d=queue[idx];const now=Date.now();const day=864e5;
+  let due=g===0?now+8*6e4:g===1?now+day:now+4*day;
+  srs[d.id]={due,last:now,g};saveSrs();
+  if(g===0)queue.push(d);
+  idx++;renderCard();
+}
+
+renderCats();renderChips();buildQueue();renderCard();
+</script>
+</body>
+</html>

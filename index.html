@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0d0e13">
+<meta name="theme-color" content="#0c0d12">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <title>中观择日</title>
 <style>
 :root{
@@ -164,6 +167,33 @@ body{
 .nav div .ni{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.5}
 .nav div.on{color:var(--gold-br)}
 .nav div.on .ni{opacity:1;box-shadow:0 0 10px var(--gold-br)}
+/* ===== 速查（算） ===== */
+.subtab{display:flex;gap:9px;margin-bottom:18px}
+.subtab .st{flex:1;text-align:center;padding:9px 0;border-radius:12px;border:1px solid var(--line);
+  color:var(--ink2);font-size:14px;letter-spacing:2px;cursor:pointer;transition:.2s}
+.subtab .st.on{border-color:var(--gold);color:var(--gold-br);
+  background:radial-gradient(circle,rgba(201,164,92,.12),transparent);box-shadow:0 0 16px rgba(201,164,92,.1)}
+.pick-lab{font-size:12px;color:var(--gold);letter-spacing:3px;margin:0 2px 10px}
+.grid-g{display:grid;gap:7px;margin-bottom:18px}
+.g24{grid-template-columns:repeat(6,1fr)}
+.g12{grid-template-columns:repeat(6,1fr)}
+.g10{grid-template-columns:repeat(5,1fr)}
+.gcell{text-align:center;padding:11px 0;border-radius:10px;border:1px solid var(--line);
+  color:var(--ink);font-size:16px;cursor:pointer;transition:.15s;background:var(--card)}
+.gcell:active{transform:scale(.94)}
+.gcell.on{border-color:var(--gold-br);color:var(--gold-br);
+  background:radial-gradient(circle,rgba(201,164,92,.18),transparent);box-shadow:0 0 14px rgba(201,164,92,.15)}
+.res{background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--line);
+  border-radius:16px;padding:6px 18px 14px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.res .rrow{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.res .rrow:last-child{border-bottom:none}
+.res .rk{flex:none;width:78px;font-size:13px;color:var(--gold);letter-spacing:1px;line-height:1.7}
+.res .rv{flex:1;font-size:15px;color:var(--ink);line-height:1.75;letter-spacing:.5px}
+.res .rv b{color:var(--gold-br);font-weight:600}
+.res .rv .warn{color:var(--red)}
+.res .rv small{color:var(--ink3);font-size:12px}
+.res-hint{text-align:center;color:var(--ink3);padding:36px 0;font-size:13px;letter-spacing:2px;line-height:2}
+.calc-note{font-size:11px;color:var(--ink3);text-align:center;margin-top:16px;line-height:1.8;letter-spacing:.5px}
 ::-webkit-scrollbar{width:0;height:0}
 </style>
 </head>
@@ -179,20 +209,25 @@ body{
     <div class="cats" id="cats"></div>
   </div>
   <div class="view" id="v-list">
-    <div class="crumb"><span class="back" onclick="go('home')">‹ 返回</span><span class="ttl" id="list-title"></span></div>
+    <div class="crumb"><span class="back" onclick="history.back()">‹ 返回</span><span class="ttl" id="list-title"></span></div>
     <div id="list"></div>
   </div>
   <div class="view" id="v-detail">
-    <div class="crumb"><span class="back" id="d-back">‹ 返回</span></div>
+    <div class="crumb"><span class="back" id="d-back" onclick="history.back()">‹ 返回</span></div>
     <div class="detail" id="detail"></div>
   </div>
   <div class="view" id="v-learn">
     <div class="chips" id="learn-chips"></div>
     <div id="learn-body"></div>
   </div>
+  <div class="view" id="v-calc">
+    <div class="subtab" id="calc-sub"></div>
+    <div id="calc-body"></div>
+  </div>
 </div>
 <div class="nav">
   <div class="on" id="n-cha" onclick="tab('cha')"><span class="ni"></span>查</div>
+  <div id="n-suan" onclick="tab('suan')"><span class="ni"></span>算</div>
   <div id="n-xue" onclick="tab('xue')"><span class="ni"></span>学</div>
 </div>
 
@@ -204,16 +239,29 @@ const catName=k=>(CATS.find(c=>c.key===k)||{}).name||k;
 const ORD=['','壹','贰','叁','肆','伍','陆','柒','捌'];
 const catOrd=k=>ORD[CATS.findIndex(c=>c.key===k)+1]||'';
 const LV=['','入门','基础','进阶'];
-let detailFrom='home';
-
-function go(v){document.querySelectorAll('#v-home,#v-list,#v-detail').forEach(e=>e.classList.remove('on'));
-  $('#v-'+v).classList.add('on');$('#app').scrollTop=0;}
+/* ===== 视图路由（支持安卓返回键 / 浏览器后退） ===== */
+function show(s){
+  s=s||{v:'home'};
+  ['home','list','detail','learn','calc'].forEach(v=>{const el=$('#v-'+v);if(el)el.classList.remove('on');});
+  const isXue=s.v==='learn',isSuan=s.v==='calc';
+  $('#n-cha').classList.toggle('on',!isXue&&!isSuan);
+  $('#n-suan').classList.toggle('on',isSuan);
+  $('#n-xue').classList.toggle('on',isXue);
+  if(s.v==='list'){$('#list-title').textContent=catName(s.cat);
+    $('#list').innerHTML=DATA.filter(d=>d.cat===s.cat).map(itemHTML).join('');
+    $('#v-list').classList.add('on');}
+  else if(s.v==='detail'){renderDetail(s.id);$('#v-detail').classList.add('on');}
+  else if(s.v==='learn'){$('#v-learn').classList.add('on');}
+  else if(s.v==='calc'){initCalc();$('#v-calc').classList.add('on');}
+  else{$('#v-home').classList.add('on');}
+  $('#app').scrollTop=0;
+}
+function goState(s){show(s);history.pushState(s,'');}
+window.addEventListener('popstate',e=>show(e.state||{v:'home'}));
 function tab(t){
-  $('#n-cha').classList.toggle('on',t==='cha');
-  $('#n-xue').classList.toggle('on',t==='xue');
-  if(t==='cha'){$('#v-learn').classList.remove('on');go('home');}
-  else{document.querySelectorAll('#v-home,#v-list,#v-detail').forEach(e=>e.classList.remove('on'));
-    $('#v-learn').classList.add('on');$('#app').scrollTop=0;}
+  if(t==='cha'){$('#q').value='';$('#sec-t').textContent='六 类 择 要';renderCats();goState({v:'home'});}
+  else if(t==='suan'){goState({v:'calc'});}
+  else{renderChips();goState({v:'learn'});}
 }
 
 function renderCats(){
@@ -232,20 +280,66 @@ function itemHTML(d){
     <div class="t"><span class="lvl lvl${d.level}">${LV[d.level]}</span><span class="nmtxt">${d.title}</span></div>
     <div class="tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>`;
 }
-function openCat(k){$('#list-title').textContent=catName(k);
-  $('#list').innerHTML=DATA.filter(d=>d.cat===k).map(itemHTML).join('');go('list');}
+function openCat(k){goState({v:'list',cat:k});}
 
+/* 别名 + 拼音映射：口语词/拼音 → 教材正名 */
+const ALIAS={
+  '嫁娶':['结婚','婚嫁','婚姻','娶亲','出嫁','完婚','六神论','十神','麒麟','麟星','jiaqu','hunjia','jiehun'],
+  '移徙':['搬家','乔迁','迁居','入伙','banjia','yixi','qianju'],
+  '入宅归火':['入宅','安神位','进宅','ruzhai'],
+  '造宅':['建房','盖房','起造','建造','修房','造屋','zaozhai','jianfang','gaifang'],
+  '动土':['破土','挖土','开工','兴工','dongtu','potu'],
+  '开市':['开业','开张','营业','开工','kaishi','kaiye','kaizhang'],
+  '安葬':['下葬','葬礼','丧葬','埋葬','出殡','入殓','anzang','zangli','xiazang'],
+  '安床':['安床','放床','ancuang','anchuang'],
+  '安门':['安门','装门','开门','门楼','anmen'],
+  '起基定磉':['起基','定磉','行墙','qiji'],
+  '竖柱上梁':['上梁','立柱','封顶','shangliang','shuzhu'],
+  '出行':['出门','远行','旅行','赴任','chuxing','yuanxing'],
+  '祈福':['祈福','还愿','qifu'],
+  '祭祀':['祭祀','祭祖','扫墓','jisi'],
+  '三煞':['三杀','劫煞','灾煞','岁煞','sansha'],
+  '戊己都天':['都天','五虎煞','wujidoutian','dutian','dutiansha'],
+  '岁破':['冲太岁','太岁','suipo','taisui'],
+  '天乙贵人':['贵人','天乙','guiren','tianyi'],
+  '驿马':['马星','禄马','yima','maxing','luma'],
+  '真太阳时':['太阳时','真太阳','平太阳','taiyangshi','zhentaiyang'],
+  '二十四山':['坐山','廿四山','ershisishan','zuoshan'],
+  '十二黄道':['黄道','黄道吉日','青龙','明堂','天德','玉堂','huangdao'],
+  '阴府':['阴府煞','正阴府','傍阴府','yinfu'],
+  '二十八宿':['星宿','廿八宿','ershibaxiu','xingxiu'],
+  '补龙':['补龙','扶山','bulong','fushan'],
+  '斗首':['斗首','六山','doushou','liushan'],
+  '奇门':['奇门遁甲','遁甲','起局','qimen','dunjia'],
+  '五虎遁':['五虎遁','五鼠遁','排月柱','排时柱','wuhudun','wushudun'],
+  '洪范':['洪范五行','库音','山运','hongfan','kuyin'],
+  '贵人登天时':['登天时','贵登天','dengtianshi'],
+  '回头贡煞':['回头贡煞','贡煞','huitou'],
+  '四离四绝':['四离','四绝','sili','sijue'],
+};
+function expandKw(kw){
+  const low=kw.toLowerCase();const terms=new Set();
+  for(const canon in ALIAS){
+    if(canon.includes(kw)){terms.add(canon);continue;}
+    if(ALIAS[canon].some(a=>{const al=a.toLowerCase();
+      return al===low||(low.length>=2&&al.startsWith(low))||(low.length>=2&&al.includes(low));})){terms.add(canon);}
+  }
+  return [...terms];
+}
 $('#q').addEventListener('input',e=>{
   const kw=e.target.value.trim();
   if(!kw){$('#sec-t').textContent='六 类 择 要';renderCats();return;}
-  const r=DATA.filter(d=>(d.title+d.body+d.tags.join('')+catName(d.cat)).includes(kw));
+  const extra=expandKw(kw);
+  const r=DATA.filter(d=>{
+    const hay=d.title+d.body+d.tags.join('')+catName(d.cat);
+    return hay.includes(kw)||extra.some(t=>hay.includes(t));
+  });
   $('#sec-t').textContent='命 中 '+r.length+' 条';
   const box=$('#cats');box.className='';   // 搜索结果用列表排版
-  box.innerHTML=r.length?r.map(itemHTML).join(''):'<div class="empty">未找到相关知识点<br>换个关键词试试</div>';
+  box.innerHTML=r.length?r.map(itemHTML).join(''):'<div class="empty">未找到相关知识点<br>试试：嫁娶 · 三煞 · dongtu</div>';
 });
 
-function openDetail(id){
-  detailFrom=$('#v-list').classList.contains('on')?'list':'home';
+function renderDetail(id){
   const d=byId(id);
   $('#detail').innerHTML=`
     <div class="dt">${d.title}</div>
@@ -253,9 +347,8 @@ function openDetail(id){
       <span>${catName(d.cat)}</span><span class="dot"></span><span>教材 P${d.pages}</span></div>
     <div class="body">${d.body}</div>
     <div class="tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
-  $('#d-back').onclick=()=>go(detailFrom);
-  go('detail');
 }
+function openDetail(id){goState({v:'detail',id});}
 
 /* ===== 学习：翻卡 + 轻量SRS ===== */
 var SKEY='zeri_srs_v1';
@@ -321,7 +414,90 @@ function grade(g){
   idx++;renderCard();
 }
 
+/* ===== 速查（算）：全部按确定口诀精确推算 ===== */
+const GAN=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const ZHI=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const SHAN=['壬','子','癸','丑','艮','寅','甲','卯','乙','辰','巽','巳','丙','午','丁','未','坤','申','庚','酉','辛','戌','乾','亥'];
+const SHAN_ZHI={壬:'子',子:'子',癸:'丑',丑:'丑',艮:'寅',寅:'寅',甲:'卯',卯:'卯',乙:'辰',辰:'辰',巽:'巳',巳:'巳',丙:'午',午:'午',丁:'未',未:'未',坤:'申',申:'申',庚:'酉',酉:'酉',辛:'戌',戌:'戌',乾:'亥',亥:'亥'};
+const SHAN_GUA={壬:'坎',子:'坎',癸:'坎',丑:'艮',艮:'艮',寅:'艮',甲:'震',卯:'震',乙:'震',辰:'巽',巽:'巽',巳:'巽',丙:'离',午:'离',丁:'离',未:'坤',坤:'坤',申:'坤',庚:'兑',酉:'兑',辛:'兑',戌:'乾',乾:'乾',亥:'乾'};
+const ZHENGYINFU={坎:['丙','辛'],艮:['甲','己'],震:['戊','癸'],巽:['甲','己'],离:['丁','壬'],坤:['丙','辛','戊','癸'],兑:['乙','庚'],乾:['乙','庚','丁','壬']};
+const LU={甲:'寅',乙:'卯',丙:'巳',丁:'午',戊:'巳',己:'午',庚:'申',辛:'酉',壬:'亥',癸:'子'};
+const YANGREN={甲:'卯',丙:'午',戊:'午',庚:'酉',壬:'子'};
+const YANGGUI={甲:'未',乙:'申',丙:'酉',丁:'亥',戊:'丑',己:'子',庚:'丑',辛:'寅',壬:'卯',癸:'巳'};
+const YINGUI={甲:'丑',乙:'子',丙:'亥',丁:'酉',戊:'未',己:'申',庚:'未',辛:'午',壬:'巳',癸:'卯'};
+const SANHE={水:['申','子','辰'],火:['寅','午','戌'],金:['巳','酉','丑'],木:['亥','卯','未']};
+const SANHUI={木:['寅','卯','辰'],火:['巳','午','未'],金:['申','酉','戌'],水:['亥','子','丑']};
+const MA={申:'寅',子:'寅',辰:'寅',寅:'申',午:'申',戌:'申',巳:'亥',酉:'亥',丑:'亥',亥:'巳',卯:'巳',未:'巳'};
+const LIUHE={子:'丑',丑:'子',寅:'亥',亥:'寅',卯:'戌',戌:'卯',辰:'酉',酉:'辰',巳:'申',申:'巳',午:'未',未:'午'};
+function heJu(z){for(const e in SANHE)if(SANHE[e].includes(z))return{e,arr:SANHE[e]};}
+function huiJu(z){for(const e in SANHUI)if(SANHUI[e].includes(z))return{e,arr:SANHUI[e]};}
+function sanshaYears(z){
+  if(['巳','午','未'].includes(z))return '申子辰(水局)';
+  if(['亥','子','丑'].includes(z))return '寅午戌(火局)';
+  if(['寅','卯','辰'].includes(z))return '巳酉丑(金局)';
+  return '亥卯未(木局)';
+}
+var calcSub='shan',calcShan=null,calcGan=null,calcZhi=null;
+function initCalc(){
+  $('#calc-sub').innerHTML=
+    `<div class="st ${calcSub==='shan'?'on':''}" onclick="setSub('shan')">按坐山</div>
+     <div class="st ${calcSub==='gz'?'on':''}" onclick="setSub('gz')">按干支</div>`;
+  renderCalc();
+}
+function setSub(s){calcSub=s;initCalc();}
+function hintBox(t){return `<div class="res-hint">${t}</div>`;}
+function renderCalc(){
+  const b=$('#calc-body');
+  if(calcSub==='shan'){
+    b.innerHTML=
+     `<div class="pick-lab">选 坐 山（二十四山）</div>
+      <div class="grid-g g24">${SHAN.map(s=>`<div class="gcell ${s===calcShan?'on':''}" onclick="pickShan('${s}')">${s}</div>`).join('')}</div>
+      <div id="calc-res">${calcShan?shanRes(calcShan):hintBox('点选坐山，即出 岁破 · 三煞 · 阴府 避忌')}</div>
+      <div class="calc-note">依三合冲、双山地支、纳甲阴府等定式精算，仅列可确切计算之项；<br>洪范库音、六十甲子女命全表请查「速查表」知识卡。</div>`;
+  }else{
+    b.innerHTML=
+     `<div class="pick-lab">选 天 干（日干 / 年命干）</div>
+      <div class="grid-g g10">${GAN.map(g=>`<div class="gcell ${g===calcGan?'on':''}" onclick="pickGan('${g}')">${g}</div>`).join('')}</div>
+      <div class="pick-lab">选 地 支（年命 / 日支 / 生肖）</div>
+      <div class="grid-g g12">${ZHI.map(z=>`<div class="gcell ${z===calcZhi?'on':''}" onclick="pickZhi('${z}')">${z}</div>`).join('')}</div>
+      <div id="calc-res">${(calcGan||calcZhi)?gzRes():hintBox('选天干 → 禄·羊刃·贵人；选地支 → 三合·六合·驿马')}</div>
+      <div class="calc-note">天乙贵人能化真三煞等重煞；白天用阳贵、夜晚用阴贵。</div>`;
+  }
+}
+function pickShan(s){calcShan=(calcShan===s?null:s);
+  $('#calc-res').innerHTML=calcShan?shanRes(calcShan):hintBox('点选坐山，即出 岁破 · 三煞 · 阴府 避忌');
+  document.querySelectorAll('.g24 .gcell').forEach(c=>c.classList.toggle('on',c.textContent===calcShan));}
+function pickGan(g){calcGan=(calcGan===g?null:g);renderCalc();}
+function pickZhi(z){calcZhi=(calcZhi===z?null:z);renderCalc();}
+function shanRes(s){
+  const zhi=SHAN_ZHI[s],gua=SHAN_GUA[s];
+  const chong=ZHI[(ZHI.indexOf(zhi)+6)%12];
+  const yf=ZHENGYINFU[gua];
+  return `<div class="res">
+   <div class="rrow"><div class="rk">坐山</div><div class="rv"><b>${s}山</b>　（属${gua}卦 · 双山地支 ${zhi}）</div></div>
+   <div class="rrow"><div class="rk">岁破</div><div class="rv">逢 <b>${chong}</b> 之年月日时冲山 → <span class="warn">岁破 / 月破 / 日破 / 时破</span>，大凶宜避</div></div>
+   <div class="rrow"><div class="rk">山家三煞</div><div class="rv">逢 <b>${sanshaYears(zhi)}</b> 年，三煞占此山方，年月日时忌坐 <small>（时间论三合、方位论三会）</small></div></div>
+   <div class="rrow"><div class="rk">正阴府</div><div class="rv">忌日课天干 <b>${yf.join(' ')}</b> <small>（单干制化可用、双全忌；开山动土论，不忌修方）</small></div></div>
+  </div>`;
+}
+function gzRes(){
+  let rows='';
+  if(calcGan){const g=calcGan;
+    rows+=`<div class="rrow"><div class="rk">天干 ${g}</div><div class="rv">禄在 <b>${LU[g]}</b>　·　羊刃 <b>${YANGREN[g]||'—'}</b>${YANGREN[g]?'':' <small>(阴干羊刃少论)</small>'}</div></div>`;
+    rows+=`<div class="rrow"><div class="rk">天乙贵人</div><div class="rv">阳贵(昼) <b>${YANGGUI[g]}</b>　·　阴贵(夜) <b>${YINGUI[g]}</b></div></div>`;
+  }
+  if(calcZhi){const z=calcZhi,hj=heJu(z),hui=huiJu(z);
+    rows+=`<div class="rrow"><div class="rk">地支 ${z}</div><div class="rv">三合 <b>${hj.arr.join('')}</b>(${hj.e}局)　·　六合 <b>${LIUHE[z]}</b>　·　六冲 <b>${ZHI[(ZHI.indexOf(z)+6)%12]}</b></div></div>`;
+    rows+=`<div class="rrow"><div class="rk">驿马</div><div class="rv">马星在 <b>${MA[z]}</b> <small>（以年支或日支三合取）</small></div></div>`;
+    rows+=`<div class="rrow"><div class="rk">三会</div><div class="rv"><b>${hui.arr.join('')}</b>(${hui.e}局)</div></div>`;
+  }
+  return `<div class="res">${rows}</div>`;
+}
+
+/* ===== 初始化 ===== */
+history.replaceState({v:'home'},'');
 renderCats();renderChips();buildQueue();renderCard();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
 </script>
 </body>
 </html>

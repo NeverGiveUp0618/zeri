@@ -222,6 +222,31 @@ body{
   font-size:13px;letter-spacing:1px;opacity:0;pointer-events:none;transition:.25s;z-index:50;
   box-shadow:0 6px 22px rgba(0,0,0,.5)}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* ===== 学·测验 ===== */
+.qcard{background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--line);
+  border-radius:20px;padding:22px 20px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.qtype{font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:14px}
+.qstem{font-size:16.5px;line-height:1.9;color:var(--ink);letter-spacing:.5px}
+.qstem b{color:var(--gold-br);font-size:20px;font-weight:700}
+.qask{display:block;margin-top:12px;font-size:14px;color:var(--ink2);letter-spacing:1px}
+.qopts{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+.qopt{text-align:left;padding:14px 16px;border-radius:13px;border:1px solid var(--line);
+  background:var(--card);color:var(--ink);font-size:15.5px;font-family:inherit;cursor:pointer;
+  letter-spacing:.5px;transition:.15s;line-height:1.6}
+.qopt:active{transform:scale(.99)}
+.qopt.right{border-color:var(--green);color:var(--green);
+  background:radial-gradient(circle,rgba(125,154,102,.15),transparent)}
+.qopt.wrong{border-color:var(--red);color:var(--red);
+  background:radial-gradient(circle,rgba(176,101,90,.15),transparent)}
+.qfb{margin-top:16px;padding:12px 15px;border-radius:12px;font-size:14px;letter-spacing:.5px;line-height:1.7}
+.qfb.ok{color:var(--green);border:1px solid rgba(125,154,102,.4)}
+.qfb.no{color:var(--red);border:1px solid rgba(176,101,90,.4)}
+.qfb .qmore{color:var(--gold);cursor:pointer;margin-left:6px;letter-spacing:1px}
+.qnext{width:100%;margin-top:13px;padding:14px 0;border-radius:13px;border:1px solid var(--gold-dim);
+  background:transparent;color:var(--gold-br);font-size:15px;font-family:inherit;cursor:pointer;letter-spacing:3px}
+.qnext:active{transform:scale(.98)}
+.qscore{text-align:center;font-size:13px;color:var(--ink2);letter-spacing:1px;margin-bottom:16px}
+.qscore b{color:var(--gold-br);font-weight:600}
 ::-webkit-scrollbar{width:0;height:0}
 </style>
 </head>
@@ -246,9 +271,16 @@ body{
     <div class="detail" id="detail"></div>
   </div>
   <div class="view" id="v-learn">
-    <div class="lstat" id="learn-stat"></div>
-    <div class="chips" id="learn-chips"></div>
-    <div id="learn-body"></div>
+    <div class="subtab" id="learn-mode"></div>
+    <div id="learn-know">
+      <div class="lstat" id="learn-stat"></div>
+      <div class="chips" id="learn-chips"></div>
+      <div id="learn-body"></div>
+    </div>
+    <div id="learn-calc-q" style="display:none">
+      <div class="chips" id="qc-chips"></div>
+      <div id="qc-body"></div>
+    </div>
   </div>
   <div class="view" id="v-calc">
     <div class="subtab" id="calc-sub"></div>
@@ -291,7 +323,7 @@ window.addEventListener('popstate',e=>show(e.state||{v:'home'}));
 function tab(t){
   if(t==='cha'){$('#q').value='';$('#sec-t').textContent='六 类 择 要';renderFavs();renderCats();goState({v:'home'});}
   else if(t==='suan'){goState({v:'calc'});}
-  else{renderChips();renderStat();goState({v:'learn'});}
+  else{enterLearn();goState({v:'learn'});}
 }
 
 function renderCats(){
@@ -439,44 +471,59 @@ function buildQueue(){
   queue.sort((a,b)=>(srs[a.id]?.due||0)-(srs[b.id]?.due||0));
   idx=0;flipped=false;
 }
+/* 知识题：给释义 → 选是哪个知识点（客观判分，驱动SRS） */
+var quizState=null;
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function qSnippet(d){
+  let b=d.body.replace(/\s+/g,' ').trim();
+  d.title.split(/[·・.]/).forEach(p=>{if(p.length>=2)b=b.split(p).join('○○');});
+  b=b.split(d.title).join('○○');
+  return b.slice(0,84);
+}
+function pickDistractors(d,n){
+  const same=shuffle(DATA.filter(x=>x.cat===d.cat&&x.id!==d.id));
+  const other=shuffle(DATA.filter(x=>x.cat!==d.cat&&x.id!==d.id));
+  return same.concat(other).slice(0,n);
+}
 function renderCard(){
   const box=$('#learn-body');
   if(idx>=queue.length){
     box.innerHTML=`<div class="done"><div class="sym">✦ ✦ ✦</div>
       <div class="msg">此 组 已 毕</div>
-      <div class="sub">${curCat==='all'?'全部':catName(curCat)} · 暂无到期卡片<br>换个分类，或稍后再来温习</div>
+      <div class="sub">${curCat==='all'?'全部':catName(curCat)} · 暂无到期题目<br>换个分类，或稍后再来温习</div>
       <button onclick="pickCat('all')">回到全部</button>
       <div class="reset" onclick="resetSrs()">重置全部学习进度</div></div>`;
     renderChips();renderStat();return;
   }
   const d=queue[idx];$('#app').scrollTop=0;
-  const cur=srs[d.id];
-  const lA=fmtIvl(schedule(cur,0).ivl),lH=fmtIvl(schedule(cur,1).ivl),lG=fmtIvl(schedule(cur,2).ivl);
+  const opts=shuffle([{t:d.title,ok:true},...pickDistractors(d,3).map(x=>({t:x.title,ok:false}))]);
+  quizState={d,opts,answered:false};
   const pct=Math.round(idx/queue.length*100);
   box.innerHTML=`
     <div class="pbar"><span class="lab">${catOrd(d.cat)} ${catName(d.cat)}</span>
       <span class="track"><span class="fill" style="width:${pct}%"></span></span>
       <span class="lab">${idx+1}/${queue.length}</span></div>
-    <div class="flash" id="flash" onclick="flip()">
-      <div class="fc-cat">${catName(d.cat)} · ${LV[d.level]}</div>
-      <div class="fc-q">${d.title}</div>
-      <div class="fc-a" id="fc-a" style="display:none"></div>
-      <div class="hint" id="hint">轻 触 翻 面</div>
-    </div>
-    <div class="grade" id="grade" style="display:none">
-      <button class="gbtn g-again" onclick="grade(0)">再来<small>${lA}</small></button>
-      <button class="gbtn g-hard" onclick="grade(1)">有点难<small>${lH}</small></button>
-      <button class="gbtn g-good" onclick="grade(2)">记住了<small>${lG}</small></button>
+    <div class="qcard">
+      <div class="qtype">释义辨识 · ${catName(d.cat)} · ${LV[d.level]}</div>
+      <div class="qstem">「${qSnippet(d)}…」<span class="qask">这段讲的是哪个知识点？</span></div>
+      <div class="qopts" id="qopts">
+        ${opts.map((o,i)=>`<button class="qopt" onclick="answerQuiz(${i})">${o.t}</button>`).join('')}
+      </div>
+      <div id="qfb"></div>
     </div>`;
-  flipped=false;
 }
-function flip(){
-  if(flipped)return;flipped=true;
-  const d=queue[idx];const a=$('#fc-a');
-  a.textContent=d.body;a.style.display='block';
-  $('#flash').querySelector('.fc-q').style.cssText='margin:0 0 12px;font-size:20px';
-  $('#hint').style.display='none';$('#grade').style.display='flex';
+function answerQuiz(i){
+  if(!quizState||quizState.answered)return;quizState.answered=true;
+  document.querySelectorAll('#qopts .qopt').forEach((el,k)=>{el.disabled=true;
+    if(quizState.opts[k].ok)el.classList.add('right');
+    else if(k===i)el.classList.add('wrong');});
+  const ok=quizState.opts[i].ok,d=quizState.d;
+  applyGrade(ok?2:0);
+  $('#qfb').innerHTML=`<div class="qfb ${ok?'ok':'no'}">${ok?'✓ 答对了，已加长复习间隔':'✗ 正确答案：'+d.title}
+      <span class="qmore" onclick="openDetail('${d.id}')">查看详情 ›</span></div>
+    <button class="qnext" onclick="advance()">下一题 ›</button>`;
 }
+function advance(){idx++;renderCard();}
 /* 间隔递增：再来→8分重来；有点难→缩短；记住了→按熟练度成倍拉长(4天→约9→约21…) */
 function schedule(card,g){
   let ease=(card&&card.ease)||2.3, reps=(card&&card.reps)||0, pIvl=(card&&card.ivl)||0;
@@ -491,12 +538,12 @@ function fmtIvl(iv){
   if(iv<30)return Math.round(iv)+'天';
   return (Math.round(iv/30*10)/10)+'月';
 }
-function grade(g){
+function applyGrade(g){
   const d=queue[idx];const now=Date.now();
   const r=schedule(srs[d.id],g);
   srs[d.id]={due:now+r.ivl*864e5,last:now,g,reps:r.reps,ease:r.ease,ivl:r.ivl};saveSrs();
-  if(g===0)queue.push(d);
-  idx++;renderCard();renderStat();
+  if(g===0)queue.push(d);   // 答错的题本轮末尾再考一次
+  renderStat();
 }
 function renderStat(){
   const el=$('#learn-stat');if(!el)return;
@@ -588,9 +635,74 @@ function gzRes(){
   return `<div class="res">${rows}</div>`;
 }
 
+/* ===== 学·模式切换（知识题 / 速查题） ===== */
+var lmode='know';
+function renderLmode(){
+  $('#learn-mode').innerHTML=
+   `<div class="st ${lmode==='know'?'on':''}" onclick="setLmode('know')">知识题</div>
+    <div class="st ${lmode==='calc'?'on':''}" onclick="setLmode('calc')">速查题</div>`;
+  $('#learn-know').style.display=lmode==='know'?'':'none';
+  $('#learn-calc-q').style.display=lmode==='calc'?'':'none';
+}
+function setLmode(m){lmode=m;enterLearn();}
+function enterLearn(){
+  renderLmode();
+  if(lmode==='know'){renderStat();buildQueue();renderChips();renderCard();}
+  else{renderQcChips();newCalcQ();}
+}
+
+/* ===== 速查题：用「算」的精确数据出计算题，即时判分 ===== */
+var qcCat='随机',qcScore=0,qcTotal=0,qcAns=null,qcAnswered=false;
+const QC_TYPES=['随机','禄','贵人','驿马','六合','六冲','三煞','岁破','阴府'];
+function rnd(a){return a[Math.floor(Math.random()*a.length)];}
+function optZhi(ans){return shuffle([ans,...shuffle(ZHI.filter(z=>z!==ans)).slice(0,3)]);}
+function optFrom(all,ans){return shuffle([ans,...shuffle(all.filter(x=>x!==ans)).slice(0,3)]);}
+function genQ(type){
+  if(type==='随机')type=rnd(QC_TYPES.slice(1));
+  if(type==='禄'){const g=rnd(GAN);return{stem:`【禄】<b>${g}</b> 日 / 命，禄在哪一支？`,ans:LU[g],opts:optZhi(LU[g])};}
+  if(type==='贵人'){const g=rnd(GAN),yang=Math.random()<0.5,a=yang?YANGGUI[g]:YINGUI[g];
+    return{stem:`【天乙贵人】<b>${g}</b> 日的${yang?'阳贵(昼)':'阴贵(夜)'}在哪一支？`,ans:a,opts:optZhi(a)};}
+  if(type==='驿马'){const z=rnd(ZHI);return{stem:`【驿马】<b>${z}</b>（年 / 日支）三合取，马星在？`,ans:MA[z],opts:optZhi(MA[z])};}
+  if(type==='六合'){const z=rnd(ZHI);return{stem:`【六合】<b>${z}</b> 与哪一支相合？`,ans:LIUHE[z],opts:optZhi(LIUHE[z])};}
+  if(type==='六冲'){const z=rnd(ZHI),c=ZHI[(ZHI.indexOf(z)+6)%12];return{stem:`【六冲】<b>${z}</b> 冲哪一支？`,ans:c,opts:optZhi(c)};}
+  if(type==='三煞'){const s=rnd(SHAN),y=sanshaYears(SHAN_ZHI[s]);
+    return{stem:`【山家三煞】坐 <b>${s}山</b>，逢哪个三合局之年犯三煞？`,ans:y,opts:optFrom(['申子辰(水局)','寅午戌(火局)','巳酉丑(金局)','亥卯未(木局)'],y)};}
+  if(type==='岁破'){const s=rnd(SHAN),z=SHAN_ZHI[s],c=ZHI[(ZHI.indexOf(z)+6)%12];
+    return{stem:`【岁破】坐 <b>${s}山</b>（双山地支 ${z}），逢哪支之年为岁破？`,ans:c,opts:optZhi(c)};}
+  const pool=SHAN.filter(x=>ZHENGYINFU[SHAN_GUA[x]].length===2),s=rnd(pool),gua=SHAN_GUA[s],a=ZHENGYINFU[gua].join('');
+  return{stem:`【正阴府】坐 <b>${s}山</b>（${gua}卦），开山动土忌哪组天干？`,ans:a,opts:optFrom(['甲己','乙庚','丙辛','丁壬','戊癸'],a)};
+}
+function renderQcChips(){
+  $('#qc-chips').innerHTML=QC_TYPES.map(t=>`<div class="chip ${t===qcCat?'on':''}" onclick="pickQc('${t}')">${t}</div>`).join('');
+}
+function pickQc(t){qcCat=t;renderQcChips();newCalcQ();}
+function newCalcQ(){
+  qcAnswered=false;qcAns=genQ(qcCat);$('#app').scrollTop=0;
+  $('#qc-body').innerHTML=`
+    <div class="qscore">本轮 <b>${qcScore}</b> / ${qcTotal} 正确</div>
+    <div class="qcard">
+      <div class="qtype">速查计算 · ${qcCat==='随机'?'随机':qcCat}</div>
+      <div class="qstem">${qcAns.stem}</div>
+      <div class="qopts" id="qcopts">
+        ${qcAns.opts.map(o=>`<button class="qopt" onclick="answerCalcQ('${o}')">${o}</button>`).join('')}
+      </div>
+      <div id="qcfb"></div>
+    </div>`;
+}
+function answerCalcQ(choice){
+  if(qcAnswered)return;qcAnswered=true;qcTotal++;
+  const ok=choice===qcAns.ans;if(ok)qcScore++;
+  document.querySelectorAll('#qcopts .qopt').forEach(el=>{el.disabled=true;
+    if(el.textContent===qcAns.ans)el.classList.add('right');
+    else if(el.textContent===choice)el.classList.add('wrong');});
+  $('#qcfb').innerHTML=`<div class="qfb ${ok?'ok':'no'}">${ok?'✓ 正确':'✗ 正确答案：'+qcAns.ans}</div>
+    <button class="qnext" onclick="newCalcQ()">下一题 ›</button>`;
+  const sc=$('#qc-body').querySelector('.qscore');if(sc)sc.innerHTML=`本轮 <b>${qcScore}</b> / ${qcTotal} 正确`;
+}
+
 /* ===== 初始化 ===== */
 history.replaceState({v:'home'},'');
-renderFavs();renderCats();renderStat();renderChips();buildQueue();renderCard();
+renderFavs();renderCats();renderStat();renderChips();buildQueue();renderCard();renderLmode();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
 </script>
 </body>

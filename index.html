@@ -342,8 +342,17 @@ const ORD=['','壹','贰','叁','肆','伍','陆','柒','捌'];
 const catOrd=k=>ORD[CATS.findIndex(c=>c.key===k)+1]||'';
 const LV=['','入门','基础','进阶'];
 /* ===== 视图路由（支持安卓返回键 / 浏览器后退） ===== */
+const _viewScroll={};
+let _viewState={v:'home'};
+try{history.scrollRestoration='manual'}catch(e){}
+function _viewKey(s){return s.v+(s.cat?':'+s.cat:'')+(s.id?':'+s.id:'')}
+function _restoreViewScroll(s){
+  const y=_viewScroll[_viewKey(s)]||0,app=$('#app'),restore=()=>{app.scrollTop=y};
+  restore();requestAnimationFrame(()=>{restore();requestAnimationFrame(restore)});
+}
 function show(s){
   s=s||{v:'home'};
+  const app=$('#app');if(app)_viewScroll[_viewKey(_viewState)]=app.scrollTop;
   ['home','list','detail','learn','calc'].forEach(v=>{const el=$('#v-'+v);if(el)el.classList.remove('on');});
   const isXue=s.v==='learn',isSuan=s.v==='calc';
   $('#n-cha').classList.toggle('on',!isXue&&!isSuan);
@@ -356,7 +365,7 @@ function show(s){
   else if(s.v==='learn'){$('#v-learn').classList.add('on');}
   else if(s.v==='calc'){initCalc();$('#v-calc').classList.add('on');}
   else{if(!$('#q').value.trim())renderFavs();$('#v-home').classList.add('on');}
-  $('#app').scrollTop=0;
+  _viewState=s;_restoreViewScroll(s);
 }
 function goState(s){show(s);history.pushState(s,'');}
 window.addEventListener('popstate',e=>show(e.state||{v:'home'}));

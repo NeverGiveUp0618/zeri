@@ -288,12 +288,16 @@ body{
 .qsub{width:100%;margin-top:12px;padding:13px 0;border-radius:13px;border:1px solid var(--gold-dim);
   background:transparent;color:var(--gold-br);font-size:15px;font-family:inherit;cursor:pointer;letter-spacing:3px}
 ::-webkit-scrollbar{width:0;height:0}
+.daily{margin:0 0 18px;padding:15px;border:1px solid var(--line-br);border-radius:16px;background:linear-gradient(145deg,var(--card),rgba(201,164,92,.06))}
+.daily-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}.daily-h b{font-size:17px;color:var(--gold-br)}.daily-h span{font-size:11px;color:var(--ink3)}
+.daily-topic{font-size:13px;color:var(--ink2);margin-bottom:10px}.daily-actions{display:grid;gap:7px}.daily-actions button{padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:var(--bg);color:var(--ink);text-align:left;font-family:inherit}.daily-actions button:after{content:'›';float:right;color:var(--gold-br);font-size:18px;line-height:12px}
 </style>
 </head>
 <body>
 <div class="top"><div class="zh">择日学习</div><div class="en">Z E R I</div></div>
 <div id="app">
   <div class="view on" id="v-home">
+    <div class="daily" id="daily"></div>
     <div class="search">
       <svg class="si" viewBox="0 0 24 24" fill="none" stroke="#c9a45c" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
       <input id="q" placeholder="搜索  嫁娶 · 戊己都天 · 三煞" autocomplete="off">
@@ -341,6 +345,18 @@ const catName=k=>(CATS.find(c=>c.key===k)||{}).name||k;
 const ORD=['','壹','贰','叁','肆','伍','陆','柒','捌'];
 const catOrd=k=>ORD[CATS.findIndex(c=>c.key===k)+1]||'';
 const LV=['','入门','基础','进阶'];
+function renderDaily(){
+  const n=Math.floor(Date.now()/864e5),c=CATS[n%CATS.length],first=DATA.find(d=>d.cat===c.key);
+  $('#daily').innerHTML=`<div class="daily-h"><b>今日学习清单</b><span>约 5–10 分钟</span></div>
+    <div class="daily-topic">今日主题：${c.name} · ${c.desc}</div>
+    <div class="daily-actions">
+      <button onclick="openDetail('${first.id}')">① 精读：${first.title}</button>
+      <button onclick="dailyLearn('${c.key}')">② 做 3 道${c.name}知识题</button>
+      <button onclick="dailyWrong()">③ 回看 1 道错题 / 速查题</button>
+    </div>`;
+}
+function dailyLearn(k){curCat=k;lmode='know';enterLearn();goState({v:'learn'});}
+function dailyWrong(){curCat=WRONG.size?'__wrong__':'all';lmode=WRONG.size?'know':'calc';enterLearn();goState({v:'learn'});}
 /* ===== 视图路由（支持安卓返回键 / 浏览器后退） ===== */
 const _viewScroll={};
 let _viewState={v:'home'};
@@ -906,7 +922,7 @@ function submitFill(){
 
 /* ===== 初始化 ===== */
 history.replaceState({v:'home'},'');
-renderFavs();renderCats();renderStat();renderChips();buildQueue();renderCard();renderLmode();
+renderDaily();renderFavs();renderCats();renderStat();renderChips();buildQueue();renderCard();renderLmode();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
 </script>
 <!-- 返回五术堂首页 · portal -->

@@ -348,7 +348,7 @@ const LV=['','入门','基础','进阶'];
 function renderDaily(){
   const n=Math.floor(Date.now()/864e5),c=CATS[n%CATS.length],first=DATA.find(d=>d.cat===c.key);
   const key='zeri_daily_'+todayStr(),done=JSON.parse(localStorage.getItem(key)||'{}');
-  const item=(id,label,action)=>`<div class="daily-item"><button class="daily-check ${done[id]?'done':''}" onclick="toggleDaily('${id}')">${done[id]?'✓':'○'}</button><button class="daily-go" onclick="${action}">${label}</button></div>`;
+  const item=(id,label,action)=>`<div class="daily-item"><button class="daily-check ${done[id]?'done':''}" disabled aria-label="${done[id]?'系统已确认完成':'等待系统确认'}">${done[id]?'✓':'○'}</button><button class="daily-go" onclick="${action}">${label}</button></div>`;
   $('#daily').innerHTML=`<div class="daily-h"><b>今日学习清单</b><span>约 5–10 分钟</span></div>
     <div class="daily-topic">今日主题：${c.name} · ${c.desc}</div>
     <div class="daily-actions">
@@ -357,9 +357,10 @@ function renderDaily(){
       ${item('review','③ 回看 1 道错题 / 速查题','dailyWrong()')}
     </div>`;
 }
-function toggleDaily(id){const key='zeri_daily_'+todayStr(),done=JSON.parse(localStorage.getItem(key)||'{}');done[id]=!done[id];localStorage.setItem(key,JSON.stringify(done));renderDaily();}
+function markDailyAuto(id){const key='zeri_daily_'+todayStr(),done=JSON.parse(localStorage.getItem(key)||'{}');if(id==='quiz')done.quizCount=(done.quizCount||0)+1;if(id!=='quiz'||done.quizCount>=3)done[id]=true;localStorage.setItem(key,JSON.stringify(done));renderDaily();}
 function dailyLearn(k){curCat=k;lmode='know';enterLearn();goState({v:'learn'});}
-function dailyWrong(){curCat=WRONG.size?'__wrong__':'all';lmode=WRONG.size?'know':'calc';enterLearn();goState({v:'learn'});}
+var dailyReviewActive=false;
+function dailyWrong(){dailyReviewActive=true;curCat=WRONG.size?'__wrong__':'all';lmode=WRONG.size?'know':'calc';enterLearn();goState({v:'learn'});}
 /* ===== 视图路由（支持安卓返回键 / 浏览器后退） ===== */
 const _viewScroll={};
 let _viewState={v:'home'};
@@ -542,7 +543,7 @@ function renderDetail(id){
     <div class="tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
   applyFont();
 }
-function openDetail(id){goState({v:'detail',id});}
+function openDetail(id){const n=Math.floor(Date.now()/864e5),c=CATS[n%CATS.length],first=DATA.find(d=>d.cat===c.key);if(first&&first.id===id)markDailyAuto('read');goState({v:'detail',id});}
 
 /* ===== 学习：翻卡 + 轻量SRS ===== */
 var SKEY='zeri_srs_v1';
@@ -627,6 +628,7 @@ function answerQuiz(i){
     if(quizState.opts[k].ok)el.classList.add('right');
     else if(k===i)el.classList.add('wrong');});
   const ok=quizState.opts[i].ok,d=quizState.d;
+  markDailyAuto('quiz');if(dailyReviewActive||curCat==='__wrong__'){markDailyAuto('review');dailyReviewActive=false;}
   applyGrade(ok?2:0);markStudied();
   if(ok){if(WRONG.has(d.id)){WRONG.delete(d.id);saveWrong();}}
   else{WRONG.add(d.id);saveWrong();}
@@ -908,7 +910,7 @@ function qcFeedback(ok){
 }
 function answerCalcQ(choice){
   if(qcAnswered)return;qcAnswered=true;qcTotal++;
-  const ok=choice===qcAns.ans;if(ok)qcScore++;markStudied();
+  const ok=choice===qcAns.ans;if(ok)qcScore++;markStudied();if(dailyReviewActive){markDailyAuto('review');dailyReviewActive=false;}
   document.querySelectorAll('#qcopts .qopt').forEach(el=>{el.disabled=true;
     if(el.textContent===qcAns.ans)el.classList.add('right');
     else if(el.textContent===choice)el.classList.add('wrong');});
@@ -918,7 +920,7 @@ function qcNorm(s){return s.replace(/[（(][^）)]*[）)]/g,'').replace(/\s/g,''
 function submitFill(){
   if(qcAnswered)return;const inp=$('#qcin');if(!inp)return;const v=inp.value.trim();if(!v)return;
   qcAnswered=true;qcTotal++;
-  const ok=v===qcAns.ans||qcNorm(v)===qcNorm(qcAns.ans);if(ok)qcScore++;markStudied();
+  const ok=v===qcAns.ans||qcNorm(v)===qcNorm(qcAns.ans);if(ok)qcScore++;markStudied();if(dailyReviewActive){markDailyAuto('review');dailyReviewActive=false;}
   inp.disabled=true;inp.style.borderColor=ok?'var(--green)':'var(--red)';inp.style.color=ok?'var(--green)':'var(--red)';
   qcFeedback(ok);
 }

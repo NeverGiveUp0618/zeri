@@ -1,5 +1,5 @@
 /* 择日学习 Service Worker —— 离线缓存 */
-const CACHE = 'zeri-v13-auto-daily';          // 改内容后升版本号即可刷新缓存
+const CACHE = 'zeri-v14-audit';          // 改内容后升版本号即可刷新缓存
 const ASSETS = [
   './',
   './index.html',

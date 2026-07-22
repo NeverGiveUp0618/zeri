@@ -346,7 +346,7 @@ const ORD=['','壹','贰','叁','肆','伍','陆','柒','捌'];
 const catOrd=k=>ORD[CATS.findIndex(c=>c.key===k)+1]||'';
 const LV=['','入门','基础','进阶'];
 function renderDaily(){
-  const n=Math.floor(Date.now()/864e5),c=CATS[n%CATS.length],first=DATA.find(d=>d.cat===c.key);
+  const n=Math.floor(new Date().setHours(0,0,0,0)/864e5),c=CATS[n%CATS.length],first=DATA.find(d=>d.cat===c.key);
   const key='zeri_daily_'+todayStr(),done=JSON.parse(localStorage.getItem(key)||'{}');
   const item=(id,label,action)=>`<div class="daily-item"><button class="daily-check ${done[id]?'done':''}" disabled aria-label="${done[id]?'系统已确认完成':'等待系统确认'}">${done[id]?'✓':'○'}</button><button class="daily-go" onclick="${action}">${label}</button></div>`;
   $('#daily').innerHTML=`<div class="daily-h"><b>今日学习清单</b><span>约 5–10 分钟</span></div>
@@ -543,7 +543,7 @@ function renderDetail(id){
     <div class="tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
   applyFont();
 }
-function openDetail(id){const n=Math.floor(Date.now()/864e5),c=CATS[n%CATS.length],first=DATA.find(d=>d.cat===c.key);goState({v:'detail',id});if(first&&first.id===id)setTimeout(()=>{if(_viewState&&_viewState.v==='detail'&&_viewState.id===id)markDailyAuto('read')},8000);}
+function openDetail(id){const n=Math.floor(new Date().setHours(0,0,0,0)/864e5),c=CATS[n%CATS.length],first=DATA.find(d=>d.cat===c.key);goState({v:'detail',id});if(first&&first.id===id)setTimeout(()=>{if(_viewState&&_viewState.v==='detail'&&_viewState.id===id)markDailyAuto('read')},8000);}
 
 /* ===== 学习：翻卡 + 轻量SRS ===== */
 var SKEY='zeri_srs_v1';
@@ -928,6 +928,7 @@ function submitFill(){
 /* ===== 初始化 ===== */
 history.replaceState({v:'home'},'');
 renderDaily();renderFavs();renderCats();renderStat();renderChips();buildQueue();renderCard();renderLmode();
+try{parent.postMessage({type:'yst-progress',app:'zeri',text:`错题 ${WRONG.size} · 连续 ${streak.days||0} 天`},'https://nevergiveup0618.github.io')}catch(e){}
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
 </script>
 <!-- 返回五术堂首页 · portal -->

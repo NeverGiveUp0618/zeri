@@ -357,10 +357,10 @@ function renderDaily(){
       ${item('review','③ 回看 1 道错题 / 速查题','dailyWrong()')}
     </div>`;
 }
-function markDailyAuto(id){const key='zeri_daily_'+todayStr(),done=JSON.parse(localStorage.getItem(key)||'{}');if(id==='quiz')done.quizCount=(done.quizCount||0)+1;if(id!=='quiz'||done.quizCount>=3)done[id]=true;localStorage.setItem(key,JSON.stringify(done));renderDaily();}
-function dailyLearn(k){curCat=k;lmode='know';enterLearn();goState({v:'learn'});}
-var dailyReviewActive=false;
-function dailyWrong(){dailyReviewActive=true;curCat=WRONG.size?'__wrong__':'all';lmode=WRONG.size?'know':'calc';enterLearn();goState({v:'learn'});}
+function markDailyAuto(id){const key='zeri_daily_'+todayStr(),done=JSON.parse(localStorage.getItem(key)||'{}');if(id==='quiz')done.quizCount=(done.quizCount||0)+1;if(id!=='quiz'||done.quizCount>=3)done[id]=true;if(id==='quiz'&&done.quizCount>=3)dailyQuizActive=false;localStorage.setItem(key,JSON.stringify(done));renderDaily();}
+var dailyQuizActive=false,dailyReviewActive=false;
+function dailyLearn(k){dailyQuizActive=true;dailyReviewActive=false;curCat=k;lmode='know';enterLearn();goState({v:'learn'});}
+function dailyWrong(){dailyQuizActive=false;dailyReviewActive=true;curCat=WRONG.size?'__wrong__':'all';lmode=WRONG.size?'know':'calc';enterLearn();goState({v:'learn'});}
 /* ===== 视图路由（支持安卓返回键 / 浏览器后退） ===== */
 const _viewScroll={};
 let _viewState={v:'home'};
@@ -628,7 +628,7 @@ function answerQuiz(i){
     if(quizState.opts[k].ok)el.classList.add('right');
     else if(k===i)el.classList.add('wrong');});
   const ok=quizState.opts[i].ok,d=quizState.d;
-  markDailyAuto('quiz');if(dailyReviewActive||curCat==='__wrong__'){markDailyAuto('review');dailyReviewActive=false;}
+  if(dailyQuizActive)markDailyAuto('quiz');if(dailyReviewActive){markDailyAuto('review');dailyReviewActive=false;}
   applyGrade(ok?2:0);markStudied();
   if(ok){if(WRONG.has(d.id)){WRONG.delete(d.id);saveWrong();}}
   else{WRONG.add(d.id);saveWrong();}

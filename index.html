@@ -543,7 +543,7 @@ function renderDetail(id){
     <div class="tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
   applyFont();
 }
-function openDetail(id){const n=Math.floor(Date.now()/864e5),c=CATS[n%CATS.length],first=DATA.find(d=>d.cat===c.key);if(first&&first.id===id)markDailyAuto('read');goState({v:'detail',id});}
+function openDetail(id){const n=Math.floor(Date.now()/864e5),c=CATS[n%CATS.length],first=DATA.find(d=>d.cat===c.key);goState({v:'detail',id});if(first&&first.id===id)setTimeout(()=>{if(_viewState&&_viewState.v==='detail'&&_viewState.id===id)markDailyAuto('read')},8000);}
 
 /* ===== 学习：翻卡 + 轻量SRS ===== */
 var SKEY='zeri_srs_v1';

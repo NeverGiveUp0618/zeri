@@ -751,7 +751,11 @@ function gzRes(){
 }
 
 /* ===== 排盘·日课分析器 ===== */
-const DUTIAN={甲:['辰','巳'],己:['辰','巳'],乙:['寅','卯'],庚:['寅','卯'],丙:['子','丑'],辛:['子','丑'],丁:['戌','亥'],壬:['戌','亥'],戊:['申','酉'],癸:['申','酉']};
+/* 戊己都天：以年干起五虎遁，遁得戊、己所在之支即是（教材p343表＋算法）。
+   乙庚年正月起戊寅，故戊己各现两次，得寅卯子丑共四支。
+   夹杀都天＝二十四山上夹在两都天支中间的那个字，教材原表为 巽/甲/乾/庚/丁，可反证各年归属。 */
+const DUTIAN={甲:['辰','巳'],己:['辰','巳'],乙:['寅','卯','子','丑'],庚:['寅','卯','子','丑'],丙:['戌','亥'],辛:['戌','亥'],丁:['申','酉'],壬:['申','酉'],戊:['午','未'],癸:['午','未']};
+const DUTIAN_JIA={甲:['巽'],己:['巽'],乙:['甲','癸'],庚:['甲','癸'],丙:['乾'],辛:['乾'],丁:['庚'],壬:['庚'],戊:['丁'],癸:['丁']};
 const GONGSHA={未:['申','子','辰'],戌:['亥','卯','未'],丑:['寅','午','戌'],辰:['巳','酉','丑']};
 const SANSHA_FANG={水:['巳','午','未'],火:['亥','子','丑'],金:['寅','卯','辰'],木:['申','酉','戌']};
 var ripanState={yg:'',yz:'',mg:'',mz:'',dg:'',dz:'',hg:'',hz:'',shan:'',cg:'',cz:''};
@@ -789,7 +793,11 @@ function analyzeRipan(){
     zhis.forEach(([l,z])=>{if(ssz.includes(z))F.push(['bad',`<b>山家三煞</b>：${l}支 ${z} 属${ss}，三煞占 ${shan}山方`]);});
     const yf=ZHENGYINFU[gua],hit=gans.filter(([l,g])=>yf.includes(g));
     if(hit.length)F.push([hit.length>=2?'bad':'warn',`<b>正阴府</b>：${shan}(${gua}卦)忌 ${yf.join('')}，日课见 ${hit.map(h=>h[0]+h[1]).join('、')}${hit.length>=2?'（双全·忌）':'（单干·可制化）'}`]);
-    if(S.yg&&DUTIAN[S.yg]&&DUTIAN[S.yg].includes(sz))F.push(['warn',`<b>戊己都天</b>：${S.yg}年都天在 ${DUTIAN[S.yg].join('')}，坐山 ${shan}(${sz}) 犯，忌动土`]);
+    if(S.yg&&DUTIAN[S.yg]){
+      const isJia=(DUTIAN_JIA[S.yg]||[]).includes(shan);
+      if(isJia)F.push(['warn',`<b>夹杀都天</b>：${S.yg}年都天在 ${DUTIAN[S.yg].join('')}，坐山 ${shan} 夹在都天两支之间，一并避忌，忌动土`]);
+      else if(DUTIAN[S.yg].includes(sz))F.push(['warn',`<b>戊己都天</b>：${S.yg}年都天在 ${DUTIAN[S.yg].join('')}，坐山 ${shan}(${sz}) 犯，忌动土`]);
+    }
     gans.forEach(([l,g])=>{
       if(LU[g]===sz)F.push(['good',`<b>禄到山</b>：${l}干 ${g} 禄在 ${sz}，到坐山`]);
       if(YANGGUI[g]===sz||YINGUI[g]===sz)F.push(['good',`<b>贵人到山</b>：${l}干 ${g} 贵人到 ${sz}`]);});

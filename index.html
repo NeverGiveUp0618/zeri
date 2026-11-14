@@ -391,6 +391,11 @@ function show(s){
   _viewState=s;_restoreViewScroll(s);
 }
 function goState(s){show(s);history.pushState(s,'');}
+/* 笔记位置钩子（易术堂共用 notes.js）：详情/列表页记位置，笔记本里「回到出处」据此翻回；blocks＝本站正文是 div，补充给标记模式用 */
+window.YGN_HOOK={blocks:'.bp,.bl,.bh',
+  loc:function(){var s=_viewState;return s&&(s.v==='detail'||s.v==='list')?{v:s.v,cat:s.cat,id:s.id}:null},
+  go:function(l){if(l&&l.v)goState(l)},
+  label:function(){var t=document.querySelector('#v-detail.on .dt')||document.querySelector('#v-list.on #list-title');return t?t.textContent.trim():''}};
 window.addEventListener('popstate',e=>show(e.state||{v:'home'}));
 function tab(t){
   if(t==='cha'){$('#q').value='';$('#sec-t').textContent='六 类 择 要';renderFavs();renderCats();goState({v:'home'});}

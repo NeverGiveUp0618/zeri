@@ -1,5 +1,5 @@
 /* 择日学习 Service Worker —— 离线缓存 */
-const CACHE = 'zeri-v17-guard-b2611081932';          // 改内容后升版本号即可刷新缓存
+const CACHE = 'zeri-v17-guard-b2611141651';          // 改内容后升版本号即可刷新缓存
 const ASSETS = [
   './',
   './index.html',

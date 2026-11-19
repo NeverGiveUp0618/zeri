@@ -300,6 +300,7 @@ body{
 <div class="top"><div class="zh">择日学习</div><div class="en">Z E R I</div></div>
 <div id="app">
   <div class="view on" id="v-home">
+    <a href="course.html" class="daily" style="display:block;text-decoration:none;color:var(--ink)"><div class="daily-h"><b>择日系统课程</b><span>初级 · 中级 · 高级</span></div><div class="daily-topic">按顺序学概念、规则、例子与条件，读完就做章末题。</div><span style="color:var(--gold)">进入课程</span></a>
     <div class="daily" id="daily"></div>
     <div class="search">
       <svg class="si" viewBox="0 0 24 24" fill="none" stroke="#c9a45c" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
@@ -335,9 +336,10 @@ body{
   </div>
 </div>
 <div class="nav">
+  <div onclick="location.href='course.html'"><span class="ni"></span>学</div>
   <div class="on" id="n-cha" onclick="tab('cha')"><span class="ni"></span>查</div>
   <div id="n-suan" onclick="tab('suan')"><span class="ni"></span>算</div>
-  <div id="n-xue" onclick="tab('xue')"><span class="ni"></span>学</div>
+  <div id="n-xue" onclick="tab('xue')"><span class="ni"></span>练</div>
 </div>
 
 <script src="data.js"></script>
@@ -394,7 +396,7 @@ function goState(s){show(s);history.pushState(s,'');}
 /* 笔记位置钩子（易术堂共用 notes.js）：详情/列表页记位置，笔记本里「回到出处」据此翻回；blocks＝本站正文是 div，补充给标记模式用 */
 window.YGN_HOOK={blocks:'.bp,.bl,.bh',
   loc:function(){var s=_viewState;return s&&(s.v==='detail'||s.v==='list')?{v:s.v,cat:s.cat,id:s.id}:null},
-  go:function(l){if(l&&l.v)goState(l)},
+  go:function(l){if(l&&l.v==='course')location.href='course.html#'+encodeURIComponent(l.id)+(l.sec?'~'+encodeURIComponent(l.sec):'');else if(l&&l.v==='course-ref')location.href='course.html#mountains~'+encodeURIComponent(l.mountain);else if(l&&l.v)goState(l)},
   label:function(){var t=document.querySelector('#v-detail.on .dt')||document.querySelector('#v-list.on #list-title');return t?t.textContent.trim():''}};
 window.addEventListener('popstate',e=>show(e.state||{v:'home'}));
 function tab(t){
@@ -798,8 +800,11 @@ function analyzeRipan(){
     zhis.forEach(([l,z])=>{if(z===chong)F.push(['bad',`<b>${brk[l]}</b>：${l}支 ${z} 冲坐山 ${shan}山，大凶`]);});
     const ss=sanshaYears(sz),ssz=ss.slice(0,3).split('');
     zhis.forEach(([l,z])=>{if(ssz.includes(z))F.push(['bad',`<b>山家三煞</b>：${l}支 ${z} 属${ss}，三煞占 ${shan}山方`]);});
-    const yf=ZHENGYINFU[gua],hit=gans.filter(([l,g])=>yf.includes(g));
-    if(hit.length)F.push([hit.length>=2?'bad':'warn',`<b>正阴府</b>：${shan}(${gua}卦)忌 ${yf.join('')}，日课见 ${hit.map(h=>h[0]+h[1]).join('、')}${hit.length>=2?'（双全·忌）':'（单干·可制化）'}`]);
+    const yf=ZHENGYINFU[gua];
+    [['甲','己'],['乙','庚'],['丙','辛'],['丁','壬'],['戊','癸']].filter(pair=>pair.every(g=>yf.includes(g))).forEach(pair=>{
+      const hit=gans.filter(([l,g])=>pair.includes(g)),double=pair.every(g=>hit.some(h=>h[1]===g));
+      if(hit.length)F.push([double?'bad':'warn',`<b>正阴府</b>：${shan}(${gua}卦) ${pair.join('')}组，日课见 ${hit.map(h=>h[0]+h[1]).join('、')}${double?'（双全，须继续核山运死活）':'（单干，重复同字仍按单干核）'}`]);
+    });
     if(S.yg&&DUTIAN[S.yg]){
       const isJia=(DUTIAN_JIA[S.yg]||[]).includes(shan);
       if(isJia)F.push(['warn',`<b>夹杀都天</b>：${S.yg}年都天在 ${DUTIAN[S.yg].join('')}，坐山 ${shan} 夹在都天两支之间，一并避忌，忌动土`]);
@@ -823,7 +828,14 @@ function analyzeRipan(){
       else if(heJu(cz).arr.includes(z)&&z!==cz)F.push(['good',`<b>命课三合</b>：${l}支 ${z} 与主命 ${cz} 同 ${heJu(cz).e}局`]);});
   }
   if(!shan&&!cz&&!zhis.length&&!gans.length){out.innerHTML=hintBox('排入四柱、坐山、主事年命，自动分析');return;}
-  if(!F.length){out.innerHTML='<div class="res"><div class="allclear">✦ 未见明显冲煞　可再核历日神煞</div></div>';return;}
+  const missing=P.filter(p=>!p[1]||!p[2]).map(p=>p[0]+'柱');
+  if(!shan)missing.push('坐山');if(!S.cg||!S.cz)missing.push('主事年命');
+  if(missing.length)F.unshift(['warn',`<b>信息未齐</b>：${missing.join('、')}待补；以下仅提示已输入部分，不能判整课。`]);
+  const invalid=P.filter(p=>p[1]&&p[2]&&GAN.indexOf(p[1])%2!==ZHI.indexOf(p[2])%2).map(p=>p[0]+p[1]+p[2]);
+  if(S.cg&&S.cz&&GAN.indexOf(S.cg)%2!==ZHI.indexOf(S.cz)%2)invalid.push('主命'+S.cg+S.cz);
+  if(invalid.length)F.unshift(['bad',`<b>干支配对无效</b>：${invalid.join('、')}不在六十甲子中，请先核四柱。`]);
+  if(shan&&'乾坤艮巽'.includes(shan))F.unshift(['warn','<b>四维山待核兼向</b>：当前简化归支不能代替兼家专条，请对照课程第五、九、三十章。']);
+  if(!F.length){out.innerHTML='<div class="res"><div class="calc-note">已实现的检查项暂无提示；历日神煞、事项专忌、兼向、傍阴府与山运死活等仍须逐项另核。</div></div>';return;}
   const ord={bad:0,warn:1,good:2},ico={bad:'✕',warn:'△',good:'✓'};
   F.sort((a,b)=>ord[a[0]]-ord[b[0]]);
   out.innerHTML='<div class="res">'+F.map(f=>`<div class="flag ${f[0]}"><div class="fi">${ico[f[0]]}</div><div class="ft">${f[1]}</div></div>`).join('')+'</div>';
@@ -943,6 +955,10 @@ function submitFill(){
 /* ===== 初始化 ===== */
 history.replaceState({v:'home'},'');
 renderDaily();renderFavs();renderCats();renderStat();renderChips();buildQueue();renderCard();renderLmode();
+const entry=new URLSearchParams(location.search);
+if(entry.get('knowledge')&&byId(entry.get('knowledge')))goState({v:'detail',id:entry.get('knowledge')});
+else if(entry.get('tab')==='calc'){if(['ripan','shan','gz','nv'].includes(entry.get('sub')))calcSub=entry.get('sub');goState({v:'calc'});}
+else if(entry.get('tab')==='learn'){enterLearn();goState({v:'learn'});}
 try{parent.postMessage({type:'yst-progress',app:'zeri',text:`错题 ${WRONG.size} · 连续 ${streak.days||0} 天`},'https://nevergiveup0618.github.io')}catch(e){}
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
 </script>

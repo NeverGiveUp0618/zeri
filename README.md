@@ -16,15 +16,17 @@
 ## 构建与检查
 
 ```sh
-python3 build_course.py
-python3 audit_course.py
+/Users/xiaojin/.homebrew/bin/python3 build_course.py
+/Users/xiaojin/.homebrew/bin/python3 audit_course.py
+/Users/xiaojin/.homebrew/bin/python3 audit_rules.py
 NODE_PATH=../bazi-course/node_modules node tests_check.js
 NODE_PATH=../bazi-course/node_modules node tests_course.js
 NODE_PATH=../bazi-course/node_modules node tests_course_notes.js
 node tests_course_sw.js
+NODE_PATH=../bazi-course/node_modules node tests_review.js
 ```
 
-`build_course.py` 用标准库生成 `data-course.js` 和可下载的 `course-textbook.md`，不要直接改产物。`audit_course.py` 有本地 `_src/pages.json` 时逐页核引文与原表；无源时明确报告不能执行该层。
+`build_course.py` 用标准库生成 `data-course.js`、精确到山的 `data-mountain.js` 和可下载的 `course-textbook.md`，不要直接改产物。`audit_course.py` 有本地 `_src/pages.json` 时逐页核引文与原表；无源时明确报告不能执行该层。
 
 章末题只考资料明确规则及给足输入的局部应用。手算练习标明是演算，不冒充原课真实个案。争议处不设唯一答案。答案不应持续成为最长选项。
 
@@ -36,10 +38,12 @@ node tests_course_sw.js
 - `zeri_course_answers_v1`：章末题客观作答。
 - `zeri_course_positions_v1`：阅读位置。
 
+课程支持导出及导入学习记录；导入合并既有已读与作答记录。初始化先等待共享guard的镜像恢复。
+
 全科笔记仍用共享 `ygn_v1`，不另建笔记本。`YGN_HOOK` 保存课程ID及实际小节；返回时先展开折叠小节，再由共享模块按文本指纹定位。原表保存山名，能回对应坐山。旧速查页能转接课程笔记来源，课程页也能返回旧知识卡来源。
 
 课程CORE资源与共享笔记/阅读模块分别预缓存，共享资源失败不妨碍核心缓存安装。清缓存仅处理 `zeri-` 自身版本，不清其他科目。线上更新需提升 `sw.js` 缓存版本。
 
 ## 本轮验证范围
 
-已执行结构、页序与短引核对、盘面月时干配对、逐山文本保真、真实共享笔记模块联调、课程路由与作答、SW离线回落回归。浏览器预览连接器不可用，未冒称完成真实设备视觉验收。
+已执行结构、页序与短引核对、盘面月时干配对、逐山文本保真、真实共享笔记模块联调、课程路由与作答、SW离线回落回归。已用独立无头Chrome检查360/390/768/1280宽度及150%页面缩放，16种组合无页面横向溢出，并查看手机与桌面截图。详情见[复查报告](复查报告.md)；不冒称实体手机验收。

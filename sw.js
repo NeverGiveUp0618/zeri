@@ -1,5 +1,5 @@
 /* 择日学习 Service Worker —— 离线缓存 */
-const CACHE = 'zeri-v19-course-review';
+const CACHE = 'zeri-v20-course-review';
 const ASSETS = [
   './',
   './index.html',

@@ -22,10 +22,13 @@ for c in cats:
         if link in re.findall(r'\]\(#(zr-\d{2})\)',md.split('## ',1)[0]):
             assert int(link[3:])<c['n'],(c['id'],'前置必须在本章之前')
     sections=re.findall(r'^## (.+)$',md,re.M)
-    assert len(sections)==8,(c['id'],sections)
+    assert sections==['一、先把问题讲清楚','二、规则与条件表','三、实际怎么检查','四、原课例子与拆解','五、易错与适用边界','六、原文对照','七、本章小结','八、出处与回查'],(c['id'],sections)
+    assert md.splitlines()[0]==f"# 第{c['n']}章 {c['title']}"
+    assert all(x in md for x in ['> **前置**：','> **本章解决什么**：','> **本章的一句话**：'])
     assert all(1<=n<=1832 for n in c['refs'])
     assert len(md)>800,(c['id'],'章节意外变短')
     for quote,page in re.findall(r'^> (.+)\n>\n> 〔《择日合集》PDF第(\d+)页〕',md,re.M):
+        assert int(page) in c['refs'],(c['id'],page,'引文页不在refs')
         if pages:assert norm(quote) in norm(pages[int(page)-1]),(c['id'],page,'引文未命中')
         quotes+=1
     qs=json.loads((ROOT/'content/题目'/c['stage']/(name+'.json')).read_text())
@@ -41,7 +44,7 @@ for c in cats:
         assert q['e'] and len(q['a'])<=23,q['id']
         assert not re.search(r'例中|如上例|那个命主|这个盘|谁说过|哪份讲义',q['q']),q['id']
         if len(q['a'])>max(map(len,q['w'])):longest+=1
-assert not re.search('中观|视频|奇门遁甲起局',all_md),'展示层禁用词'
+assert not re.search('中观|视频|奇门|六爻|大六壬|盲派|杨筠松|王进武|赖布衣|蒋大鸿|原句用于|步骤编排|完整原文件',all_md),'展示层禁用词'
 cases=json.loads((ROOT/'content/案例.json').read_text())
 gan='甲乙丙丁戊己庚辛壬癸';zhi='子丑寅卯辰巳午未申酉戌亥'
 def valid_pillars(p):

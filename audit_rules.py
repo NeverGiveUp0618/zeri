@@ -28,3 +28,28 @@ for shan,(kind,pairs) in expected.items():
  assert m[shan]['kind']==kind+'阴府',shan
  assert set(m[shan]['pairs'])==set(pairs[j:j+2] for j in range(0,len(pairs),2)),shan
 print('通过：24山正傍类别与全部对应组，独立基准核对。')
+# 新补教材表：用独立起点推算登天240格、麒麟288格，保留原页戊/戌异文。
+def chapter_text(n):
+ files=list((R/'content/教材').glob(f'*/{n:02}-*.md'));assert len(files)==1;return files[0].read_text()
+ch18=chapter_text(18);star_rows=re.findall(r'^\| (立春|雨水|惊蛰|春分|清明|谷雨|立夏|小满|芒种|夏至|小暑|大暑|立秋|处暑|白露|秋分|寒露|霜降|立冬|小雪|大雪|冬至|小寒|大寒) \| ([^\n]+)',ch18,re.M)
+# Only 24-step rows here; the separate 12-month table has 阳贵/阴贵 as its second cell.
+star_rows=[(term,[v.strip() for v in row.strip('| ').split('|')]) for term,row in star_rows if '贵' not in row]
+assert len(star_rows)==24
+for term,vals in star_rows:
+ assert len(vals)==14,(term,vals)
+ star,solar=vals[:2]
+ for hour,location in enumerate(vals[2:]):assert location==Z[(hour+Z.index(star)-Z.index(solar))%12],(term,hour,location)
+months=['雨水','春分','谷雨','小满','夏至','大暑','处暑','秋分','霜降','小雪','冬至','大寒'];gu={'阳贵':'未申酉亥丑子丑寅卯巳','阴贵':'丑子亥酉未申未午巳卯'}
+rows=re.findall(r'^\| ('+'|'.join(months)+r') \| (阳贵|阴贵) \| ([^\n]+)',ch18,re.M);assert len(rows)==24
+for term,kind,row in rows:
+ vals=[v.strip() for v in row.strip('| ').split('|')];assert len(vals)==10
+ solar=(11-months.index(term))%12
+ for j,v in enumerate(vals):
+  expected=Z[(solar+11-Z.index(gu[kind][j]))%12]
+  if (term,kind,j)==('春分','阳贵',3):assert v=='戊〔待核〕' and expected=='戌'
+  else:assert v==expected,(term,kind,j,v,expected)
+ch33=chapter_text(33);table=ch33.split('### 乌兔太阳日按月朔柱查',1)[1].split('## 三、',1)[0]
+sets=re.findall(r'^\| ([甲乙丙丁戊己庚辛壬癸子丑寅卯辰巳午未申酉戌亥、]+) \|',table,re.M);pillars=[x for row in sets for x in row.split('、')]
+assert len(pillars)==60 and len(set(pillars))==60
+assert set(pillars)=={G[i%10]+Z[i%12] for i in range(60)}
+print('通过：新增麒麟到方288格、贵人登天240格独立复算；乌兔月朔60甲子无漏重。')

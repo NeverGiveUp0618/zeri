@@ -1,6 +1,6 @@
 # 择日学习
 
-现有 GitHub Pages 项目，在原有查、算、练上新增 `course.html` 系统课程。保持原站玄黑鎏金、历史存储键与易术堂入口。
+现有 GitHub Pages 项目，学、查、算、练统一在 `index.html` 内切换，系统课程入口为 `index.html?tab=course`；旧 `course.html#章节` 自动转接。保持原站玄黑鎏金、历史存储键与易术堂入口。
 
 ## 课程内容源
 
@@ -22,6 +22,7 @@
 NODE_PATH=../bazi-course/node_modules node tests_check.js
 NODE_PATH=../bazi-course/node_modules node tests_course.js
 NODE_PATH=../bazi-course/node_modules node tests_course_notes.js
+NODE_PATH=../bazi-course/node_modules node tests_tabs.js
 node tests_course_sw.js
 NODE_PATH=../bazi-course/node_modules node tests_review.js
 ```
@@ -64,3 +65,12 @@ SW已升为 `zeri-v22-reading-layout`。独立Chrome完成34章两种宽度共68
 课程与查算练共用 `site-shell.css` 的页头、底栏和高亮样式，四个入口切换保持一致。练习统计按完整的标签与数字分组换行；类别和题型筛选保持一行横滑，题面标签也按完整词组换行。SW升为 `zeri-v23-unified-mobile-shell`，共用样式进入离线缓存。
 
 通过底栏实际点击检查320/360/390/430/820/1440宽度、100/120/135/150%共享阅读字号，覆盖课程、速查、坐山计算、知识题、分类筛选、速查题与返回课程，共168个状态；统计文字完整、筛选可滑动、切换前后页头和底栏尺寸一致。最终手机截图另复核。全部构建、审计与回归通过，新增统计分组和入口切换回归，共用笔记11项仍通过。以上为浏览器手机尺寸模拟。
+
+
+## 底栏无整页跳转（2026-11-19）
+
+此前统一外观后，课程与查算练仍是不同文档，加上旧视图从透明淡入，切换会闪。现四个入口统一在同一文档内显示，页头、底栏、共享阅读与笔记模块始终保留；取消视图淡入，切回时保留课程展开状态、阅读位置、当前题和推算输入。浏览器后退、课程内速查/推算链接及旧书签仍可使用。
+
+`course.js` 同时支持独立验证与主应用内运行，笔记钩子按当前入口派发。`build_ui.py` 从 `course.css` 生成仅作用于课程容器的 `course-embedded.css`，由 `build_course.py` 一并调用，不直接修改产物。`tests_tabs.js` 用真实课程与共享笔记模块检查14项入口、状态、后退和出处定位。
+
+SW为 `zeri-v24-in-page-tabs`。独立Chrome检查320/390/820/1440宽度、100/150%字体共56种切换状态；每个宽度连续32次切换，在下一帧检查内容始终不透明，文档/页头/底栏保持同一对象，无新Document请求，旧书签转接及笔记定位通过。构建、内容/规则审计与全部回归通过；手机尺寸模拟不代替实体机反馈。

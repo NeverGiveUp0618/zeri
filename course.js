@@ -2,7 +2,9 @@
 (async function(){
 'use strict';
 const D=window.ZERI_COURSE,KEY='zeri_course_v1',QKEY='zeri_course_answers_v1',POS='zeri_course_positions_v1';
-const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const host=window.ZERI_EMBEDDED,root=host?document.getElementById(host.rootId):document,scroller=host?document.getElementById(host.scrollId):window;
+const isActive=()=>!host||host.isActive(),scrollTop=()=>host?scroller.scrollTop:window.scrollY,scrollToPosition=y=>{if(!isActive())return;if(host)scroller.scrollTop=y;else window.scrollTo(0,y)};
+const $=s=>root.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 if(!D||!Array.isArray(D.chapters)){$('#course-home').innerHTML='<p>课程数据加载未完成，请重新打开课程。</p><a class="btn" href="course.html">重新加载</a>';return}
 if(window.YG&&window.YG.ready){$('#course-home').textContent='正在读取学习记录…';try{await window.YG.ready}catch(e){}}
 function read(k,def){try{return JSON.parse(localStorage.getItem(k))||def}catch(e){return def}}
@@ -16,11 +18,11 @@ progress.read=Object.fromEntries(Object.entries(progress.read).filter(([id,v])=>
 positions=Object.fromEntries(Object.entries(positions).filter(([id,y])=>knownChapters.has(id)&&Number.isFinite(y)&&y>=0));
 for(const id of Object.keys(answers))if(!knownQuestions.has(id))delete answers[id];
 for(const c of chapters)for(const q of c.questions){const a=answers[q.id];if(a&&(!object(a)||![q.a,...q.w].includes(a.choice)||a.correct!==(a.choice===q.a)||(a.rev&&a.rev!==q.rev)))delete answers[q.id]}
-function storageIssue(){let el=$('#storage-issue');if(!el){el=document.createElement('div');el.id='storage-issue';el.className='source-notice';document.querySelector('header').after(el)}el.textContent='当前浏览器未能保存学习记录。本页仍可学习，请先导出记录或检查存储空间。'}
+function storageIssue(){let el=document.getElementById('storage-issue');if(!el){el=document.createElement('div');el.id='storage-issue';el.className='source-notice';if(host)root.prepend(el);else document.querySelector('header').after(el)}el.textContent='当前浏览器未能保存学习记录。本页仍可学习，请先导出记录或检查存储空间。'}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(progress));localStorage.setItem(QKEY,JSON.stringify(answers))}catch(e){storageIssue()}report()}
 function byId(id){return chapters.find(c=>c.id===id)}
 function report(){const n=chapters.filter(c=>progress.read[c.id]).length;try{parent.postMessage({type:'yst-progress',app:'zeri',text:`课程已读 ${n}/${chapters.length} · 章末题 ${Object.keys(answers).length}/${D.questionCount}`},location.origin)}catch(e){}}
-function jump(id,sec){const target='#'+encodeURIComponent(id)+(sec?'~'+encodeURIComponent(sec):'');if(location.hash===target)route();else location.hash=target}
+function jump(id,sec){if(host){host.open(encodeURIComponent(id)+(sec?'~'+encodeURIComponent(sec):''));return}const target='#'+encodeURIComponent(id)+(sec?'~'+encodeURIComponent(sec):'');if(location.hash===target)route();else location.hash=target}
 function card(c){return `<a class="lesson" href="#${c.id}"><span class="num">${String(c.n).padStart(2,'0')}</span><div><h3>${esc(c.title)}</h3><p>${esc(c.goal)}</p></div><span class="state ${progress.read[c.id]?'read':''}">${progress.read[c.id]?'已读':'未读'}</span></a>`}
 function catalog(query=''){
  const term=query.trim().toLowerCase(),filtered=chapters.filter(c=>!term||(`${c.title} ${c.text} ${c.questions.map(q=>q.q).join(' ')}`).toLowerCase().includes(term));
@@ -38,7 +40,7 @@ function home(){
  catalog();$('#course-search').addEventListener('input',e=>catalog(e.target.value));$('[data-export]').onclick=exportProgress;
  $('[data-export]').insertAdjacentHTML('afterend','<button class="btn small" data-import>导入学习记录</button><input id="course-import" type="file" accept="application/json,.json" hidden><span id="transfer-status" class="meta" role="status"></span>');
  $('[data-import]').onclick=()=>$('#course-import').click();$('#course-import').onchange=importProgress;
- window.scrollTo(0,0);report();
+ scrollToPosition(0);report();
 }
 function gzClass(z){if('甲乙寅卯'.includes(z))return 'wood';if('丙丁巳午'.includes(z))return 'fire';if('戊己辰戌丑未'.includes(z))return 'earth';if('庚辛申酉'.includes(z))return 'metal';return 'water'}
 function chart(c){if(!c||!c.pillars)return '';return `<aside class="chart"><div class="caption">${esc(c.people)} · ${esc(c.type)}${c.illustration?' · 不作真实候选':''}</div><div class="pillars">${c.pillars.map((p,i)=>`<div class="pillar"><small>${['年','月','日','时'][i]}</small>${p==='—'?'<span class="gz">—</span>':p.split('').map(z=>`<span class="gz ${gzClass(z)}">${z}</span>`).join('')}</div>`).join('')}</div></aside>`}
@@ -64,7 +66,7 @@ function reader(c,sec){
  const links=box.querySelector('.reference-links');links.innerHTML=(c.links||[]).map(l=>`<a class="btn small" href="index.html?knowledge=${encodeURIComponent(l.id)}">速查 · ${esc(l.title)}</a>`).join('');
  if(c.n===15)links.insertAdjacentHTML('beforeend','<a class="btn small" href="index.html?tab=calc&sub=nv">查询六十甲子女命全表</a>');
  if(c.n===30)links.insertAdjacentHTML('beforeend','<a class="btn small" href="#mountains">二十四山原表查阅</a>');
- requestAnimationFrame(()=>{if(sec)focusSection(sec);else window.scrollTo(0,positions[c.id]||0)});
+ requestAnimationFrame(()=>{if(sec)focusSection(sec);else scrollToPosition(positions[c.id]||0)});
 }
 function shuffled(arr){return arr.map(x=>({x,r:Math.random()})).sort((a,b)=>a.r-b.r).map(x=>x.x)}
 function appendQuestion(q,c,parent){
@@ -97,9 +99,9 @@ function utility(which,ref){
   let n=0;for(const c of chapters)for(const q of c.questions)if(answers[q.id]&&!answers[q.id].correct){n++;appendQuestion(q,c,$('#wrong-list'))}
   if(!n)$('#wrong-list').innerHTML='<div class="empty">目前没有未改正的章末错题。</div>';
  }
- window.scrollTo(0,0);
+ scrollToPosition(0);
 }
-function route(){flushPosition();let id='',sec=null;try{const parts=location.hash.slice(1).split('~');id=decodeURIComponent(parts[0]||'');sec=parts[1]?decodeURIComponent(parts[1]):null}catch(e){home();return}if(['route','cases','wrong','mountains'].includes(id))utility(id,sec);else {const c=byId(id);if(c){if(current===c.id&&!$('#course-reader').hidden){if(sec)focusSection(sec)}else reader(c,sec)}else home()}prepareReading($('#course-reader'))}
+function route(hash=location.hash){flushPosition();let id='',sec=null;try{const parts=String(hash).replace(/^#/,'').split('~');id=decodeURIComponent(parts[0]||'');sec=parts[1]?decodeURIComponent(parts[1]):null}catch(e){home();return}if(['route','cases','wrong','mountains'].includes(id))utility(id,sec);else {const c=byId(id);if(c){if(current===c.id&&!$('#course-reader').hidden){if(sec)focusSection(sec)}else reader(c,sec)}else home()}prepareReading($('#course-reader'))}
 function exportProgress(){
  const blob=new Blob([JSON.stringify({v:1,app:'zeri-course',at:new Date().toISOString(),progress,answers,positions},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='择日课程学习记录.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
@@ -116,10 +118,13 @@ function importProgress(e){
 }
 let timer,pendingPosition=null;
 function flushPosition(){clearTimeout(timer);if(!pendingPosition)return;positions[pendingPosition.id]=pendingPosition.y;pendingPosition=null;try{localStorage.setItem(POS,JSON.stringify(positions))}catch(e){storageIssue()}}
-window.addEventListener('scroll',()=>{if(!current)return;clearTimeout(timer);pendingPosition={id:current,y:Math.max(0,Math.round(scrollY))};timer=setTimeout(flushPosition,180)},{passive:true});
+scroller.addEventListener('scroll',()=>{if(!current||!isActive())return;clearTimeout(timer);pendingPosition={id:current,y:Math.max(0,Math.round(scrollTop()))};timer=setTimeout(flushPosition,180)},{passive:true});
 window.addEventListener('pagehide',flushPosition);
 document.addEventListener('click',e=>{const section=e.target.closest&&e.target.closest('#course-reader .section');const q=e.target.closest&&e.target.closest('#course-reader .question');if(section)noteSection=section.id;else if(q)noteSection=q.id},true);
-window.YGN_HOOK={blocks:'.section-body p,.section-body li,.section-body tr,.question h3,.feedback',loc:()=>current?{v:'course',id:current,sec:noteSection}:activeUtility==='mountains'?{v:'course-ref',id:'mountains',mountain:activeMountain}:null,go:l=>{if(l&&l.v==='course')jump(l.id,l.sec);else if(l&&l.v==='course-ref')jump('mountains',l.mountain);else if(l&&l.v)location.href='index.html?knowledge='+encodeURIComponent(l.id||'')},label:()=>{if(!current)return activeUtility==='mountains'?'二十四山 · '+activeMountain+'山':'择日课程';const c=byId(current),s=c.sections.find(s=>s.id===noteSection);return '第'+c.n+'章 '+c.title+(s?' · '+s.title:noteSection&&noteSection.includes('-q')?' · 章末题':'')}};
-window.addEventListener('hashchange',route);route();
+const noteHook={blocks:'.section-body p,.section-body li,.section-body tr,.question h3,.feedback',loc:()=>current?{v:'course',id:current,sec:noteSection}:activeUtility==='mountains'?{v:'course-ref',id:'mountains',mountain:activeMountain}:null,go:l=>{if(l&&l.v==='course')jump(l.id,l.sec);else if(l&&l.v==='course-ref')jump('mountains',l.mountain);else if(l&&l.v){if(host)host.openTool(l);else location.href='index.html?knowledge='+encodeURIComponent(l.id||'')}},label:()=>{if(!current)return activeUtility==='mountains'?'二十四山 · '+activeMountain+'山':'择日课程';const c=byId(current),s=c.sections.find(s=>s.id===noteSection);return '第'+c.n+'章 '+c.title+(s?' · '+s.title:noteSection&&noteSection.includes('-q')?' · 章末题':'')}};
+let lastHash=null;
+const api={hook:noteHook,pause:flushPosition,activate(hash,force=false){hash=String(hash||'').replace(/^#/,'');if(force||lastHash!==hash){route(hash);lastHash=hash;return false}else{prepareReading($('#course-reader'));return true}}};
+window.ZeriCourse=api;
+if(host){host.ready(api)}else{window.YGN_HOOK=noteHook;window.addEventListener('hashchange',()=>route());route()}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();

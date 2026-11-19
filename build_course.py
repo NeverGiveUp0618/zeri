@@ -101,4 +101,7 @@ def build():
     (ROOT/'course-textbook.md').write_text(route+'\n\n'+'\n\n---\n\n'.join((ROOT/'content/教材'/c['stage']/(f"{c['n']:02}-{c['title']}.md")).read_text() for c in catalog))
     print(f'课程构建：{len(catalog)}章，{count}题，{chars}字符；版本 {data["built"]}')
 
-if __name__=='__main__':build()
+if __name__=='__main__':
+    build()
+    from build_ui import build_ui
+    build_ui()

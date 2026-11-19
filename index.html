@@ -54,9 +54,8 @@ body{
 #app{position:absolute;top:calc(58px + env(safe-area-inset-top));
   bottom:calc(60px + env(safe-area-inset-bottom));left:0;right:0;
   overflow-y:auto;-webkit-overflow-scrolling:touch}
-.view{display:none;padding:18px 16px 34px;animation:fade .35s ease}
+.view{display:none;padding:18px 16px 34px;animation:none}
 .view.on{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .search{position:relative;margin-bottom:20px}
 .search input{
   width:100%;padding:13px 16px 13px 42px;border:1px solid var(--line);border-radius:14px;
@@ -323,11 +322,15 @@ html[data-yg-zoom="135"] .dtop,html[data-yg-zoom="150"] .dtop{flex-wrap:wrap}
 html[data-yg-zoom="135"] .dacts,html[data-yg-zoom="150"] .dacts{width:100%;justify-content:flex-start}
 }
 </style>
+<link rel="stylesheet" href="course-embedded.css">
 <link rel="stylesheet" href="site-shell.css">
+<script defer src="data-course.js"></script>
+<script defer src="course.js"></script>
 </head>
 <body>
 <header class="site-header"><a href="course.html" class="brand">择日学习</a><span class="section-label" id="site-section">速查</span><a class="site-home" href="https://nevergiveup0618.github.io/all-project/">易术堂</a></header>
 <div id="app">
+  <div class="view" id="v-course"><main id="course-view"><div id="course-home"></div><article id="course-reader" class="doc" hidden></article></main></div>
   <div class="view on" id="v-home">
     <a href="course.html" class="daily" style="display:block;text-decoration:none;color:var(--ink)"><div class="daily-h"><b>择日系统课程</b><span>初级 · 中级 · 高级</span></div><div class="daily-topic">按顺序学概念、规则、例子与条件，读完就做章末题。</div><span style="color:var(--gold)">进入课程</span></a>
     <div class="daily" id="daily"></div>
@@ -367,7 +370,7 @@ html[data-yg-zoom="135"] .dacts,html[data-yg-zoom="150"] .dacts{width:100%;justi
   </div>
 </div>
 <nav class="nav site-nav" aria-label="站点导航">
-  <a href="course.html"><b>学</b><span>课程</span></a>
+  <a id="n-course" href="index.html?tab=course" onclick="event.preventDefault();tab('course')"><b>学</b><span>课程</span></a>
   <a class="on" id="n-cha" href="index.html" onclick="event.preventDefault();tab('cha')"><b>查</b><span>速查</span></a>
   <a id="n-suan" href="index.html?tab=calc" onclick="event.preventDefault();tab('suan')"><b>算</b><span>推算</span></a>
   <a id="n-xue" href="index.html?tab=learn" onclick="event.preventDefault();tab('xue')"><b>练</b><span>练习</span></a>
@@ -400,43 +403,82 @@ function dailyLearn(k){dailyQuizActive=true;dailyReviewActive=false;curCat=k;lmo
 function dailyWrong(){dailyQuizActive=false;dailyReviewActive=true;curCat=WRONG.size?'__wrong__':'all';lmode=WRONG.size?'know':'calc';enterLearn();goState({v:'learn'});}
 /* ===== 视图路由（支持安卓返回键 / 浏览器后退） ===== */
 const _viewScroll={};
-let _viewState={v:'home'};
+let _viewState={v:'home'},_courseHash='';
 try{history.scrollRestoration='manual'}catch(e){}
 function _viewKey(s){return s.v+(s.cat?':'+s.cat:'')+(s.id?':'+s.id:'')}
 function _restoreViewScroll(s){
-  const y=_viewScroll[_viewKey(s)]||0,app=$('#app'),restore=()=>{app.scrollTop=y};
+  const y=_viewScroll[_viewKey(s)]||0,app=$('#app'),restore=()=>{if(_viewState===s)app.scrollTop=y};
   restore();requestAnimationFrame(()=>{restore();requestAnimationFrame(restore)});
 }
 function show(s){
   s=s||{v:'home'};
   const app=$('#app');if(app)_viewScroll[_viewKey(_viewState)]=app.scrollTop;
-  ['home','list','detail','learn','calc'].forEach(v=>{const el=$('#v-'+v);if(el)el.classList.remove('on');});
-  const isXue=s.v==='learn',isSuan=s.v==='calc';
-  $('#site-section').textContent=isXue?'练习':isSuan?'推算':'速查';
-  $('#n-cha').classList.toggle('on',!isXue&&!isSuan);
+  if(_viewState.v==='course'&&window.ZeriCourse)window.ZeriCourse.pause();
+  ['home','list','detail','learn','calc','course'].forEach(v=>{const el=$('#v-'+v);if(el)el.classList.remove('on');});
+  const isXue=s.v==='learn',isSuan=s.v==='calc',isCourse=s.v==='course';let restoreScroll=true;
+  $('#site-section').textContent=isCourse?'系统课程':isXue?'练习':isSuan?'推算':'速查';
+  $('#n-course').classList.toggle('on',isCourse);
+  $('#n-cha').classList.toggle('on',!isXue&&!isSuan&&!isCourse);
   $('#n-suan').classList.toggle('on',isSuan);
   $('#n-xue').classList.toggle('on',isXue);
-  if(s.v==='list'){$('#list-title').textContent=catName(s.cat);
+  if(isCourse){_courseHash=s.hash||'';$('#v-course').classList.add('on');app.scrollTop=0;restoreScroll=window.ZeriCourse?window.ZeriCourse.activate(_courseHash,!!s.focus):false;}
+  else if(s.v==='list'){$('#list-title').textContent=catName(s.cat);
     $('#list').innerHTML=DATA.filter(d=>d.cat===s.cat).map(itemHTML).join('');
     $('#v-list').classList.add('on');}
   else if(s.v==='detail'){renderDetail(s.id);$('#v-detail').classList.add('on');}
   else if(s.v==='learn'){$('#v-learn').classList.add('on');}
-  else if(s.v==='calc'){initCalc();$('#v-calc').classList.add('on');}
+  else if(s.v==='calc'){if(!$('#calc-body').children.length)initCalc();$('#v-calc').classList.add('on');}
   else{if(!$('#q').value.trim())renderFavs();$('#v-home').classList.add('on');}
-  _viewState=s;_restoreViewScroll(s);
+  _viewState=s;if(restoreScroll)_restoreViewScroll(s);
 }
-function goState(s){show(s);history.pushState(s,'');}
+function stateUrl(s){
+  const url=new URL('index.html',location.href);
+  if(s.v==='course'){url.searchParams.set('tab','course');url.hash=s.hash||''}
+  else if(s.v==='calc'){url.searchParams.set('tab','calc');url.searchParams.set('sub',calcSub)}
+  else if(s.v==='learn')url.searchParams.set('tab','learn');
+  else if(s.v==='detail')url.searchParams.set('knowledge',s.id);
+  return url.pathname+url.search+url.hash;
+}
+function goState(s){if(s.v==='course')s={...s,hash:s.hash==null?_courseHash:s.hash};show(s);history.pushState(s,'',stateUrl(s));}
 /* 笔记位置钩子（易术堂共用 notes.js）：详情/列表页记位置，笔记本里「回到出处」据此翻回；blocks＝本站正文是 div，补充给标记模式用 */
 window.YGN_HOOK={blocks:'.bp,.bl,.bh',
   loc:function(){var s=_viewState;return s&&(s.v==='detail'||s.v==='list')?{v:s.v,cat:s.cat,id:s.id}:null},
   go:function(l){if(l&&l.v==='course')location.href='course.html#'+encodeURIComponent(l.id)+(l.sec?'~'+encodeURIComponent(l.sec):'');else if(l&&l.v==='course-ref')location.href='course.html#mountains~'+encodeURIComponent(l.mountain);else if(l&&l.v)goState(l)},
   label:function(){var t=document.querySelector('#v-detail.on .dt')||document.querySelector('#v-list.on #list-title');return t?t.textContent.trim():''}};
+const toolsNoteHook=window.YGN_HOOK;
+let courseNoteHook=null,pendingCourseNote=null;
+window.YGN_HOOK={
+ blocks:'.bp,.bl,.bh,.section-body p,.section-body li,.section-body tr,.question h3,.feedback',
+ loc:()=>_viewState.v==='course'?(courseNoteHook?courseNoteHook.loc():null):toolsNoteHook.loc(),
+ label:()=>_viewState.v==='course'?(courseNoteHook?courseNoteHook.label():'择日课程'):toolsNoteHook.label(),
+ go:l=>{if(l&&(l.v==='course'||l.v==='course-ref')){if(courseNoteHook)courseNoteHook.go(l);else{pendingCourseNote=l;goState({v:'course',hash:l.v==='course'?l.id+(l.sec?'~'+l.sec:''):'mountains~'+l.mountain})}}else if(l&&l.v)goState(l)}
+};
+window.ZERI_EMBEDDED={rootId:'course-view',scrollId:'app',isActive:()=>_viewState.v==='course',
+ open:hash=>goState({v:'course',hash,focus:true}),openTool:l=>goState(l),
+ ready:api=>{courseNoteHook=api.hook;if(_viewState.v==='course')api.activate(_courseHash);if(pendingCourseNote){api.hook.go(pendingCourseNote);pendingCourseNote=null}}
+};
 window.addEventListener('popstate',e=>show(e.state||{v:'home'}));
+window.addEventListener('hashchange',()=>{if(location.search.includes('tab=course')){const s={v:'course',hash:location.hash.slice(1)};if(_viewState.v==='course'&&_viewState.hash===s.hash)return;show(s);history.replaceState(s,'')}});
 function tab(t){
-  if(t==='cha'){$('#q').value='';$('#sec-t').textContent='六 类 择 要';renderFavs();renderCats();goState({v:'home'});}
-  else if(t==='suan'){goState({v:'calc'});}
-  else{enterLearn();goState({v:'learn'});}
+  if(t==='course'){goState({v:'course'});}
+  else if(t==='cha'){if(_viewState.v==='home')return;goState({v:'home'});}
+  else if(t==='suan'){if(_viewState.v==='calc')return;goState({v:'calc'});}
+  else{if(_viewState.v==='learn')return;if(!quizState&&!qcAns)enterLearn();goState({v:'learn'});}
 }
+// Keep links to both historical entry pages inside the same document.
+document.addEventListener('click',e=>{
+ if(e.defaultPrevented||e.button||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
+ const a=e.target.closest('a[href]');if(!a||a.target||a.hasAttribute('download'))return;
+ const url=new URL(a.href,location.href),base=new URL('.',location.href);
+ if(url.origin!==base.origin||![base.pathname+'index.html',base.pathname+'course.html'].includes(url.pathname))return;
+ if(a.getAttribute('href').startsWith('#'))return;
+ e.preventDefault();
+ if(url.pathname.endsWith('/course.html')||url.searchParams.get('tab')==='course'){goState({v:'course',hash:url.hash.slice(1)});return}
+ const knowledge=url.searchParams.get('knowledge'),target=url.searchParams.get('tab');
+ if(knowledge&&byId(knowledge))goState({v:'detail',id:knowledge});
+ else if(target==='calc'){const sub=url.searchParams.get('sub');if(['ripan','shan','gz','nv'].includes(sub))setSub(sub);goState({v:'calc'})}
+ else if(target==='learn')tab('xue');else tab('cha');
+});
 
 function renderCats(){
   $('#cats').className='cats';
@@ -994,7 +1036,8 @@ function submitFill(){
 history.replaceState({v:'home'},'');
 renderDaily();renderFavs();renderCats();renderStat();renderChips();buildQueue();renderCard();renderLmode();
 const entry=new URLSearchParams(location.search);
-if(entry.get('knowledge')&&byId(entry.get('knowledge')))goState({v:'detail',id:entry.get('knowledge')});
+if(entry.get('tab')==='course'){const state={v:'course',hash:location.hash.slice(1)};show(state);history.replaceState(state,'')}
+else if(entry.get('knowledge')&&byId(entry.get('knowledge')))goState({v:'detail',id:entry.get('knowledge')});
 else if(entry.get('tab')==='calc'){if(['ripan','shan','gz','nv'].includes(entry.get('sub')))calcSub=entry.get('sub');goState({v:'calc'});}
 else if(entry.get('tab')==='learn'){enterLearn();goState({v:'learn'});}
 try{parent.postMessage({type:'yst-progress',app:'zeri',text:`错题 ${WRONG.size} · 连续 ${streak.days||0} 天`},'https://nevergiveup0618.github.io')}catch(e){}

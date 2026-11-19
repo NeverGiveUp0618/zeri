@@ -1,5 +1,5 @@
 /* 择日学习 Service Worker —— 离线缓存 */
-const CACHE = 'zeri-v23-unified-mobile-shell';
+const CACHE = 'zeri-v24-in-page-tabs';
 const ASSETS = [
   './',
   './index.html',
@@ -7,6 +7,7 @@ const ASSETS = [
   './data-mountain.js',
   './course.html',
   './course.css',
+  './course-embedded.css',
   './site-shell.css',
   './course.js',
   './data-course.js',

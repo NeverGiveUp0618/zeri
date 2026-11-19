@@ -42,6 +42,18 @@ function home(){
 }
 function gzClass(z){if('甲乙寅卯'.includes(z))return 'wood';if('丙丁巳午'.includes(z))return 'fire';if('戊己辰戌丑未'.includes(z))return 'earth';if('庚辛申酉'.includes(z))return 'metal';return 'water'}
 function chart(c){if(!c||!c.pillars)return '';return `<aside class="chart"><div class="caption">${esc(c.people)} · ${esc(c.type)}${c.illustration?' · 不作真实候选':''}</div><div class="pillars">${c.pillars.map((p,i)=>`<div class="pillar"><small>${['年','月','日','时'][i]}</small>${p==='—'?'<span class="gz">—</span>':p.split('').map(z=>`<span class="gz ${gzClass(z)}">${z}</span>`).join('')}</div>`).join('')}</div></aside>`}
+let tableObserver;
+function prepareReading(root){
+ if(tableObserver)tableObserver.disconnect();
+ const intro=root.querySelector('.chapter-intro blockquote');
+ if(intro&&!intro.dataset.typeset){intro.dataset.typeset='1';const pieces=intro.innerHTML.split(/<br\s*\/?\s*>/i);intro.innerHTML=pieces.filter(p=>p.trim()).map(p=>'<p>'+p+'</p>').join('')}
+ const frames=[...root.querySelectorAll('.table-frame')];
+ const measure=()=>frames.forEach(frame=>{const wrap=frame.querySelector('.table-wrap');if(!wrap)return;const max=wrap.scrollWidth-wrap.clientWidth;frame.classList.toggle('is-scrollable',max>2);frame.classList.toggle('can-scroll-back',wrap.scrollLeft>2);frame.classList.toggle('can-scroll-forward',wrap.scrollLeft<max-2)});
+ for(const frame of frames){const wrap=frame.querySelector('.table-wrap');if(!wrap.dataset.scrollBound){wrap.dataset.scrollBound='1';wrap.addEventListener('scroll',measure,{passive:true})}}
+ if(window.ResizeObserver){tableObserver=new ResizeObserver(measure);frames.forEach(f=>tableObserver.observe(f))}
+ requestAnimationFrame(measure);
+ root.querySelectorAll('details').forEach(d=>{if(!d.dataset.tableBound){d.dataset.tableBound='1';d.addEventListener('toggle',measure)}});
+}
 function reader(c,sec){
  current=c.id;noteSection=sec||null;activeUtility=null;progress.last=c.id;save();drawn=new Map();$('#course-home').hidden=true;$('#course-home').innerHTML='';const box=$('#course-reader');box.hidden=false;
  const caseItem=(D.cases||[]).find(x=>x.chapter===c.id),prev=chapters[c.n-2],next=chapters[c.n];
@@ -87,7 +99,7 @@ function utility(which,ref){
  }
  window.scrollTo(0,0);
 }
-function route(){flushPosition();let id='',sec=null;try{const parts=location.hash.slice(1).split('~');id=decodeURIComponent(parts[0]||'');sec=parts[1]?decodeURIComponent(parts[1]):null}catch(e){home();return}if(['route','cases','wrong','mountains'].includes(id))utility(id,sec);else {const c=byId(id);if(c){if(current===c.id&&!$('#course-reader').hidden){if(sec)focusSection(sec)}else reader(c,sec)}else home()}}
+function route(){flushPosition();let id='',sec=null;try{const parts=location.hash.slice(1).split('~');id=decodeURIComponent(parts[0]||'');sec=parts[1]?decodeURIComponent(parts[1]):null}catch(e){home();return}if(['route','cases','wrong','mountains'].includes(id))utility(id,sec);else {const c=byId(id);if(c){if(current===c.id&&!$('#course-reader').hidden){if(sec)focusSection(sec)}else reader(c,sec)}else home()}prepareReading($('#course-reader'))}
 function exportProgress(){
  const blob=new Blob([JSON.stringify({v:1,app:'zeri-course',at:new Date().toISOString(),progress,answers,positions},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='择日课程学习记录.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }

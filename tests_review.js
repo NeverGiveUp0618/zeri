@@ -37,6 +37,7 @@ async function go(w,h){w.location.hash=h;await sleep(35)}
  t('年月干不合五虎遁时暂停后续扫描',()=>{const s=analyze({yg:'甲',yz:'子',mg:'甲',mz:'寅',shan:'午'});assert(s.includes('五虎遁'));assert(s.includes('暂停'))});
  t('日时干不合五鼠遁时暂停后续扫描',()=>assert(analyze({dg:'甲',dz:'寅',hg:'甲',hz:'寅'}).includes('五鼠遁')));
  t('主命四煞只按对应墓支提示，不把三方等同全忌',()=>{assert(!analyze({cz:'子',dz:'巳'}).includes('主命四煞'));assert(analyze({cz:'子',dz:'未'}).includes('主命四煞'))});
+ t('速查标题和同一行解释分开，解释不再整段加粗',()=>{const el=w.document.createElement('div');el.innerHTML=w.fmtBody('【正阴府】这里是需要正常阅读的解释正文','ss-08');assert.equal(el.querySelector('.bh').textContent,'正阴府');assert.equal(el.querySelector('.bp').textContent,'这里是需要正常阅读的解释正文')});
  t('女命冲支提示不再把所有同支日一律禁用',()=>{assert(w.nvRes('甲子').includes('不把所有同支日一概判忌'));assert(w.nvRes('辛巳').includes('第18项题头误印'))});
  for(let i=0;i<1000;i++){const q=w.genQ('阴府'),shan=q.stem.match(/<b>(.)山/)[1],rule=w.ZERI_MOUNTAINS[shan];assert(rule.pairs.includes(q.ans));assert(q.stem.includes(rule.kind));assert.equal(new Set(q.opts).size,4)}
  t('随机阴府题1000题均匹配具体山原条',()=>assert(true));

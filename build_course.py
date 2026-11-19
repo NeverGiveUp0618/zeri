@@ -25,11 +25,24 @@ def render(text):
                 cells=[c.strip() for c in lines[i].strip().strip('|').split('|')]
                 if not all(re.fullmatch(r':?-+:?',c) for c in cells):rows.append(cells)
                 i+=1
-            out.append('<div class="table-wrap"><table>')
+            # Keep useful text widths even on a narrow screen; the wrapper scrolls.
+            columns=max(map(len,rows),default=0)
+            widths=[];compact=[]
+            for col in range(columns):
+                cells=[r[col] for r in rows if col<len(r)]
+                length=max((sum(1 if ord(ch)>255 else .6 for ch in cell) for cell in cells),default=1)
+                compact.append(length<=6)
+                limit=12 if col==0 else 26
+                widths.append(round(max(4.5,min(limit,length+2)),1))
+            label=html.escape('、'.join(rows[0]),quote=True)
+            out.append('<div class="table-frame"><div class="table-scroll-hint" aria-hidden="true">左右滑动查看表格 <span>→</span></div>')
+            out.append(f'<div class="table-wrap" tabindex="0" role="region" aria-label="{label}，可横向滚动"><table class="{"table-many" if columns>=3 else "table-pair"}{" table-pinned" if columns>=3 and widths[0]<=9 else ""}" style="width:{sum(widths):g}em">')
+            out.append('<colgroup>'+''.join(f'<col style="width:{w:g}em">' for w in widths)+'</colgroup><thead>')
             for j,row in enumerate(rows):
+                if j==1:out.append('</thead><tbody>')
                 tag='th' if j==0 else 'td'
-                out.append('<tr>'+''.join(f'<{tag}>{inline(c)}</{tag}>' for c in row)+'</tr>')
-            out.append('</table></div>');continue
+                out.append('<tr>'+''.join(f'<{tag}'+(' scope="col"' if j==0 else '')+(' class="cell-compact"' if compact[k] else '')+f'>{inline(c)}</{tag}>' for k,c in enumerate(row))+'</tr>')
+            out.append(('</tbody>' if len(rows)>1 else '</thead>')+'</table></div></div>');continue
         if line.startswith('>'):
             quote=[]
             while i<len(lines) and lines[i].strip().startswith('>'):

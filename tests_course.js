@@ -37,7 +37,7 @@ async function route(h){w.location.hash=h;await wait()}
  t('搜索包含章节正文',()=>assert([...w.document.querySelectorAll('.lesson')].some(a=>a.href.endsWith('#zr-22'))));
  t('笔记钩子记住课程来源',()=>assert(w.YGN_HOOK&&typeof w.YGN_HOOK.go==='function'));
  // 原分析器回归：去重和分组，不依赖原测试里同一张基准表。
- const oldhtml=fs.readFileSync('index.html','utf8').replace('<script src="data.js"></script>','<script>'+fs.readFileSync('data.js','utf8')+'</script>');
+ const oldhtml=fs.readFileSync('index.html','utf8').replace('<script src="data.js"></script>','<script>'+fs.readFileSync('data.js','utf8')+'</script>').replace('<script src="data-mountain.js"></script>','<script>'+fs.readFileSync('data-mountain.js','utf8')+'</script>');
  const old=new JSDOM(oldhtml,{url:'https://example.test/zeri/',runScripts:'dangerously',virtualConsole:new VirtualConsole()});const ow=old.window;ow.scrollTo=()=>{};ow.document.body.insertAdjacentHTML('beforeend','<div id="ripan-out"></div>');
  function analyze(state){ow.ripanState={yg:'',yz:'',mg:'',mz:'',dg:'',dz:'',hg:'',hz:'',shan:'',cg:'',cz:'',...state};ow.analyzeRipan();return ow.document.querySelector('#ripan-out').textContent}
  t('两个丁不再误算丁壬双全',()=>{const s=analyze({yg:'丁',mg:'丁',shan:'午'});assert(s.includes('单干'));assert(!s.includes('双全'))});

@@ -1,9 +1,10 @@
 /* 择日学习 Service Worker —— 离线缓存 */
-const CACHE = 'zeri-v18-system-course';
+const CACHE = 'zeri-v19-course-review';
 const ASSETS = [
   './',
   './index.html',
   './data.js',
+  './data-mountain.js',
   './course.html',
   './course.css',
   './course.js',

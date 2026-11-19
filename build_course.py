@@ -7,6 +7,7 @@ ROOT=Path(__file__).resolve().parent
 def inline(t):
     t=html.escape(t)
     t=re.sub(r'\*\*(.+?)\*\*',r'<strong>\1</strong>',t)
+    t=re.sub(r'\[([^\]]+)\]\((#zr-\d{2}(?:~[\w-]+)?)\)',r'<a href="\2">\1</a>',t)
     t=re.sub(r'〔([^〕]+)〕',r'<span class="citation">〔\1〕</span>',t)
     return t
 
@@ -61,25 +62,28 @@ def build():
         questions=json.loads((ROOT/'content/题目'/c['stage']/(name+'.json')).read_text())
         for q in questions:
             assert len(q['w'])==3 and len(set([q['a']]+q['w']))==4, q['id']
-            # 用答案出现的位置为默认回看落点，案例比通则更具体时落到案例。
-            answer=q['a'].replace('、','')
-            ranked=[]
-            for s in c['sections']:
-                plain=re.sub('<[^>]+>','',s['html']).replace('、','')
-                score=8 if answer in plain else 0
-                score+=sum(1 for k in re.findall('[\u4e00-\u9fff]{2,4}',q['e']) if k in plain)
-                if s['title'].startswith(('六、','七、','八、')):score-=8
-                ranked.append((score,s))
-            q['sec']=max(ranked,key=lambda x:x[0])[1]['title']
+            assert q['sec'] in [s['title'] for s in c['sections']],q['id']
+            q['rev']=hashlib.sha256(json.dumps(q,ensure_ascii=False,sort_keys=True).encode()).hexdigest()[:12]
         c['questions']=questions;count+=len(questions)
         c['text']=re.sub(r'[>#*|]','',text)
         c['words']=len(re.findall('[\u4e00-\u9fff]',text))
     route=(ROOT/'content/学习路线.md').read_text()
     cases=json.loads((ROOT/'content/案例.json').read_text())
     mountains=json.loads((ROOT/'content/二十四山原表.json').read_text())
+    # 精确到具体山的正/傍阴府对应，直接来自逐山条文；不把八卦原理表铺满24山。
+    mountain_rules={}
+    for m in mountains:
+        part=re.search(r'4[、.]阴府[：:]?(.*?)(?:5[、.]|$)',m['text'],re.S)
+        assert part,m['id']
+        source=part[1].strip();plain=source.replace('、','').replace('，','')
+        pairs=list(dict.fromkeys(re.findall('甲己|乙庚|丙辛|丁壬|戊癸',plain)))
+        assert pairs,m['id']
+        mountain_rules[m['id']]=dict(kind='正阴府' if '正阴府' in source else '傍阴府',pairs=pairs,source=source,pages=m['pages'])
+    (ROOT/'data-mountain.js').write_text('/* 生成文件：来自content/二十四山原表.json，勿手改 */\nwindow.ZERI_MOUNTAINS='+json.dumps(mountain_rules,ensure_ascii=False,separators=(',',':'))+';\n')
     for item in cases:
         assert any(c['id']==item['chapter'] for c in catalog), item['id']
-    data=dict(chapters=catalog,cases=cases,mountains=mountains,route=render(route),built=hashlib.sha256(json.dumps(catalog,ensure_ascii=False).encode()).hexdigest()[:12],characters=chars,questionCount=count)
+    data=dict(chapters=catalog,cases=cases,mountains=mountains,route=render(route),characters=chars,questionCount=count)
+    data['built']=hashlib.sha256(json.dumps(data,ensure_ascii=False,sort_keys=True).encode()).hexdigest()[:12]
     (ROOT/'data-course.js').write_text('/* 生成文件；编辑 content/教材 与 content/题目 后运行 build_course.py */\nwindow.ZERI_COURSE='+json.dumps(data,ensure_ascii=False,separators=(',',':'))+';\n')
     (ROOT/'course-textbook.md').write_text(route+'\n\n'+'\n\n---\n\n'.join((ROOT/'content/教材'/c['stage']/(f"{c['n']:02}-{c['title']}.md")).read_text() for c in catalog))
     print(f'课程构建：{len(catalog)}章，{count}题，{chars}字符；版本 {data["built"]}')

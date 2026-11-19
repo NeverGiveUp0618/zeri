@@ -6,7 +6,8 @@ vc.on('jsdomError',e=>{if(!/scrollTo|Not implemented|serviceWorker/.test(e.messa
 vc.on('error',m=>errs.push('console.error:'+m));
 // 真加载外部 data.js（照 index.html 的 <script src="data.js"> 顺序内联进去）
 const html=fs.readFileSync(DIR+'index.html','utf8')
-  .replace('<script src="data.js"></script>','<script>'+fs.readFileSync(DIR+'data.js','utf8')+'</script>');
+  .replace('<script src="data.js"></script>','<script>'+fs.readFileSync(DIR+'data.js','utf8')+'</script>')
+  .replace('<script src="data-mountain.js"></script>','<script>'+fs.readFileSync(DIR+'data-mountain.js','utf8')+'</script>');
 const dom=new JSDOM(html,{runScripts:'dangerously',pretendToBeVisual:true,url:'http://localhost/',virtualConsole:vc});
 setTimeout(()=>{
  const w=dom.window,E=x=>w.eval(x);

@@ -9,7 +9,7 @@ let n=0;function ok(label,f){f();n++;console.log('✓ '+label)}
 (async()=>{
  w.location.hash='zr-22';await sleep(80);
  ok('真实笔记模块识别为择日学习',()=>assert.equal(w.YGN.appOfPath(),'zeri'));
- const details=$('#zr-22-s5');details.open=true;const target=details.querySelector('p'),text=target.textContent;
+ const details=$('#zr-22-s5');details.open=true;const target=details.querySelector('p,li'),text=target.textContent;
  $('#ygnBtn').click();target.click();await sleep(30);
  ok('点击段落只打开面板，不自动存笔记',()=>assert.equal(w.YGN.all().length,0));
  $('#ygnSh [data-a="nb"]').click();

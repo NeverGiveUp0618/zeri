@@ -343,6 +343,7 @@ body{
 </div>
 
 <script src="data.js"></script>
+<script src="data-mountain.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const byId=id=>DATA.find(d=>d.id===id);
@@ -735,15 +736,12 @@ function pickShan(s){calcShan=(calcShan===s?null:s);
 function pickGan(g){calcGan=(calcGan===g?null:g);renderCalc();}
 function pickZhi(z){calcZhi=(calcZhi===z?null:z);renderCalc();}
 function shanRes(s){
-  const zhi=SHAN_ZHI[s],gua=SHAN_GUA[s];
-  const chong=ZHI[(ZHI.indexOf(zhi)+6)%12];
-  const yf=ZHENGYINFU[gua];
-  return `<div class="res">
-   <div class="rrow"><div class="rk">坐山</div><div class="rv"><b>${s}山</b>　（属${gua}卦 · 双山地支 ${zhi}）</div></div>
-   <div class="rrow"><div class="rk">岁破</div><div class="rv">逢 <b>${chong}</b> 之年月日时冲山 → <span class="warn">岁破 / 月破 / 日破 / 时破</span>，大凶宜避</div></div>
-   <div class="rrow"><div class="rk">山家三煞</div><div class="rv">逢 <b>${sanshaYears(zhi)}</b> 年，三煞占此山方，年月日时忌坐 <small>（时间论三合、方位论三会）</small></div></div>
-   <div class="rrow"><div class="rk">正阴府</div><div class="rv">忌日课天干 <b>${yf.join(' ')}</b> <small>（单干制化可用、双全忌；开山动土论，不忌修方）</small></div></div>
-  </div>`;
+ const zhi=SHAN_ZHI[s],gua=SHAN_GUA[s],chong=ZHI[(ZHI.indexOf(zhi)+6)%12],r=window.ZERI_MOUNTAINS&&window.ZERI_MOUNTAINS[s];
+ return `<div class="res"><div class="rrow"><div class="rk">坐山</div><div class="rv"><b>${s}山</b>（属${gua}卦）</div></div>
+ <div class="rrow"><div class="rk">冲山</div><div class="rv">${ZHI.includes(s)?`逢${chong}之年月日时冲山，分别核岁破、月破、日破、时破`:'须补兼向并查该山专条，不按简化归支直接判冲山'}</div></div>
+ <div class="rrow"><div class="rk">山家三煞</div><div class="rv">${'乾坤艮巽'.includes(s)?'四维山须补兼家，不能按单一归支判定':`逢${sanshaYears(zhi)}时间支，三煞占此山方，年月日时分别核`}</div></div>
+ <div class="rrow"><div class="rk">${r?r.kind:'阴府待核'}</div><div class="rv">${r?r.source:'逐山数据尚未加载，请重新打开页面'}</div></div>
+ <div class="calc-note"><a href="course.html#mountains~${encodeURIComponent(s)}">查看${s}山原条及页码</a>；仍须分单双、山运死活与用事条件。</div></div>`;
 }
 function gzRes(){
   let rows='';
@@ -793,17 +791,23 @@ function analyzeRipan(){
   const out=$('#ripan-out');if(!out)return;const S=ripanState;
   const P=[['年',S.yg,S.yz],['月',S.mg,S.mz],['日',S.dg,S.dz],['时',S.hg,S.hz]];
   const zhis=P.filter(p=>p[2]).map(p=>[p[0],p[2]]),gans=P.filter(p=>p[1]).map(p=>[p[0],p[1]]);
+  const errors=P.filter(p=>p[1]&&p[2]&&GAN.indexOf(p[1])%2!==ZHI.indexOf(p[2])%2).map(p=>p[0]+p[1]+p[2]+'不在六十甲子中');
+  if(S.cg&&S.cz&&GAN.indexOf(S.cg)%2!==ZHI.indexOf(S.cz)%2)errors.push('主命干支不在六十甲子中');
+  if(S.yg&&S.mg&&S.mz){const start=(GAN.indexOf(S.yg)%5*2+2)%10,expected=GAN[(start+(ZHI.indexOf(S.mz)-2+12)%12)%10];if(S.mg!==expected)errors.push('月干不合五虎遁，应核'+expected+S.mz);}
+  if(S.dg&&S.hg&&S.hz){const expected=GAN[(GAN.indexOf(S.dg)%5*2+ZHI.indexOf(S.hz))%10];if(S.hg!==expected)errors.push('时干不合五鼠遁，应核'+expected+S.hz);}
+  if(errors.length){out.innerHTML=hintBox('干支配对无效或柱间不合：'+errors.join('；')+'。请先核四柱，暂停后续吉凶扫描。');return;}
   const F=[],shan=S.shan;
   if(shan){
     const sz=SHAN_ZHI[shan],gua=SHAN_GUA[shan],chong=ZHI[(ZHI.indexOf(sz)+6)%12];
     const brk={'年':'岁破','月':'月破','日':'日破','时':'时破'};
-    zhis.forEach(([l,z])=>{if(z===chong)F.push(['bad',`<b>${brk[l]}</b>：${l}支 ${z} 冲坐山 ${shan}山，大凶`]);});
+    if(ZHI.includes(shan))zhis.forEach(([l,z])=>{if(z===chong)F.push(['bad',`<b>${brk[l]}</b>：${l}支 ${z} 冲坐山 ${shan}山，大凶`]);});
     const ss=sanshaYears(sz),ssz=ss.slice(0,3).split('');
-    zhis.forEach(([l,z])=>{if(ssz.includes(z))F.push(['bad',`<b>山家三煞</b>：${l}支 ${z} 属${ss}，三煞占 ${shan}山方`]);});
-    const yf=ZHENGYINFU[gua];
-    [['甲','己'],['乙','庚'],['丙','辛'],['丁','壬'],['戊','癸']].filter(pair=>pair.every(g=>yf.includes(g))).forEach(pair=>{
+    if(!'乾坤艮巽'.includes(shan))zhis.forEach(([l,z])=>{if(ssz.includes(z))F.push(['bad',`<b>山家三煞</b>：${l}支 ${z} 属${ss}，三煞占 ${shan}山方`]);});
+    const rule=window.ZERI_MOUNTAINS&&window.ZERI_MOUNTAINS[shan];
+    if(!rule)F.push(['warn','逐山阴府数据尚未加载，本项不能判定，请重试或查原条。']);
+    (rule?rule.pairs:[]).map(pair=>pair.split('')).forEach(pair=>{
       const hit=gans.filter(([l,g])=>pair.includes(g)),double=pair.every(g=>hit.some(h=>h[1]===g));
-      if(hit.length)F.push([double?'bad':'warn',`<b>正阴府</b>：${shan}(${gua}卦) ${pair.join('')}组，日课见 ${hit.map(h=>h[0]+h[1]).join('、')}${double?'（双全，须继续核山运死活）':'（单干，重复同字仍按单干核）'}`]);
+      if(hit.length)F.push([double?'bad':'warn',`<b>${rule.kind}</b>：${shan}山 ${pair.join('')}组，日课见 ${hit.map(h=>h[0]+h[1]).join('、')}${double?'（双全，须继续核山运死活）':'（单干，重复同字仍按单干核）'}；制化条件依该山原条核。`]);
     });
     if(S.yg&&DUTIAN[S.yg]){
       const isJia=(DUTIAN_JIA[S.yg]||[]).includes(shan);
@@ -819,8 +823,8 @@ function analyzeRipan(){
   if(cz){
     if(GONGSHA[cz]){const need=GONGSHA[cz],have=zhis.map(z=>z[1]);
       if(need.every(n=>have.includes(n)))F.push(['bad',`<b>回头贡煞</b>：${cz}命忌课中 ${need.join('')} 三字全见，已犯`]);}
-    const cfang=SANSHA_FANG[heJu(cz).e];
-    zhis.forEach(([l,z])=>{if(cfang.includes(z))F.push(['warn',`<b>主命三煞</b>：${l}支 ${z} 为 ${cz}命三煞方，需贵人化`]);});
+    const sha={水:'未',火:'丑',金:'辰',木:'戌'}[heJu(cz).e];
+    zhis.forEach(([l,z])=>{if(z===sha)F.push(['warn',`<b>主命四煞</b>：${l}支 ${z} 为 ${cz}命对应岁煞支；真三煞还须配出生年干，制化依专条核。`]);});
     const cchong=ZHI[(ZHI.indexOf(cz)+6)%12];
     zhis.forEach(([l,z])=>{
       if(z===cchong)F.push(['warn',`<b>命课相冲</b>：${l}支 ${z} 冲主命 ${cz}${l==='日'?'（日柱冲命，重）':''}`]);
@@ -831,10 +835,7 @@ function analyzeRipan(){
   const missing=P.filter(p=>!p[1]||!p[2]).map(p=>p[0]+'柱');
   if(!shan)missing.push('坐山');if(!S.cg||!S.cz)missing.push('主事年命');
   if(missing.length)F.unshift(['warn',`<b>信息未齐</b>：${missing.join('、')}待补；以下仅提示已输入部分，不能判整课。`]);
-  const invalid=P.filter(p=>p[1]&&p[2]&&GAN.indexOf(p[1])%2!==ZHI.indexOf(p[2])%2).map(p=>p[0]+p[1]+p[2]);
-  if(S.cg&&S.cz&&GAN.indexOf(S.cg)%2!==ZHI.indexOf(S.cz)%2)invalid.push('主命'+S.cg+S.cz);
-  if(invalid.length)F.unshift(['bad',`<b>干支配对无效</b>：${invalid.join('、')}不在六十甲子中，请先核四柱。`]);
-  if(shan&&'乾坤艮巽'.includes(shan))F.unshift(['warn','<b>四维山待核兼向</b>：当前简化归支不能代替兼家专条，请对照课程第五、九、三十章。']);
+  if(shan&&!ZHI.includes(shan))F.unshift(['warn',`<b>${'乾坤艮巽'.includes(shan)?'四维山':'天干山'}待核兼向</b>：冲山等依兼家专条另核，不把简化归支当最终结论。`]);
   if(!F.length){out.innerHTML='<div class="res"><div class="calc-note">已实现的检查项暂无提示；历日神煞、事项专忌、兼向、傍阴府与山运死活等仍须逐项另核。</div></div>';return;}
   const ord={bad:0,warn:1,good:2},ico={bad:'✕',warn:'△',good:'✓'};
   F.sort((a,b)=>ord[a[0]]-ord[b[0]]);
@@ -858,14 +859,16 @@ function nvForm(){
 }
 function nvRes(gz){
   const w=WOMEN[gz],chg=z=>ZHI[(ZHI.indexOf(z)+6)%12];
+  const page=992+Array.from({length:60},(_,i)=>GAN[i%10]+ZHI[i%12]).indexOf(gz);
   return `<div class="res">
    <div class="rrow"><div class="rk">大利月</div><div class="rv"><b>${w.dali}</b> 月　<small>(首选嫁娶月)</small></div></div>
    <div class="rrow"><div class="rk">小利月</div><div class="rv"><b>${w.jili}</b> 月　<small>(次选)</small></div></div>
    <div class="rrow"><div class="rk">妨翁姑</div><div class="rv">${w.wg} 月 <small>(不得已用则进门翁姑暂避)</small></div></div>
    <div class="rrow"><div class="rk">妨父母</div><div class="rv">${w.fm} 月 <small>(出门父母不送)</small></div></div>
-   <div class="rrow"><div class="rk">夫星</div><div class="rv"><b>${w.fu}</b>　·　忌 <span class="warn">冲夫星日（${chg(w.fu[1])}日）</span></div></div>
+   <div class="rrow"><div class="rk">夫星</div><div class="rv"><b>${w.fu}</b>　·　<span class="warn">冲支提示：${chg(w.fu[1])}日</span> <small>真冲、正冲、偏冲及制化依本命原页分别核</small></div></div>
+   <div class="calc-note">基础字段据PDF第${page}页；完整日忌、宫位与制化仍须回原页，不等于整课已核。${gz==='辛巳'?'原第18项题头误印己巳，依序及十神对应归辛巳；正常己巳另在第6项。':''}</div>
    <div class="rrow"><div class="rk">天嗣</div><div class="rv">${w.si} <small>(子嗣星)</small></div></div>
-   <div class="rrow"><div class="rk">胎元</div><div class="rv"><b>${w.tai}</b>　·　忌 <span class="warn">冲胎元日（${chg(w.tai[1])}日）</span></div></div>
+   <div class="rrow"><div class="rk">胎元</div><div class="rv"><b>${w.tai}</b>　·　<span class="warn">冲支提示：${chg(w.tai[1])}日</span> <small>不把所有同支日一概判忌，须核具体干支</small></div></div>
   </div>`;
 }
 
@@ -899,12 +902,14 @@ function genQ(type){
   if(type==='驿马'){const z=rnd(ZHI);return{stem:`【驿马】<b>${z}</b>（年 / 日支）三合取，马星在？`,ans:MA[z],opts:optZhi(MA[z])};}
   if(type==='六合'){const z=rnd(ZHI);return{stem:`【六合】<b>${z}</b> 与哪一支相合？`,ans:LIUHE[z],opts:optZhi(LIUHE[z])};}
   if(type==='六冲'){const z=rnd(ZHI),c=ZHI[(ZHI.indexOf(z)+6)%12];return{stem:`【六冲】<b>${z}</b> 冲哪一支？`,ans:c,opts:optZhi(c)};}
-  if(type==='三煞'){const s=rnd(SHAN),y=sanshaYears(SHAN_ZHI[s]);
+  if(type==='三煞'){const s=rnd(SHAN.filter(x=>!'乾坤艮巽'.includes(x))),y=sanshaYears(SHAN_ZHI[s]);
     return{stem:`【山家三煞】坐 <b>${s}山</b>，逢哪个三合局之年犯三煞？`,ans:y,opts:optFrom(['申子辰(水局)','寅午戌(火局)','巳酉丑(金局)','亥卯未(木局)'],y)};}
-  if(type==='岁破'){const s=rnd(SHAN),z=SHAN_ZHI[s],c=ZHI[(ZHI.indexOf(z)+6)%12];
+  if(type==='岁破'){const s=rnd(ZHI),z=SHAN_ZHI[s],c=ZHI[(ZHI.indexOf(z)+6)%12];
     return{stem:`【岁破】坐 <b>${s}山</b>（双山地支 ${z}），逢哪支之年为岁破？`,ans:c,opts:optZhi(c)};}
-  const pool=SHAN.filter(x=>ZHENGYINFU[SHAN_GUA[x]].length===2),s=rnd(pool),gua=SHAN_GUA[s],a=ZHENGYINFU[gua].join('');
-  return{stem:`【正阴府】坐 <b>${s}山</b>（${gua}卦），开山动土忌哪组天干？`,ans:a,opts:optFrom(['甲己','乙庚','丙辛','丁壬','戊癸'],a)};
+  const rules=window.ZERI_MOUNTAINS||{},pool=SHAN.filter(x=>rules[x]&&rules[x].pairs.length===1);
+  if(!pool.length)return genQ('六冲');
+  const s=rnd(pool),r=rules[s],a=r.pairs[0];
+  return{stem:`【${r.kind}】坐 <b>${s}山</b>，依逐山原条对应哪组天干？`,ans:a,opts:optFrom(['甲己','乙庚','丙辛','丁壬','戊癸'],a)};
 }
 function renderQcChips(){
   $('#qc-chips').innerHTML=QC_TYPES.map(t=>`<div class="chip ${t===qcCat?'on':''}" onclick="pickQc('${t}')">${t}</div>`).join('');

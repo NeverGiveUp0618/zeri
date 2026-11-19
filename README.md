@@ -1,6 +1,6 @@
 # 择日学习
 
-现有 GitHub Pages 项目，学、查、算、练统一在 `index.html` 内切换，系统课程入口为 `index.html?tab=course`；旧 `course.html#章节` 自动转接。保持原站玄黑鎏金、历史存储键与易术堂入口。
+现有 GitHub Pages 项目，学、查、练统一在 `index.html` 内切换，系统课程入口为 `index.html?tab=course`；旧 `course.html#章节` 自动转接。保持原站玄黑鎏金、历史存储键与易术堂入口。
 
 ## 课程内容源
 
@@ -23,6 +23,7 @@ NODE_PATH=../bazi-course/node_modules node tests_check.js
 NODE_PATH=../bazi-course/node_modules node tests_course.js
 NODE_PATH=../bazi-course/node_modules node tests_course_notes.js
 NODE_PATH=../bazi-course/node_modules node tests_tabs.js
+NODE_PATH=../bazi-course/node_modules node tests_course_flow.js
 node tests_course_sw.js
 NODE_PATH=../bazi-course/node_modules node tests_review.js
 ```
@@ -39,7 +40,7 @@ NODE_PATH=../bazi-course/node_modules node tests_review.js
 - `zeri_course_answers_v1`：章末题客观作答。
 - `zeri_course_positions_v1`：阅读位置。
 
-课程支持导出及导入学习记录；导入合并既有已读与作答记录。初始化先等待共享guard的镜像恢复。
+学习记录仍在本地保存，初始化先等待共享guard的镜像恢复。课程页不提供下载、学习记录导入导出或备份入口。
 
 全科笔记仍用共享 `ygn_v1`，不另建笔记本。`YGN_HOOK` 保存课程ID及实际小节；返回时先展开折叠小节，再由共享模块按文本指纹定位。原表保存山名，能回对应坐山。旧速查页能转接课程笔记来源，课程页也能返回旧知识卡来源。
 
@@ -74,3 +75,14 @@ SW已升为 `zeri-v22-reading-layout`。独立Chrome完成34章两种宽度共68
 `course.js` 同时支持独立验证与主应用内运行，笔记钩子按当前入口派发。`build_ui.py` 从 `course.css` 生成仅作用于课程容器的 `course-embedded.css`，由 `build_course.py` 一并调用，不直接修改产物。`tests_tabs.js` 用真实课程与共享笔记模块检查14项入口、状态、后退和出处定位。
 
 SW为 `zeri-v24-in-page-tabs`。独立Chrome检查320/390/820/1440宽度、100/150%字体共56种切换状态；每个宽度连续32次切换，在下一帧检查内容始终不透明，文档/页头/底栏保持同一对象，无新Document请求，旧书签转接及笔记定位通过。构建、内容/规则审计与全部回归通过；手机尺寸模拟不代替实体机反馈。
+
+
+## 逐题练习与课程速查（2026-11-19）
+
+底栏现仅保留学、查、练，移除独立推算模块及其表单与入口。旧速查的分类、详情、搜索和收藏界面撤下，“查”全部替换为34课知识点速查：直接复用每课规则与条件表、易错与适用边界、本章小结，不另造规则；支持初中高级筛选、正文搜索、表格横滑，以及跳回对应课的小节。新速查可存入同一全科笔记本，记课ID与小节并支持返回定位。旧速查笔记的文字仍保留，旧入口转到相关课程。
+
+初中高级课程目录默认全部折叠（搜索时展开命中结果）；目录底部下载、学习记录导入导出及备份入口移除，也不显示备份提醒。自动本地保存与既有存储键继续使用。
+
+本章练一练每次只渲染一题；答后保留解析，手动点下一题；最后一题点完成后显示结果。再做本章从第一题开始，只清本章答案，不自动标已读。题目笔记定位可切到尚未显示的对应题。章末错题汇总维持单独回顾方式。
+
+SW升 `zeri-v25-course-review-quiz`，新速查脚本与样式进入预缓存。新增 `tests_course_flow.js` 12项涵盖34章160题全流程、折叠与移除入口、34课速查文字一致性、筛选搜索和真实笔记联调；其他回归同步检查。独立Chrome四档宽度360/390/820/1440与100/150%字体，共64个目录、速查、横滑、回正文和逐题状态通过；已检查手机截图。上述为浏览器模拟。

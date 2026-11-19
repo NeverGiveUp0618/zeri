@@ -18,7 +18,7 @@ progress.read=Object.fromEntries(Object.entries(progress.read).filter(([id,v])=>
 positions=Object.fromEntries(Object.entries(positions).filter(([id,y])=>knownChapters.has(id)&&Number.isFinite(y)&&y>=0));
 for(const id of Object.keys(answers))if(!knownQuestions.has(id))delete answers[id];
 for(const c of chapters)for(const q of c.questions){const a=answers[q.id];if(a&&(!object(a)||![q.a,...q.w].includes(a.choice)||a.correct!==(a.choice===q.a)||(a.rev&&a.rev!==q.rev)))delete answers[q.id]}
-function storageIssue(){let el=document.getElementById('storage-issue');if(!el){el=document.createElement('div');el.id='storage-issue';el.className='source-notice';if(host)root.prepend(el);else document.querySelector('header').after(el)}el.textContent='当前浏览器未能保存学习记录。本页仍可学习，请先导出记录或检查存储空间。'}
+function storageIssue(){let el=document.getElementById('storage-issue');if(!el){el=document.createElement('div');el.id='storage-issue';el.className='source-notice';if(host)root.prepend(el);else document.querySelector('header').after(el)}el.textContent='当前浏览器未能保存学习记录。本页仍可学习，请检查浏览器存储空间后重试。'}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(progress));localStorage.setItem(QKEY,JSON.stringify(answers))}catch(e){storageIssue()}report()}
 function byId(id){return chapters.find(c=>c.id===id)}
 function report(){const n=chapters.filter(c=>progress.read[c.id]).length;try{parent.postMessage({type:'yst-progress',app:'zeri',text:`课程已读 ${n}/${chapters.length} · 章末题 ${Object.keys(answers).length}/${D.questionCount}`},location.origin)}catch(e){}}
@@ -29,22 +29,20 @@ function catalog(query=''){
  $('#catalog').innerHTML=['初级','中级','高级'].map((level,i)=>{
   const all=chapters.filter(c=>c.stage===level),list=filtered.filter(c=>c.stage===level);if(!list.length)return '';
   const count=all.filter(c=>progress.read[c.id]).length;
-  return `<details class="level" ${term||i===0?'open':''}><summary>${level}<span>${all.length}章 · 已读${count}</span></summary>${list.map(card).join('')}</details>`;
+  return `<details class="level" ${term?'open':''}><summary>${level}<span>${all.length}章 · 已读${count}</span></summary>${list.map(card).join('')}</details>`;
  }).join('')||'<div class="empty">没有匹配内容，可换一个术语搜索。</div>';
 }
 function home(){
  current=null;noteSection=null;activeUtility=null;$('#course-reader').hidden=true;$('#course-reader').innerHTML='';$('#course-home').hidden=false;
  const readCount=chapters.filter(c=>progress.read[c.id]).length,next=byId(progress.last)||chapters.find(c=>!progress.read[c.id])||chapters[0];
  const wrong=Object.values(answers).filter(a=>!a.correct).length;
- $('#course-home').innerHTML=`<section class="hero"><div class="eyebrow">从会查规则，到能逐项核课</div><h1>把择日学成一条完整思路</h1><p>先立时间与山命坐标，再学日常用事、嫁娶造葬，最后进入正体五行与斗首复核。</p><div class="meta">${chapters.length}章 · ${D.questionCount}道章末题 · 原课案例拆解 · 逐页出处</div><div class="actions"><a class="btn primary" href="#${next.id}">${progress.last?'继续阅读':'开始第一章'}</a><a class="btn" href="#route">学习路线</a><a class="btn" href="#cases">案例索引</a><a class="btn" href="#wrong">错题 ${wrong}</a></div><div class="progress"><i style="width:${readCount/chapters.length*100}%"></i></div><div class="meta">手动已读 ${readCount}/${chapters.length} · 标记与答题记录分别保存</div></section><input class="search" id="course-search" type="search" placeholder="搜索课程全文、规则和题目" aria-label="搜索课程"><div id="catalog"></div><div class="actions"><a class="btn small" href="course-textbook.md" download>下载课程 Markdown</a><button class="btn small" data-export>导出学习记录</button><a class="btn small" href="https://nevergiveup0618.github.io/all-project/backup.html">全科进度备份</a></div><div class="source-notice">以《择日合集》PDF文件页序标源。原课存在异文的地方就近说明，不作为唯一答案。原PDF和本地分册不随网站发布。</div>`;
- catalog();$('#course-search').addEventListener('input',e=>catalog(e.target.value));$('[data-export]').onclick=exportProgress;
- $('[data-export]').insertAdjacentHTML('afterend','<button class="btn small" data-import>导入学习记录</button><input id="course-import" type="file" accept="application/json,.json" hidden><span id="transfer-status" class="meta" role="status"></span>');
- $('[data-import]').onclick=()=>$('#course-import').click();$('#course-import').onchange=importProgress;
+ $('#course-home').innerHTML=`<section class="hero"><div class="eyebrow">从会查规则，到能逐项核课</div><h1>把择日学成一条完整思路</h1><p>先立时间与山命坐标，再学日常用事、嫁娶造葬，最后进入正体五行与斗首复核。</p><div class="meta">${chapters.length}章 · ${D.questionCount}道章末题 · 原课案例拆解 · 逐页出处</div><div class="actions"><a class="btn primary" href="#${next.id}">${progress.last?'继续阅读':'开始第一章'}</a><a class="btn" href="#route">学习路线</a><a class="btn" href="#cases">案例索引</a><a class="btn" href="#wrong">错题 ${wrong}</a></div><div class="progress"><i style="width:${readCount/chapters.length*100}%"></i></div><div class="meta">手动已读 ${readCount}/${chapters.length} · 标记与答题记录分别保存</div></section><input class="search" id="course-search" type="search" placeholder="搜索课程全文、规则和题目" aria-label="搜索课程"><div id="catalog"></div><div class="source-notice">以《择日合集》PDF文件页序标源。原课存在异文的地方就近说明，不作为唯一答案。原PDF和本地分册不随网站发布。</div>`;
+ catalog();$('#course-search').addEventListener('input',e=>catalog(e.target.value));
  scrollToPosition(0);report();
 }
 function gzClass(z){if('甲乙寅卯'.includes(z))return 'wood';if('丙丁巳午'.includes(z))return 'fire';if('戊己辰戌丑未'.includes(z))return 'earth';if('庚辛申酉'.includes(z))return 'metal';return 'water'}
 function chart(c){if(!c||!c.pillars)return '';return `<aside class="chart"><div class="caption">${esc(c.people)} · ${esc(c.type)}${c.illustration?' · 不作真实候选':''}</div><div class="pillars">${c.pillars.map((p,i)=>`<div class="pillar"><small>${['年','月','日','时'][i]}</small>${p==='—'?'<span class="gz">—</span>':p.split('').map(z=>`<span class="gz ${gzClass(z)}">${z}</span>`).join('')}</div>`).join('')}</div></aside>`}
-let tableObserver;
+let tableObserver;const quizPages=new Map();
 function prepareReading(root){
  if(tableObserver)tableObserver.disconnect();
  const intro=root.querySelector('.chapter-intro blockquote');
@@ -59,31 +57,39 @@ function prepareReading(root){
 function reader(c,sec){
  current=c.id;noteSection=sec||null;activeUtility=null;progress.last=c.id;save();drawn=new Map();$('#course-home').hidden=true;$('#course-home').innerHTML='';const box=$('#course-reader');box.hidden=false;
  const caseItem=(D.cases||[]).find(x=>x.chapter===c.id),prev=chapters[c.n-2],next=chapters[c.n];
- box.innerHTML=`<div class="reader-top"><a href="#">课程目录</a><span class="meta">${c.stage} · 第${c.n}/${chapters.length}章</span></div><h1 class="reader-title">${esc(c.title)}</h1><div class="meta"><a href="#${c.id}~${c.id}-s8">出处与页码</a> · ${c.questions.length}道章末题</div><div class="chapter-intro">${c.intro}</div>${chart(caseItem)}<div class="chapter-toc">${c.sections.filter(s=>!s.title.startsWith('六、')).map(s=>`<a href="#${c.id}~${encodeURIComponent(s.id)}">${esc(s.title.replace(/^[一二三四五六七八]、/,''))}</a>`).join('')}<a href="#${c.id}~quiz">章末题</a></div>${c.sections.map((s,i)=>`<details class="section" id="${s.id}" ${i<2?'open':''}><summary>${esc(s.title)}</summary><div class="section-body">${s.html}</div></details>`).join('')}<div class="reference-links">${c.keys.map(k=>`<a class="btn small" href="index.html?knowledge=${encodeURIComponent(k)}">关联速查 ${esc(k)}</a>`).join('')}</div><section class="quiz-box" id="quiz"><h2>本章练一练</h2><div class="meta">当场判断，答后看解析；不自动跳题，也不自动标已读。</div><div id="chapter-questions"></div><div class="actions"><button class="btn small" id="retry">再做本章</button></div></section><div class="read-control"><button class="btn ${progress.read[c.id]?'done':''}" id="mark-read">${progress.read[c.id]?'已标记为已读 · 可撤销':'标记本章为已读'}</button><span class="meta">由你决定是否读完</span></div><div class="chapter-pager">${prev?`<a class="btn" href="#${prev.id}">上一章 · ${esc(prev.title)}</a>`:'<a class="btn" href="#">课程目录</a>'}${next?`<a class="btn" href="#${next.id}">下一章 · ${esc(next.title)}</a>`:'<a class="btn" href="#">回课程目录</a>'}</div>`;
- for(const q of c.questions)appendQuestion(q,c,$('#chapter-questions'));
+ box.innerHTML=`<div class="reader-top"><a href="#">课程目录</a><span class="meta">${c.stage} · 第${c.n}/${chapters.length}章</span></div><h1 class="reader-title">${esc(c.title)}</h1><div class="meta"><a href="#${c.id}~${c.id}-s8">出处与页码</a> · ${c.questions.length}道章末题</div><div class="chapter-intro">${c.intro}</div>${chart(caseItem)}<div class="chapter-toc">${c.sections.filter(s=>!s.title.startsWith('六、')).map(s=>`<a href="#${c.id}~${encodeURIComponent(s.id)}">${esc(s.title.replace(/^[一二三四五六七八]、/,''))}</a>`).join('')}<a href="#${c.id}~quiz">章末题</a></div>${c.sections.map((s,i)=>`<details class="section" id="${s.id}" ${i<2?'open':''}><summary>${esc(s.title)}</summary><div class="section-body">${s.html}</div></details>`).join('')}<div class="reference-links"></div><section class="quiz-box" id="quiz"><h2>本章练一练</h2><div class="meta">每次一题，答后看解析，再点下一题。</div><div id="quiz-progress" class="meta" aria-live="polite"></div><div id="chapter-questions"></div><div class="actions"><button class="btn small" id="retry">再做本章</button></div></section><div class="read-control"><button class="btn ${progress.read[c.id]?'done':''}" id="mark-read">${progress.read[c.id]?'已标记为已读 · 可撤销':'标记本章为已读'}</button><span class="meta">由你决定是否读完</span></div><div class="chapter-pager">${prev?`<a class="btn" href="#${prev.id}">上一章 · ${esc(prev.title)}</a>`:'<a class="btn" href="#">课程目录</a>'}${next?`<a class="btn" href="#${next.id}">下一章 · ${esc(next.title)}</a>`:'<a class="btn" href="#">回课程目录</a>'}</div>`;
+ renderChapterQuiz(c);
  $('#mark-read').onclick=()=>{progress.read[c.id]=!progress.read[c.id];save();$('#mark-read').textContent=progress.read[c.id]?'已标记为已读 · 可撤销':'标记本章为已读';$('#mark-read').classList.toggle('done',!!progress.read[c.id])};
- $('#retry').onclick=()=>{for(const q of c.questions)delete answers[q.id];save();$('#chapter-questions').innerHTML='';for(const q of c.questions)appendQuestion(q,c,$('#chapter-questions'))};
- const links=box.querySelector('.reference-links');links.innerHTML=(c.links||[]).map(l=>`<a class="btn small" href="index.html?knowledge=${encodeURIComponent(l.id)}">速查 · ${esc(l.title)}</a>`).join('');
- if(c.n===15)links.insertAdjacentHTML('beforeend','<a class="btn small" href="index.html?tab=calc&sub=nv">查询六十甲子女命全表</a>');
+ $('#retry').onclick=()=>{for(const q of c.questions)delete answers[q.id];save();quizPages.set(c.id,0);renderChapterQuiz(c)};
+ const links=box.querySelector('.reference-links');links.innerHTML=`<a class="btn small" href="index.html?review=${c.id}">本课知识点速查</a>`;
  if(c.n===30)links.insertAdjacentHTML('beforeend','<a class="btn small" href="#mountains">二十四山原表查阅</a>');
  requestAnimationFrame(()=>{if(sec)focusSection(sec);else scrollToPosition(positions[c.id]||0)});
 }
 function shuffled(arr){return arr.map(x=>({x,r:Math.random()})).sort((a,b)=>a.r-b.r).map(x=>x.x)}
-function appendQuestion(q,c,parent){
+function renderChapterQuiz(c,index=quizPages.get(c.id)||0){
+ quizPages.set(c.id,index);const parent=$('#chapter-questions');parent.innerHTML='';
+ $('#quiz-progress').textContent=index<c.questions.length?`第 ${index+1} / ${c.questions.length} 题`:`已完成 ${c.questions.length} 题`;
+ if(index>=c.questions.length){const right=c.questions.filter(q=>answers[q.id]?.correct).length;parent.innerHTML=`<div class="quiz-result" role="status"><h3>本章练习已完成</h3><p>答对 ${right} / ${c.questions.length} 题。可以回看讲解，或再做本章。</p></div>`;return}
+ const q=c.questions[index],next=document.createElement('button');next.className='btn primary quiz-next';next.dataset.nextQuestion='';next.textContent=index===c.questions.length-1?'完成本章练习':'下一题';
+ const setReady=ready=>{next.hidden=!ready;next.disabled=!ready};
+ appendQuestion(q,c,parent,setReady);setReady(!!answers[q.id]);parent.appendChild(next);
+ next.onclick=()=>{if(next.disabled)return;renderChapterQuiz(c,index+1);$('#quiz').scrollIntoView({block:'start'})};
+}
+function appendQuestion(q,c,parent,onAnswered){
  const div=document.createElement('div');div.className='question';div.dataset.qid=q.id;
  const opts=shuffled([q.a,...q.w]);drawn.set(q.id,opts);
- div.id=q.id;div.innerHTML=`<h3>${esc(q.q)}</h3><div class="options">${opts.map((v,i)=>`<button class="option" data-qi="${i}">${esc(v)}</button>`).join('')}</div><div class="feedback" aria-live="polite"></div>`;
+ div._onAnswered=onAnswered;div.id=q.id;div.innerHTML=`<h3>${esc(q.q)}</h3><div class="options">${opts.map((v,i)=>`<button class="option" data-qi="${i}">${esc(v)}</button>`).join('')}</div><div class="feedback" aria-live="polite"></div>`;
  div.querySelectorAll('.option').forEach(btn=>btn.onclick=()=>{
-  const chosen=opts[+btn.dataset.qi];answers[q.id]={choice:chosen,correct:chosen===q.a,at:Date.now(),tries:(answers[q.id]?.tries||0)+1,rev:q.rev};save();feedback(div,q,c);
+  const chosen=opts[+btn.dataset.qi];answers[q.id]={choice:chosen,correct:chosen===q.a,at:Date.now(),tries:(answers[q.id]?.tries||0)+1,rev:q.rev};save();feedback(div,q,c);if(onAnswered)onAnswered(true);
  });parent.appendChild(div);if(answers[q.id])feedback(div,q,c);
 }
 function feedback(div,q,c){
  const ans=answers[q.id];div.querySelectorAll('.option').forEach(btn=>{const value=btn.textContent;btn.disabled=true;btn.classList.toggle('correct',value===q.a);btn.classList.toggle('wrong',!ans.correct&&value===ans.choice)});
  const section=c.sections.find(s=>s.title===q.sec);
  div.querySelector('.feedback').innerHTML=`<strong>${ans.correct?'回答正确':'正确答案：'+esc(q.a)}</strong><br>${esc(q.e)}<br><a href="#${c.id}~${encodeURIComponent(section?.id||'')}">回看本章相关讲解</a>${!ans.correct?'<br><button class="btn small" data-retry-question>重做此题</button>':''}`;
- const retry=div.querySelector('[data-retry-question]');if(retry)retry.onclick=()=>{const copy={...q};const old=answers[q.id];delete answers[q.id];const holder=document.createElement('div');appendQuestion(copy,c,holder);answers[q.id]=old;div.replaceWith(holder.firstElementChild)};
+ const retry=div.querySelector('[data-retry-question]');if(retry)retry.onclick=()=>{const copy={...q};const old=answers[q.id];delete answers[q.id];const holder=document.createElement('div');appendQuestion(copy,c,holder,div._onAnswered);answers[q.id]=old;div.replaceWith(holder.firstElementChild);if(div._onAnswered)div._onAnswered(false)};
 }
-function focusSection(id){const el=document.getElementById(id);if(!el)return;noteSection=id;for(let p=el;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;el.scrollIntoView({block:'start'})}
+function focusSection(id){if(current){const c=byId(current),i=c.questions.findIndex(q=>q.id===id);if(i>=0&& !document.getElementById(id))renderChapterQuiz(c,i)}const el=document.getElementById(id);if(!el)return;noteSection=id;for(let p=el;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;el.scrollIntoView({block:'start'})}
 function utility(which,ref){
  current=null;noteSection=null;activeUtility=which;$('#course-home').hidden=true;$('#course-home').innerHTML='';const box=$('#course-reader');box.hidden=false;
  box.innerHTML='<div class="reader-top"><a href="#">课程目录</a></div>';
@@ -102,20 +108,6 @@ function utility(which,ref){
  scrollToPosition(0);
 }
 function route(hash=location.hash){flushPosition();let id='',sec=null;try{const parts=String(hash).replace(/^#/,'').split('~');id=decodeURIComponent(parts[0]||'');sec=parts[1]?decodeURIComponent(parts[1]):null}catch(e){home();return}if(['route','cases','wrong','mountains'].includes(id))utility(id,sec);else {const c=byId(id);if(c){if(current===c.id&&!$('#course-reader').hidden){if(sec)focusSection(sec)}else reader(c,sec)}else home()}prepareReading($('#course-reader'))}
-function exportProgress(){
- const blob=new Blob([JSON.stringify({v:1,app:'zeri-course',at:new Date().toISOString(),progress,answers,positions},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='择日课程学习记录.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-function importProgress(e){
- const input=e.target,file=input.files&&input.files[0];if(!file)return;
- const reader=new FileReader();reader.onerror=()=>{if($('#transfer-status'))$('#transfer-status').textContent='文件未能读取，请重试。'};
- reader.onload=()=>{try{
-  const data=JSON.parse(reader.result);if(data.v!==1||data.app!=='zeri-course'||!object(data.progress)||!object(data.progress.read)||!object(data.answers))throw Error('这不是择日课程学习记录文件。');
-  for(const id of knownChapters)if(typeof data.progress.read[id]==='boolean')progress.read[id]=!!(progress.read[id]||data.progress.read[id]);
-  for(const c of chapters)for(const q of c.questions){const a=data.answers[q.id];if(!object(a)||![q.a,...q.w].includes(a.choice)||a.correct!==(a.choice===q.a)||(a.rev&&a.rev!==q.rev))continue;if(!answers[q.id]||(+a.at||0)>(+answers[q.id].at||0))answers[q.id]={choice:a.choice,correct:a.correct,at:+a.at||0,tries:+a.tries||1,rev:q.rev}}
-  if(object(data.positions))for(const id of knownChapters)if(positions[id]==null&&Number.isFinite(data.positions[id])&&data.positions[id]>=0)positions[id]=data.positions[id];
-  save();try{localStorage.setItem(POS,JSON.stringify(positions))}catch(err){storageIssue()}home();$('#transfer-status').textContent='已合并：保留现有已读，作答采用较新记录。';
- }catch(err){if($('#transfer-status'))$('#transfer-status').textContent='导入失败：'+err.message}input.value=''};reader.readAsText(file);
-}
 let timer,pendingPosition=null;
 function flushPosition(){clearTimeout(timer);if(!pendingPosition)return;positions[pendingPosition.id]=pendingPosition.y;pendingPosition=null;try{localStorage.setItem(POS,JSON.stringify(positions))}catch(e){storageIssue()}}
 scroller.addEventListener('scroll',()=>{if(!current||!isActive())return;clearTimeout(timer);pendingPosition={id:current,y:Math.max(0,Math.round(scrollTop()))};timer=setTimeout(flushPosition,180)},{passive:true});
@@ -123,7 +115,7 @@ window.addEventListener('pagehide',flushPosition);
 document.addEventListener('click',e=>{const section=e.target.closest&&e.target.closest('#course-reader .section');const q=e.target.closest&&e.target.closest('#course-reader .question');if(section)noteSection=section.id;else if(q)noteSection=q.id},true);
 const noteHook={blocks:'.section-body p,.section-body li,.section-body tr,.question h3,.feedback',loc:()=>current?{v:'course',id:current,sec:noteSection}:activeUtility==='mountains'?{v:'course-ref',id:'mountains',mountain:activeMountain}:null,go:l=>{if(l&&l.v==='course')jump(l.id,l.sec);else if(l&&l.v==='course-ref')jump('mountains',l.mountain);else if(l&&l.v){if(host)host.openTool(l);else location.href='index.html?knowledge='+encodeURIComponent(l.id||'')}},label:()=>{if(!current)return activeUtility==='mountains'?'二十四山 · '+activeMountain+'山':'择日课程';const c=byId(current),s=c.sections.find(s=>s.id===noteSection);return '第'+c.n+'章 '+c.title+(s?' · '+s.title:noteSection&&noteSection.includes('-q')?' · 章末题':'')}};
 let lastHash=null;
-const api={hook:noteHook,pause:flushPosition,activate(hash,force=false){hash=String(hash||'').replace(/^#/,'');if(force||lastHash!==hash){route(hash);lastHash=hash;return false}else{prepareReading($('#course-reader'));return true}}};
+const api={hook:noteHook,prepareReading,pause:flushPosition,activate(hash,force=false){hash=String(hash||'').replace(/^#/,'');if(force||lastHash!==hash){route(hash);lastHash=hash;return false}else{prepareReading($('#course-reader'));return true}}};
 window.ZeriCourse=api;
 if(host){host.ready(api)}else{window.YGN_HOOK=noteHook;window.addEventListener('hashchange',()=>route());route()}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});

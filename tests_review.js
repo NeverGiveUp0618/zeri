@@ -13,7 +13,7 @@ async function go(w,h){w.location.hash=h;await sleep(35)}
  t('错误类型存储不会导致白屏',()=>assert.equal(w.document.querySelectorAll('.lesson').length,34));
  await go(w,'zr-22');let c=w.ZERI_COURSE.chapters.find(x=>x.id==='zr-22'),q=c.questions[0],q2=c.questions[1];
  let div=w.document.querySelector(`[data-qid="${q.id}"]`);[...div.querySelectorAll('.option')].find(x=>x.textContent===q.w[0]).click();
- let div2=w.document.querySelector(`[data-qid="${q2.id}"]`);[...div2.querySelectorAll('.option')].find(x=>x.textContent===q2.a).click();
+ w.document.querySelector('[data-next-question]').click();let div2=w.document.querySelector(`[data-qid="${q2.id}"]`);[...div2.querySelectorAll('.option')].find(x=>x.textContent===q2.a).click();
  await go(w,'wrong');div=w.document.querySelector(`[data-qid="${q.id}"]`);div.querySelector('[data-retry-question]').click();div=w.document.querySelector(`[data-qid="${q.id}"]`);
  t('错题可直接重做且不先删错题记录',()=>{assert(!div.querySelector('.option').disabled);assert(!JSON.parse(w.localStorage.getItem('zeri_course_answers_v1'))[q.id].correct)});
  [...div.querySelectorAll('.option')].find(x=>x.textContent===q.a).click();
@@ -23,23 +23,21 @@ async function go(w,h){w.location.hash=h;await sleep(35)}
  await go(w,'zr-01');Object.defineProperty(w,'scrollY',{value:740,writable:true,configurable:true});w.dispatchEvent(new w.Event('scroll'));await go(w,'zr-02');await sleep(210);
  t('快速换章不把旧章滚动位置写入新章',()=>{const pos=JSON.parse(w.localStorage.getItem('zeri_course_positions_v1'));assert.equal(pos['zr-01'],740);assert.notEqual(pos['zr-02'],740)});
  await go(w,'%E0%A4%A');t('坏的URL编码不会导致白屏',()=>assert.equal(w.document.querySelectorAll('.lesson').length,34));
- const input=w.document.getElementById('course-import'),f=new w.File([JSON.stringify({app:'zeri-course',v:1,progress:{read:{'zr-07':true}},answers:{},positions:{'zr-07':123}})],'backup.json',{type:'application/json'});
- Object.defineProperty(input,'files',{value:[f]});input.dispatchEvent(new w.Event('change'));await sleep(80);
- t('导出的课程记录可从文件导入合并',()=>assert(JSON.parse(w.localStorage.getItem('zeri_course_v1')).read['zr-07']));w.close();
+ t('目录移除下载及导入导出与备份入口',()=>{assert(!w.document.querySelector('[data-export],[data-import],#course-import,[download],a[href*="backup"]'))});w.close();
  d=await init(w=>{w.Storage.prototype.setItem=function(){throw Error('quota')}});w=d.window;await go(w,'zr-01');
  t('存储空间不足仍可打开课程并明确提示',()=>{assert(w.document.querySelector('#storage-issue'));assert(w.document.querySelector('.reader-title'))});w.close();
  const oldhtml=fs.readFileSync('index.html','utf8').replace('<script src="data.js"></script>','<script>'+fs.readFileSync('data.js','utf8')+'</script>').replace('<script src="data-mountain.js"></script>','<script>'+fs.readFileSync('data-mountain.js','utf8')+'</script>');
  d=new JSDOM(oldhtml,{url:'https://example.test/zeri/',runScripts:'dangerously',virtualConsole:new VirtualConsole()});w=d.window;
  function analyze(state){w.ripanState={yg:'',yz:'',mg:'',mz:'',dg:'',dz:'',hg:'',hz:'',shan:'',cg:'',cz:'',...state};w.analyzeRipan();return w.document.getElementById('ripan-out').textContent}
  t('底栏切换练习会初始化完整题面，统计标签和数字保留在同组',()=>{w.document.getElementById('n-xue').click();assert(w.document.querySelector('#v-learn.on .qcard'));assert.equal(w.document.querySelectorAll('#learn-stat .stat-item').length,3);for(const el of w.document.querySelectorAll('#learn-stat .stat-item'))assert(el.querySelector('b'));w.streak.days=123;w.renderStat();assert.equal(w.document.querySelectorAll('#learn-stat .stat-item').length,4)});
- t('查算练与课程共用相同导航，切换后仅当前入口高亮',()=>{const course=new JSDOM(html);assert.deepEqual([...course.window.document.querySelectorAll('.site-nav a')].map(a=>a.textContent),[...w.document.querySelectorAll('.site-nav a')].map(a=>a.textContent));assert(w.document.querySelector('link[href="site-shell.css"]'));w.document.getElementById('n-cha').click();assert(w.document.querySelector('#v-home.on'));assert.equal(w.document.querySelectorAll('.site-nav .on').length,1);w.document.getElementById('n-suan').click();assert(w.document.querySelector('#v-calc.on'));assert.equal(w.document.querySelectorAll('.site-nav .on').length,1);course.window.close()});
+ t('三入口导航移除推算，切换后仅当前入口高亮',()=>{assert.equal(w.document.querySelectorAll('.site-nav a').length,3);assert(!w.document.getElementById('n-suan'));w.document.getElementById('n-cha').click();assert(w.document.querySelector('#v-home.on'));assert.equal(w.document.querySelectorAll('.site-nav .on').length,1)});
+ w.document.body.insertAdjacentHTML('beforeend','<div id="ripan-out"></div>');
  t('艮山甲己与寅山丁壬逐山区分',()=>{assert(analyze({shan:'艮',yg:'甲',mg:'己'}).includes('正阴府'));assert(analyze({shan:'寅',yg:'丁',mg:'壬'}).includes('傍阴府'));assert(!analyze({shan:'寅',yg:'甲',mg:'己'}).includes('双全'))});
  t('壬山两组傍阴府不再错套坎卦丙辛',()=>{assert(analyze({shan:'壬',yg:'乙',mg:'庚'}).includes('傍阴府'));assert(!analyze({shan:'壬',yg:'丙',mg:'辛'}).includes('双全'))});
  t('四维山缺兼向不再输出确定三煞或冲山',()=>{const s=analyze({shan:'乾',yz:'巳'});assert(s.includes('待核兼向'));assert(!s.includes('山家三煞'));assert(!s.includes('巳 冲坐山'))});
  t('年月干不合五虎遁时暂停后续扫描',()=>{const s=analyze({yg:'甲',yz:'子',mg:'甲',mz:'寅',shan:'午'});assert(s.includes('五虎遁'));assert(s.includes('暂停'))});
  t('日时干不合五鼠遁时暂停后续扫描',()=>assert(analyze({dg:'甲',dz:'寅',hg:'甲',hz:'寅'}).includes('五鼠遁')));
  t('主命四煞只按对应墓支提示，不把三方等同全忌',()=>{assert(!analyze({cz:'子',dz:'巳'}).includes('主命四煞'));assert(analyze({cz:'子',dz:'未'}).includes('主命四煞'))});
- t('速查标题和同一行解释分开，解释不再整段加粗',()=>{const el=w.document.createElement('div');el.innerHTML=w.fmtBody('【正阴府】这里是需要正常阅读的解释正文','ss-08');assert.equal(el.querySelector('.bh').textContent,'正阴府');assert.equal(el.querySelector('.bp').textContent,'这里是需要正常阅读的解释正文')});
  t('女命冲支提示不再把所有同支日一律禁用',()=>{assert(w.nvRes('甲子').includes('不把所有同支日一概判忌'));assert(w.nvRes('辛巳').includes('第18项题头误印'))});
  for(let i=0;i<1000;i++){const q=w.genQ('阴府'),shan=q.stem.match(/<b>(.)山/)[1],rule=w.ZERI_MOUNTAINS[shan];assert(rule.pairs.includes(q.ans));assert(q.stem.includes(rule.kind));assert.equal(new Set(q.opts).size,4)}
  t('随机阴府题1000题均匹配具体山原条',()=>assert(true));

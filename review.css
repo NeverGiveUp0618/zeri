@@ -1,0 +1,16 @@
+#review-view .review-filters{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0 18px}
+#review-view .review-lesson{margin:15px 0;border:1px solid #c9a45c45;border-radius:12px;background:#141720;overflow:hidden}
+#review-view .review-lesson>summary{display:flex;gap:14px;align-items:baseline;padding:18px;cursor:pointer;list-style:none;line-height:1.7}
+#review-view .review-lesson>summary::-webkit-details-marker{display:none}
+#review-view .review-lesson>summary::after{content:'＋';margin-left:auto;color:#e0bf7e;flex:none}
+#review-view .review-lesson[open]>summary::after{content:'−'}
+#review-view .review-number{color:#e0bf7e;flex:none}
+#review-view summary b{font-size:1em;font-weight:550;color:#e9e0cd}
+#review-view summary small{display:block;margin-top:5px;font-size:13px;color:#b1a58e}
+#review-view .review-content{padding:0 22px 24px;min-width:0}
+#review-view [data-review-sec]{padding-top:20px;border-top:1px solid #c9a45c45;margin-top:20px;min-width:0}
+#review-view [data-review-sec] h2{font-size:1.15em;line-height:1.6;color:#e0bf7e;margin:0 0 16px}
+#review-view .section-body{padding:0}
+#review-view .review-source{display:inline-block;font-size:14px;margin:8px 0 4px;color:#e0bf7e}
+#review-view #review-count{margin:12px 0}
+@media(max-width:520px){#review-view .review-content{padding:0 16px 20px}#review-view .review-lesson>summary{padding:15px;gap:10px}}

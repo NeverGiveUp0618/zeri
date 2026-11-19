@@ -20,9 +20,9 @@ def scoped(css):
             selectors=[]
             for item in selector.split(','):
                 item=item.strip()
-                if item in (':root','html','body','main'):selectors.append('#course-view')
-                elif item=='*':selectors.extend(['#course-view','#course-view *'])
-                else:selectors.append('#course-view '+item)
+                if item in (':root','html','body','main'):selectors.append(':is(#course-view,#review-view)')
+                elif item=='*':selectors.extend([':is(#course-view,#review-view)',':is(#course-view,#review-view) *'])
+                else:selectors.append(':is(#course-view,#review-view) '+item)
             result.append(','.join(selectors)+'{'+body+'}')
         css=css[end:]
     return '\n'.join(result)

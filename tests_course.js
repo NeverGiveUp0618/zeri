@@ -11,7 +11,7 @@ async function route(h){w.location.hash=h;await wait()}
  t('课程首页列全34章',()=>assert.equal(w.document.querySelectorAll('.lesson').length,34));
  t('首次阅读不会标为已读',()=>assert.equal(Object.keys(JSON.parse(w.localStorage.getItem('zeri_course_v1')||'{"read":{}}').read).length,0));
  await route('zr-22');
- t('章节渲染8个小节与全部章末题',()=>{assert.equal(w.document.querySelectorAll('.section').length,8);assert.equal(w.document.querySelectorAll('.question').length,D.chapters.find(c=>c.id==='zr-22').questions.length)});
+ t('章节渲染8个小节与一题练习',()=>{assert.equal(w.document.querySelectorAll('.section').length,8);assert.equal(w.document.querySelectorAll('.question').length,1)});
  t('丁壬案例绘完整四柱',()=>{assert.equal(w.document.querySelectorAll('.pillar').length,4);assert(w.document.querySelector('.chart').textContent.includes('午山子向'))});
  t('进入章节仍未自动标已读',()=>assert(!JSON.parse(w.localStorage.getItem('zeri_course_v1')).read['zr-22']));
  const q=D.chapters.find(c=>c.id==='zr-22').questions[0],div=w.document.querySelector(`[data-qid="${q.id}"]`);
@@ -29,9 +29,9 @@ async function route(h){w.location.hash=h;await wait()}
  t('正确作答客观记录',()=>assert(JSON.parse(w.localStorage.getItem('zeri_course_answers_v1'))[q.id].correct));
  await route('cases');t('案例索引8个且链接存在',()=>{assert.equal(w.document.querySelectorAll('#course-reader .lesson').length,8);for(const a of w.document.querySelectorAll('#course-reader .lesson'))assert(D.chapters.some(c=>a.hash.startsWith('#'+c.id+'~')))});
  await route('mountains');t('24山均可切换查原表',()=>{const s=w.document.querySelector('#mountain-pick');assert.equal(s.options.length,24);s.value='巳';s.dispatchEvent(new w.Event('change'));assert(w.document.querySelector('#mountain-text').textContent.includes('巳山亥向'))});
- for(const c of D.chapters){await route(c.id);assert.equal(w.document.querySelectorAll('.question').length,c.questions.length);for(const a of w.document.querySelectorAll('.chapter-toc a')){const id=decodeURIComponent(a.hash.split('~')[1]);assert(w.document.getElementById(id))}}
+ for(const c of D.chapters){await route(c.id);assert.equal(w.document.querySelectorAll('.question').length,1);for(const a of w.document.querySelectorAll('.chapter-toc a')){const id=decodeURIComponent(a.hash.split('~')[1]);assert(w.document.getElementById(id))}}
  t('34章逐页可达，目录锚点均可定位',()=>assert.equal(w.document.querySelectorAll('.section').length,8));
- await route('zr-15');t('女命链接直接到完整交互表',()=>assert(w.document.querySelector('a[href="index.html?tab=calc&sub=nv"]')));
+ await route('zr-15');t('课程连接本课知识点速查且无推算入口',()=>{assert(w.document.querySelector('a[href="index.html?review=zr-15"]'));assert(!w.document.querySelector('a[href*="tab=calc"]'))});
  await route('zr-30');t('逐山课程连到24山原表',()=>assert(w.document.querySelector('a[href="#mountains"]')));
  await route('');const search=w.document.querySelector('#course-search');search.value='单干';search.dispatchEvent(new w.Event('input'));
  t('搜索包含章节正文',()=>assert([...w.document.querySelectorAll('.lesson')].some(a=>a.href.endsWith('#zr-22'))));

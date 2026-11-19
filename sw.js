@@ -1,5 +1,5 @@
 /* 择日学习 Service Worker —— 离线缓存 */
-const CACHE = 'zeri-v24-in-page-tabs';
+const CACHE = 'zeri-v25-course-review-quiz';
 const ASSETS = [
   './',
   './index.html',
@@ -8,6 +8,8 @@ const ASSETS = [
   './course.html',
   './course.css',
   './course-embedded.css',
+  './review.js',
+  './review.css',
   './site-shell.css',
   './course.js',
   './data-course.js',

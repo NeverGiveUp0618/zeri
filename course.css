@@ -46,3 +46,5 @@ blockquote{font-size:1em;line-height:1.9;padding:16px 20px;margin:24px 0;border-
 #mountain-text{line-height:1.95}#mountain-text p{margin:1em 0}#mountain-text h2{font-size:1.35em;line-height:1.6;margin:1.4em 0 .7em}
 @media(min-width:900px){body{font-size:18px}main{padding:30px 32px 125px}.section>.section-body{padding:0 28px 30px}.section>summary{font-size:21px}.chapter-toc a{font-size:15px}}
 @media(max-width:520px){.section>summary{padding:15px 14px;font-size:18px;margin-left:10px}.section>.section-body{padding:0 16px 21px}.chapter-intro{padding:12px 15px}.chapter-toc{gap:8px}.chapter-toc a{padding:6px 10px}.chart{position:static}.table-frame{margin:20px 0}td,th{padding:11px 13px}.chapter-pager{flex-direction:column}.chapter-pager a:last-child{text-align:left}}
+
+#quiz-progress{margin-top:14px}.quiz-next{margin-top:20px}.quiz-result{padding:20px 0}.quiz-result h3{font-size:1.15em;color:var(--gold)}

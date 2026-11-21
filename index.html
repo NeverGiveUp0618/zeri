@@ -330,10 +330,10 @@ html[data-yg-zoom="135"] .dacts,html[data-yg-zoom="150"] .dacts{width:100%;justi
 <script defer src="course.js"></script>
 </head>
 <body>
-<header class="site-header"><a href="course.html" class="brand">择日学习</a><span class="section-label" id="site-section">速查</span><a class="site-home" href="https://nevergiveup0618.github.io/all-project/">易术堂</a></header>
+<header class="site-header"><a href="course.html" class="brand">择日学习</a><span class="section-label" id="site-section">项目学习</span><a class="site-home" href="https://nevergiveup0618.github.io/all-project/">易术堂</a></header>
 <div id="app">
-  <div class="view" id="v-course"><main id="course-view"><div id="course-home"></div><article id="course-reader" class="doc" hidden></article></main></div>
-  <div class="view on" id="v-home"><main id="review-view"><h1 class="reader-title">课程知识点速查</h1><p class="meta">按课复习规则、易错点和小结，随时回看对应讲解。</p><input class="search" id="review-search" type="search" placeholder="搜索知识点、规则或干支" aria-label="搜索课程速查"><div class="review-filters" id="review-filters"></div><div class="meta" id="review-count" aria-live="polite"></div><div id="review-list">正在载入课程速查…</div></main></div>
+  <div class="view on" id="v-course"><main id="course-view"><div id="course-home">正在载入项目课程…</div><article id="course-reader" class="doc" hidden></article></main></div>
+  <div class="view" id="v-home"><main id="review-view"><h1 class="reader-title">课程知识点速查</h1><p class="meta">按课复习规则、易错点和小结，随时回看对应讲解。</p><input class="search" id="review-search" type="search" placeholder="搜索知识点、规则或干支" aria-label="搜索课程速查"><div class="review-filters" id="review-filters"></div><div class="meta" id="review-count" aria-live="polite"></div><div id="review-list">正在载入课程速查…</div></main></div>
   <div class="view" id="v-learn">
     <div class="subtab" id="learn-mode"></div>
     <div id="learn-know">
@@ -351,8 +351,8 @@ html[data-yg-zoom="135"] .dacts,html[data-yg-zoom="150"] .dacts{width:100%;justi
 
 </div>
 <nav class="nav site-nav" aria-label="站点导航">
-  <a id="n-course" href="index.html?tab=course" onclick="event.preventDefault();tab('course')"><b>学</b><span>课程</span></a>
-  <a class="on" id="n-cha" href="index.html" onclick="event.preventDefault();tab('cha')"><b>查</b><span>速查</span></a>
+  <a class="on" id="n-course" href="index.html?tab=course" onclick="event.preventDefault();tab('course')"><b>学</b><span>课程</span></a>
+  <a id="n-cha" href="index.html?tab=cha" onclick="event.preventDefault();tab('cha')"><b>查</b><span>速查</span></a>
 
   <a id="n-xue" href="index.html?tab=learn" onclick="event.preventDefault();tab('xue')"><b>练</b><span>练习</span></a>
 </nav>
@@ -368,7 +368,7 @@ const catOrd=k=>ORD[CATS.findIndex(c=>c.key===k)+1]||'';
 const LV=['','入门','基础','进阶'];
 /* ===== 视图路由（支持安卓返回键 / 浏览器后退） ===== */
 const _viewScroll={};
-let _viewState={v:'home'},_courseHash='';
+let _viewState={v:'course',hash:''},_courseHash='';
 try{history.scrollRestoration='manual'}catch(e){}
 function _viewKey(s){return s.v+(s.cat?':'+s.cat:'')+(s.id?':'+s.id:'')}
 function _restoreViewScroll(s){
@@ -395,7 +395,7 @@ function stateUrl(s){
   const url=new URL('index.html',location.href);
   if(s.v==='course'){url.searchParams.set('tab','course');url.hash=s.hash||''}
   else if(s.v==='learn')url.searchParams.set('tab','learn');
-  else if(s.v==='home'&&s.review?.id)url.searchParams.set('review',s.review.id);
+  else if(s.v==='home'){if(s.review?.id)url.searchParams.set('review',s.review.id);else url.searchParams.set('tab','cha');}
   return url.pathname+url.search+url.hash;
 }
 function goState(s){s=normalizeState(s);if(s.v==='course')s={...s,hash:s.hash==null?_courseHash:s.hash};show(s);history.pushState(s,'',stateUrl(s));}
@@ -431,7 +431,7 @@ document.addEventListener('click',e=>{
  if(knowledge&&byId(knowledge))goState({v:'detail',id:knowledge});
  else if(target==='calc')tab('cha');
  else if(url.searchParams.get('review'))goState({v:'home',review:{id:url.searchParams.get('review')}});
- else if(target==='learn')tab('xue');else tab('cha');
+ else if(target==='learn')tab('xue');else if(target==='cha')tab('cha');else goState({v:'course',hash:url.hash.slice(1),focus:true});
 });
 
 function openDetail(id){goState({v:'detail',id});}
@@ -757,6 +757,8 @@ if(entry.get('tab')==='course'){const state={v:'course',hash:location.hash.slice
 else if(entry.get('knowledge')&&byId(entry.get('knowledge')))goState({v:'detail',id:entry.get('knowledge')});
 else if(entry.get('tab')==='calc'){show({v:'home'});history.replaceState({v:'home'},'',stateUrl({v:'home'}));}
 else if(entry.get('tab')==='learn'){enterLearn();goState({v:'learn'});}
+else if(entry.get('tab')==='cha'||entry.get('review')){const state={v:'home',...(entry.get('review')?{review:{id:entry.get('review')}}:{})};show(state);history.replaceState(state,'')}
+else{const state={v:'course',hash:location.hash.slice(1)};show(state);history.replaceState(state,'',stateUrl(state))}
 try{parent.postMessage({type:'yst-progress',app:'zeri',text:`错题 ${WRONG.size} · 连续 ${streak.days||0} 天`},'https://nevergiveup0618.github.io')}catch(e){}
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
 </script>

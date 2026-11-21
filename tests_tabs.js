@@ -7,6 +7,15 @@ w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=function(){w.lastScroll
 w.eval(fs.readFileSync('data-course.js','utf8'));w.eval(fs.readFileSync('review.js','utf8'));w.eval(fs.readFileSync('course.js','utf8'));w.eval(fs.readFileSync('../mingli-home/notes.js','utf8'));
 let n=0;const t=(label,f)=>{f();n++;console.log('✓ '+label)};
 (async()=>{
+
+ for(const [path,view,hash] of [['','course',''],['index.html','course',''],['#zp-01','course','zp-01'],['index.html?tab=cha','home',''],['index.html?review=zr-15','home',''],['index.html?tab=learn','learn','']]){
+  const extra=new JSDOM(html,{url:'https://nevergiveup0618.github.io/zeri/'+path,runScripts:'dangerously',pretendToBeVisual:true,virtualConsole:vc}),x=extra.window;
+  x.scrollTo=()=>{};x.HTMLElement.prototype.scrollIntoView=function(){};
+  for(const f of ['data-course.js','review.js','course.js'])x.eval(fs.readFileSync(f,'utf8'));
+  t('入口路由 '+(path||'根网址')+' → '+view,()=>{assert(x.document.querySelector('#v-'+view+'.on'));assert.equal(x.document.querySelectorAll('.site-nav .on').length,1);if(hash)assert(x.document.getElementById(hash+'-s1'));if(path.includes('review='))assert(x.document.querySelector('[data-review-chapter="zr-15"]').open)});
+  if(view==='home'&&!path.includes('review=')){assert(new URL(x.stateUrl({v:'home'}),x.location.href).searchParams.get('tab')==='cha')}
+  x.close();
+ }
  const doc=w.document,head=$('.site-header'),nav=$('.site-nav');
  t('课程入口在统一应用中显示34章',()=>{assert($('#v-course.on'));assert.equal(w.document.querySelectorAll('.lesson').length,34)});
  w.location.hash='zr-22';await sleep(50);const chapter=$('#course-reader'),section=$('#zr-22-s5');section.open=true;const para=section.querySelector('p,li');para.click();

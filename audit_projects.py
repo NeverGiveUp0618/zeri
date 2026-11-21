@@ -66,3 +66,9 @@ assert (5-1+58)%9+1==9
 assert (cycle.index('乙酉')-cycle.index('甲子'))%60==21
 assert (1-1+21)%9+1==4
 print('项目先后依赖无循环；五组给定原例月时配干及两项跨宫步数独立复算通过。')
+
+# Keep the water-mountain answer table's two layers distinct.
+lesson12=(root/'content/项目'/meta[11]['file']).read_text()
+for row in [('丙辛','元辰水','元辰水'),('丁壬','廉子木','武财火'),('戊癸','武财火','贪官金'),('乙庚','贪官金','破鬼土'),('甲己','破鬼土','廉子木')]:
+    assert '| '+' | '.join(row)+' |' in lesson12,row
+print('水山答案表A/B两层五组对应完整，未将A名和B五行合写。')

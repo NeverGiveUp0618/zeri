@@ -68,13 +68,14 @@
     "prerequisites": [],
     "order": 1,
     "chartPeople": "主事者出生年：辛丑",
-    "chartType": "下方为开市日课 · 改后方案",
+    "chartType": "",
     "chartLabels": [
       "开市年",
       "开市月",
       "开市日",
       "开市时"
-    ]
+    ],
+    "chartRole": "开市日课（原课改后）"
   },
   {
     "id": "zp-02",

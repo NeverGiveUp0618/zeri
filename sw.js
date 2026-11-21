@@ -1,5 +1,5 @@
 /* 择日学习 Service Worker —— 离线缓存 */
-const CACHE = 'zeri-v30-person-event';
+const CACHE = 'zeri-v31-input-review';
 const ASSETS = [
   './',
   './index.html',

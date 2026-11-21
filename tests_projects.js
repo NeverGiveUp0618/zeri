@@ -22,7 +22,7 @@ let count=0;const t=(label,fn)=>{fn();count++;console.log('✓ '+label)},go=asyn
  t('从资料库返回笔记会打开项目的对应步骤',()=>{assert($('#zp-01-s4').open);assert.equal(w.lastScroll.id,'zp-01-s4')});
  $('#app').scrollTop=430;$('#app').dispatchEvent(new w.Event('scroll'));await sleep(200);$('#n-cha').click();$('#n-course').click();await sleep(70);
  t('切换查/学保留项目位置与文档',()=>{assert($('#v-course.on'));assert.equal(w.YGN_HOOK.loc().id,'zp-01');assert.equal($('#app').scrollTop,430)});
- for(const p of w.ZERI_COURSE.projects){await go(p.id);assert.equal($('#course-reader .reader-title').textContent,p.title);assert.equal(w.document.querySelectorAll('.project-step').length,p.sections.length);assert(w.YGN_HOOK.label().startsWith('项目'+p.n));}
+ for(const p of w.ZERI_COURSE.projects){await go(p.id);assert.equal($('#course-reader .reader-title').textContent,p.title);assert.equal(w.document.querySelectorAll('.project-step').length,p.sections.length);assert(w.YGN_HOOK.label().startsWith('项目'+p.n));if(p.example){assert($('.chart .caption').textContent.includes('用事日课'));assert.deepEqual([...w.document.querySelectorAll('.chart .pillar small')].map(x=>x.textContent),['用事年','用事月','用事日','用事时'])}}
  t('16个项目全部可达，步骤、知识卡和笔记标题有效',()=>assert.equal(w.ZERI_COURSE.projects.length,16));
  await go('');const search=$('#course-search');search.value='辛丑';search.dispatchEvent(new w.Event('input'));
  t('搜索覆盖项目正文，并能展开知识资料',()=>{assert(w.document.querySelector('a.project-card[href="#zp-01"]'));assert($('#knowledge-library').open)});

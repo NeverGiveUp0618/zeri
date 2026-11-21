@@ -81,6 +81,9 @@ def build_projects(chapters, cases):
                 assert 1<=r['section']<=len(knowledge[r['chapter']]['sections'])
                 if 'table' in r:assert 0<=r['table']<knowledge[r['chapter']]['sections'][r['section']-1]['html'].count('class="table-frame')
         if p.get('caseId'):assert any(c['id']==p['caseId'] for c in cases)
+        if p.get('example'):
+            assert len(p['example']['pillars'])==4
+            assert set(p['example']['pages'])<=set(page for cid in p['sourceChapters'] for page in knowledge[cid]['refs'])
         p['pages']=sorted({page for cid in p['sourceChapters'] for page in knowledge[cid]['refs']})
     return items
 

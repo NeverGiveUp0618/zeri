@@ -1,5 +1,5 @@
 /* 择日学习 Service Worker —— 离线缓存 */
-const CACHE = 'zeri-v28-default-study';
+const CACHE = 'zeri-v29-project-expansion';
 const ASSETS = [
   './',
   './index.html',

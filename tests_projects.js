@@ -6,7 +6,7 @@ w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=function(){w.lastScroll
 for(const f of ['data-course.js','review.js','course.js','../mingli-home/notes.js'])w.eval(fs.readFileSync(f,'utf8'));
 let count=0;const t=(label,fn)=>{fn();count++;console.log('✓ '+label)},go=async hash=>{w.goState({v:'course',hash,focus:true});await sleep(50)};
 (async()=>{
- t('学入口以6个任务卡开始，知识资料默认折叠',()=>{assert.equal(w.document.querySelectorAll('.project-card').length,6);assert(!$('#knowledge-library').open);assert($('.hero h1').textContent.includes('任务'))});
+ t('学入口以16个任务卡开始，知识资料默认折叠',()=>{assert.equal(w.document.querySelectorAll('.project-card').length,16);assert(!$('#knowledge-library').open);assert($('.hero h1').textContent.includes('任务'))});
  t('首个操作直达开市项目，保留34个知识章',()=>{assert($('.hero a.primary').hash==='#zp-01');assert.equal(w.document.querySelectorAll('#catalog .lesson').length,34)});
  await go('zp-01');
  t('项目1显示任务交付、8步及原课改后四柱',()=>{assert.equal(w.document.querySelectorAll('.project-step').length,8);assert($('.project-deliverable').textContent.includes('开市'));assert($('.chart').textContent.includes('辛'));assert($('.chart').textContent.includes('巳'));assert(!$('#quiz'))});
@@ -23,7 +23,7 @@ let count=0;const t=(label,fn)=>{fn();count++;console.log('✓ '+label)},go=asyn
  $('#app').scrollTop=430;$('#app').dispatchEvent(new w.Event('scroll'));await sleep(200);$('#n-cha').click();$('#n-course').click();await sleep(70);
  t('切换查/学保留项目位置与文档',()=>{assert($('#v-course.on'));assert.equal(w.YGN_HOOK.loc().id,'zp-01');assert.equal($('#app').scrollTop,430)});
  for(const p of w.ZERI_COURSE.projects){await go(p.id);assert.equal($('#course-reader .reader-title').textContent,p.title);assert.equal(w.document.querySelectorAll('.project-step').length,p.sections.length);assert(w.YGN_HOOK.label().startsWith('项目'+p.n));}
- t('6个项目全部可达，步骤、知识卡和笔记标题有效',()=>assert.equal(w.ZERI_COURSE.projects.length,6));
+ t('16个项目全部可达，步骤、知识卡和笔记标题有效',()=>assert.equal(w.ZERI_COURSE.projects.length,16));
  await go('');const search=$('#course-search');search.value='辛丑';search.dispatchEvent(new w.Event('input'));
  t('搜索覆盖项目正文，并能展开知识资料',()=>{assert(w.document.querySelector('a.project-card[href="#zp-01"]'));assert($('#knowledge-library').open)});
  t('无新增脚本异常',()=>assert.deepEqual(errors,[]));

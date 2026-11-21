@@ -195,3 +195,5 @@
 @media(max-width:520px){:is(#course-view,#review-view) .project-card{padding:18px 15px}
 :is(#course-view,#review-view) .project-card h2{font-size:21px}
 :is(#course-view,#review-view) .project-resource{padding:12px 10px}}
+:is(#course-view,#review-view) .project-group{margin:24px 0}
+:is(#course-view,#review-view) .project-group>summary{cursor:pointer;color:var(--gold);font-size:18px;line-height:1.7;padding:12px 0;border-bottom:1px solid var(--line)}

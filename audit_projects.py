@@ -5,7 +5,7 @@ from build_course import render
 root=Path(__file__).resolve().parent
 meta=json.loads((root/'content/项目目录.json').read_text())
 d=json.loads((root/'data-course.js').read_text().split('window.ZERI_COURSE=',1)[1].rstrip(';\n'))
-assert len(meta)==len(d['projects'])==6
+assert len(meta)==len(d['projects'])==16
 knowledge={c['id']:c for c in d['chapters']}
 allids=set(knowledge)|{p['id'] for p in meta}
 resource_count=0
@@ -36,5 +36,33 @@ assert case['alternative']==['壬寅','壬寅','庚子','辛巳']
 first=(root/'content/项目'/meta[0]['file']).read_text()
 assert '没有未和午' in first and '只有寅，没有午戌' in first
 assert '庚辰、辛巳' in first
-print(f'通过：6个项目、{sum(len(p["sections"]) for p in d["projects"])}个任务步骤、{resource_count}处随步骤知识来源；原例时柱与换时演算一致。')
+print(f'通过：{len(meta)}个项目、{sum(len(p["sections"]) for p in d["projects"])}个任务步骤、{resource_count}处随步骤知识来源；原例时柱与换时演算一致。')
 print('此检查不代替教学质量审阅，也不宣称现实日课全部已核。')
+
+covered={r["chapter"] for p in meta for refs in p["resources"].values() for r in refs}
+assert covered==set(knowledge),set(knowledge)-covered
+print("34章均有具体任务调用位置；此为来源覆盖，不等于全部细则已可独立实算。")
+
+ids={p['id'] for p in meta}
+assert sorted(p['order'] for p in meta)==list(range(1,len(meta)+1))
+def visit(p,stack):
+    assert p['id'] not in stack,stack
+    for cid in p.get('prerequisites',[]):
+        assert cid in ids
+        visit(next(x for x in meta if x['id']==cid),stack+[p['id']])
+for p in meta:visit(p,[])
+# Independent pairing checks for supplied examples; no Gregorian date is inferred.
+stems='甲乙丙丁戊己庚辛壬癸';branches='子丑寅卯辰巳午未申酉戌亥'
+cycle=[stems[i%10]+branches[i%12] for i in range(60)]
+for p in meta:
+    if not p.get('example'):continue
+    y,mo,day,h=p['example']['pillars']
+    assert all(z in cycle for z in [y,mo,day,h])
+    month_stem=(stems.index(y[0])%5*2+2+(branches.index(mo[1])-2)%12)%10
+    hour_stem=(stems.index(day[0])%5*2+branches.index(h[1]))%10
+    assert mo[0]==stems[month_stem] and h[0]==stems[hour_stem],p['id']
+assert (cycle.index('丁酉')-cycle.index('己亥'))%60==58
+assert (5-1+58)%9+1==9
+assert (cycle.index('乙酉')-cycle.index('甲子'))%60==21
+assert (1-1+21)%9+1==4
+print('项目先后依赖无循环；五组给定原例月时配干及两项跨宫步数独立复算通过。')

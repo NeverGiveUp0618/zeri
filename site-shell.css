@@ -12,7 +12,7 @@
 body>#app:not(main){top:var(--site-header-height);bottom:var(--site-nav-height)}
 @media(max-width:520px){.site-header .section-label{display:none}}
 
-#v-course.view{padding:0;animation:none}#course-view{min-height:100%}
+#v-course.view{padding:0;animation:none}#course-view{min-height:100%;--course-chart-top:0px}
 /* A tab switch keeps the shell visible and reveals content immediately. */
 .view{animation:none}
 

@@ -48,10 +48,11 @@ function prepareReading(root){
  const intro=root.querySelector('.chapter-intro blockquote');
  if(intro&&!intro.dataset.typeset){intro.dataset.typeset='1';const pieces=intro.innerHTML.split(/<br\s*\/?\s*>/i);intro.innerHTML=pieces.filter(p=>p.trim()).map(p=>'<p>'+p+'</p>').join('')}
  const frames=[...root.querySelectorAll('.table-frame')];
- const measure=()=>frames.forEach(frame=>{const wrap=frame.querySelector('.table-wrap');if(!wrap)return;const max=wrap.scrollWidth-wrap.clientWidth;frame.classList.toggle('is-scrollable',max>2);frame.classList.toggle('can-scroll-back',wrap.scrollLeft>2);frame.classList.toggle('can-scroll-forward',wrap.scrollLeft<max-2)});
+ const activeChart=root.querySelector('.chart');
+ const measure=()=>{root.style.setProperty('--chart-anchor-gap',activeChart?(Math.ceil(activeChart.offsetHeight)+12)+'px':'0px');frames.forEach(frame=>{const wrap=frame.querySelector('.table-wrap');if(!wrap)return;const max=wrap.scrollWidth-wrap.clientWidth;frame.classList.toggle('is-scrollable',max>2);frame.classList.toggle('can-scroll-back',wrap.scrollLeft>2);frame.classList.toggle('can-scroll-forward',wrap.scrollLeft<max-2)});};
  for(const frame of frames){const wrap=frame.querySelector('.table-wrap');if(!wrap.dataset.scrollBound){wrap.dataset.scrollBound='1';wrap.addEventListener('scroll',measure,{passive:true})}}
- if(window.ResizeObserver){tableObserver=new ResizeObserver(measure);frames.forEach(f=>tableObserver.observe(f))}
- requestAnimationFrame(measure);
+ if(window.ResizeObserver){tableObserver=new ResizeObserver(measure);frames.forEach(f=>tableObserver.observe(f));if(activeChart)tableObserver.observe(activeChart)}
+ measure();requestAnimationFrame(measure);
  root.querySelectorAll('details').forEach(d=>{if(!d.dataset.tableBound){d.dataset.tableBound='1';d.addEventListener('toggle',measure)}});
 }
 function reader(c,sec){

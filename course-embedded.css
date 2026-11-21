@@ -91,7 +91,7 @@
 :is(#course-view,#review-view) .chapter-pager a:last-child{text-align:right}
 :is(#course-view,#review-view) .source-notice{color:var(--dim);font-size:14px;padding:14px;border:1px dashed var(--line);border-radius:10px;margin-top:18px}
 :is(#course-view,#review-view) .reference-links{display:flex;gap:9px;flex-wrap:wrap;margin:15px 0}
-:is(#course-view,#review-view) .chart{position:sticky;top:70px;z-index:15;background:#11141df5;border:1px solid var(--line);padding:10px 15px;border-radius:12px;margin:16px 0;box-shadow:0 6px 25px #0004}
+:is(#course-view,#review-view) .chart{position:sticky;top:var(--course-chart-top,70px);z-index:15;background:#11141d;border:1px solid var(--line);padding:10px 15px;border-radius:12px;margin:16px 0;box-shadow:0 6px 25px #0004}
 :is(#course-view,#review-view) .chart .caption{font-size:14px;color:var(--dim);margin-bottom:6px}
 :is(#course-view,#review-view) .pillars{display:flex;gap:9px;justify-content:center}
 :is(#course-view,#review-view) .pillar{text-align:center;flex:1;max-width:90px}
@@ -116,7 +116,7 @@
 :is(#course-view,#review-view) .lesson{padding:14px 12px;gap:10px}
 :is(#course-view,#review-view) .lesson .state{font-size:12px}
 :is(#course-view,#review-view) .quiz-box{padding:16px}
-:is(#course-view,#review-view) .chart{top:66px}
+:is(#course-view,#review-view) .chart{top:var(--course-chart-top,66px)}
 :is(#course-view,#review-view) .gz{font-size:22px}
 :is(#course-view,#review-view) header{padding-left:15px;padding-right:15px}}
 @media(max-width:520px){:is(#course-view,#review-view) header .brand{white-space:nowrap}
@@ -169,7 +169,6 @@
 :is(#course-view,#review-view) .chapter-intro{padding:12px 15px}
 :is(#course-view,#review-view) .chapter-toc{gap:8px}
 :is(#course-view,#review-view) .chapter-toc a{padding:6px 10px}
-:is(#course-view,#review-view) .chart{position:static}
 :is(#course-view,#review-view) .table-frame{margin:20px 0}
 :is(#course-view,#review-view) td,:is(#course-view,#review-view) th{padding:11px 13px}
 :is(#course-view,#review-view) .chapter-pager{flex-direction:column}
@@ -178,3 +177,4 @@
 :is(#course-view,#review-view) .quiz-next{margin-top:20px}
 :is(#course-view,#review-view) .quiz-result{padding:20px 0}
 :is(#course-view,#review-view) .quiz-result h3{font-size:1.15em;color:var(--gold)}
+:is(#course-view,#review-view) #course-reader .section,:is(#course-view,#review-view) #course-reader .question,:is(#course-view,#review-view) #course-reader #quiz{scroll-margin-top:var(--chart-anchor-gap,0px)}

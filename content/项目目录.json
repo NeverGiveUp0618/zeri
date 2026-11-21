@@ -66,7 +66,15 @@
     "caseId": "case-02",
     "group": "生活任务 · 开市、入宅、安床、出行与婚礼",
     "prerequisites": [],
-    "order": 1
+    "order": 1,
+    "chartPeople": "主事者出生年：辛丑",
+    "chartType": "下方为开市日课 · 改后方案",
+    "chartLabels": [
+      "开市年",
+      "开市月",
+      "开市日",
+      "开市时"
+    ]
   },
   {
     "id": "zp-02",

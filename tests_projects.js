@@ -1,0 +1,31 @@
+const fs=require('fs'),assert=require('assert'),{JSDOM,VirtualConsole}=require('jsdom');
+const html=fs.readFileSync('index.html','utf8').replace('<script src="data.js"></script>','<script>'+fs.readFileSync('data.js','utf8')+'</script>').replace('<script src="data-mountain.js"></script>','<script>'+fs.readFileSync('data-mountain.js','utf8')+'</script>');
+const errors=[],vc=new VirtualConsole();vc.on('jsdomError',e=>errors.push(e.message));
+const w=new JSDOM(html,{url:'https://nevergiveup0618.github.io/zeri/index.html?tab=course',runScripts:'dangerously',pretendToBeVisual:true,virtualConsole:vc}).window,$=s=>w.document.querySelector(s),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=function(){w.lastScroll=this};w.localStorage.setItem('zeri_course_v1',JSON.stringify({read:{'zr-22':true},last:'zr-22'}));
+for(const f of ['data-course.js','review.js','course.js','../mingli-home/notes.js'])w.eval(fs.readFileSync(f,'utf8'));
+let count=0;const t=(label,fn)=>{fn();count++;console.log('✓ '+label)},go=async hash=>{w.goState({v:'course',hash,focus:true});await sleep(50)};
+(async()=>{
+ t('学入口以6个任务卡开始，知识资料默认折叠',()=>{assert.equal(w.document.querySelectorAll('.project-card').length,6);assert(!$('#knowledge-library').open);assert($('.hero h1').textContent.includes('任务'))});
+ t('首个操作直达开市项目，保留34个知识章',()=>{assert($('.hero a.primary').hash==='#zp-01');assert.equal(w.document.querySelectorAll('#catalog .lesson').length,34)});
+ await go('zp-01');
+ t('项目1显示任务交付、8步及原课改后四柱',()=>{assert.equal(w.document.querySelectorAll('.project-step').length,8);assert($('.project-deliverable').textContent.includes('开市'));assert($('.chart').textContent.includes('辛'));assert($('.chart').textContent.includes('巳'));assert(!$('#quiz'))});
+ t('所需知识在步骤内折叠，未直接跳离项目',()=>{assert($('#zp-01-s5 .project-resource'));assert(!$('#zp-01-s5 .project-resource').open);const table=$('#zp-01-s5 .project-resource table');const k=w.ZERI_COURSE.chapters.find(c=>c.id==='zr-02');assert.equal(table.outerHTML,new JSDOM(k.sections[1].html).window.document.querySelectorAll('table')[1].outerHTML)});
+ const sec=$('#zp-01-s4');sec.open=true;const para=sec.querySelector('p');$('#ygnBtn').click();para.click();$('#ygnMemo').value='项目式跟做';$('#ygnSh [data-a="ok"]').click();const note=w.YGN.all()[0];$('#ygnBtn').click();
+ t('项目段落存入原全科笔记本，包含项目和真实步骤',()=>{assert.equal(note.loc.id,'zp-01');assert.equal(note.loc.sec,'zp-01-s4');assert(note.crumb.includes('项目1'))});
+ $('#mark-read').click();
+ t('手动项目已读与旧章记录共同保留，不改原题',()=>{const p=JSON.parse(w.localStorage.getItem('zeri_course_v1'));assert(p.read['zp-01']);assert(p.read['zr-22']);assert.equal(w.ZERI_COURSE.questionCount,160)});
+ const resource=$('#zp-01-s5 .project-resource');resource.open=true;resource.querySelector('a').click();await sleep(60);
+ t('可进入来源知识，保留返回当前项目步骤的链接',()=>{assert($('#zr-02-s2'));assert(w.document.querySelector('a[href="#zp-01~zp-01-s5"]'))});
+ await go('');t('查知识后首页仍能继续原项目',()=>assert($('.hero a.primary').hash==='#zp-01'));
+ w.YGN_HOOK.go(note.loc);await sleep(60);
+ t('从资料库返回笔记会打开项目的对应步骤',()=>{assert($('#zp-01-s4').open);assert.equal(w.lastScroll.id,'zp-01-s4')});
+ $('#app').scrollTop=430;$('#app').dispatchEvent(new w.Event('scroll'));await sleep(200);$('#n-cha').click();$('#n-course').click();await sleep(70);
+ t('切换查/学保留项目位置与文档',()=>{assert($('#v-course.on'));assert.equal(w.YGN_HOOK.loc().id,'zp-01');assert.equal($('#app').scrollTop,430)});
+ for(const p of w.ZERI_COURSE.projects){await go(p.id);assert.equal($('#course-reader .reader-title').textContent,p.title);assert.equal(w.document.querySelectorAll('.project-step').length,p.sections.length);assert(w.YGN_HOOK.label().startsWith('项目'+p.n));}
+ t('6个项目全部可达，步骤、知识卡和笔记标题有效',()=>assert.equal(w.ZERI_COURSE.projects.length,6));
+ await go('');const search=$('#course-search');search.value='辛丑';search.dispatchEvent(new w.Event('input'));
+ t('搜索覆盖项目正文，并能展开知识资料',()=>{assert(w.document.querySelector('a.project-card[href="#zp-01"]'));assert($('#knowledge-library').open)});
+ t('无新增脚本异常',()=>assert.deepEqual(errors,[]));
+ console.log(`项目学习通过 ${count} 项`);w.close();
+})().catch(e=>{console.error(e);w.close();process.exitCode=1});

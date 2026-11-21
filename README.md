@@ -1,10 +1,12 @@
 # 择日学习
 
-现有 GitHub Pages 项目，学、查、练统一在 `index.html` 内切换，系统课程入口为 `index.html?tab=course`；旧 `course.html#章节` 自动转接。保持原站玄黑鎏金、历史存储键与易术堂入口。
+现有 GitHub Pages 项目，学、查、练统一在 `index.html` 内切换，项目学习入口为 `index.html?tab=course`；旧 `course.html#章节` 自动转接。保持原站玄黑鎏金、历史存储键与易术堂入口。
 
 ## 课程内容源
 
-- `content/教材/{初级,中级,高级}/`：34章教材，后续直接维护 Markdown。
+- `content/项目/`：六个任务项目，是“学”的主线：复工开市、搬家入宅、安床、嫁娶、修造安门、安葬相关事项。每项按接任务、收输入、随步骤学知识、核候选、交记录组织。
+- `content/项目目录.json`：稳定项目ID `zp-01`—`zp-06`、交付要求、原例与步骤所需知识的映射。可指定仅展示某张表，避免不相关知识一起涌入。
+- `content/教材/{初级,中级,高级}/`：34章知识资料，目录默认折叠，项目中按需调用；后续直接维护 Markdown。
 - `content/题目/`：160道客观题，按章节放 JSON；题干必须给足局部判断所需条件，不问未提供案例的实际结果。
 - `content/课程目录.json`：固定章节ID、顺序、目标、出处与关联速查。
 - `content/案例.json`：8项完整、部分、空间/规则或格局示意，缺柱留空；不补造公历与实用反馈。
@@ -19,8 +21,10 @@
 /Users/xiaojin/.homebrew/bin/python3 build_course.py
 /Users/xiaojin/.homebrew/bin/python3 audit_course.py
 /Users/xiaojin/.homebrew/bin/python3 audit_rules.py
+/Users/xiaojin/.homebrew/bin/python3 audit_projects.py
 NODE_PATH=../bazi-course/node_modules node tests_check.js
 NODE_PATH=../bazi-course/node_modules node tests_course.js
+NODE_PATH=../bazi-course/node_modules node tests_projects.js
 NODE_PATH=../bazi-course/node_modules node tests_course_notes.js
 NODE_PATH=../bazi-course/node_modules node tests_tabs.js
 NODE_PATH=../bazi-course/node_modules node tests_course_flow.js
@@ -28,7 +32,7 @@ node tests_course_sw.js
 NODE_PATH=../bazi-course/node_modules node tests_review.js
 ```
 
-`build_course.py` 用标准库生成 `data-course.js`、精确到山的 `data-mountain.js` 和可下载的 `course-textbook.md`，不要直接改产物。`audit_course.py` 有本地 `_src/pages.json` 时逐页核引文与原表；无源时明确报告不能执行该层。
+`build_course.py` 用标准库生成 `data-course.js`、精确到山的 `data-mountain.js` 和合订源 `course-textbook.md`，不要直接改产物。`audit_course.py` 有本地 `_src/pages.json` 时逐页核引文与原表；无源时明确报告不能执行该层。
 
 章末题只考资料明确规则及给足输入的局部应用。手算练习标明是演算，不冒充原课真实个案。争议处不设唯一答案。答案不应持续成为最长选项。
 
@@ -36,7 +40,7 @@ NODE_PATH=../bazi-course/node_modules node tests_review.js
 
 课程存储统一用 `zeri_` 前缀，已进入易术堂既有备份和进度镜像的采集范围：
 
-- `zeri_course_v1`：手动已读、最近章节。
+- `zeri_course_v1`：项目及知识章手动已读、最近文档、最近项目 `lastProject`。
 - `zeri_course_answers_v1`：章末题客观作答。
 - `zeri_course_positions_v1`：阅读位置。
 
@@ -88,3 +92,14 @@ SW为 `zeri-v24-in-page-tabs`。独立Chrome检查320/390/820/1440宽度、100/1
 SW升 `zeri-v25-course-review-quiz`，新速查脚本与样式进入预缓存。新增 `tests_course_flow.js` 12项涵盖34章160题全流程、折叠与移除入口、34课速查文字一致性、筛选搜索和真实笔记联调；其他回归同步检查。独立Chrome四档宽度360/390/820/1440与100/150%字体，共64个目录、速查、横滑、回正文和逐题状态通过；已检查手机截图。上述为浏览器模拟。
 
 四柱盘在手机、平板、电脑上均吸顶。统一页面在 `#app` 内滚动，`site-shell.css` 将 `--course-chart-top` 设为0，使盘面紧贴页头下方；独立课程样式保留顶部偏移的回退值。`course.js` 按实际盘高计算小节锚点留空，并在阅读字号或盘高变化时重算，避免跳转小节、题目被盘面遮住。修改 `course.css` 后运行 `python3 build_ui.py` 生成 `course-embedded.css`，不要直接改生成文件。
+
+
+## 2026-11-21 改为项目学习主线
+
+用户反馈前两课不知道要做什么，要求为了完成择日任务组织课程。因此入口不再要求顺读34章，而是从六个具体任务进入，43个步骤内配36处按需知识资料。第一项目用辛丑年命开市原例，逐步复现庚辰改辛巳、五鼠遁复算与人物检查，最后交出取舍记录。其余项目按各自对象增加空间、男官女食、婚礼环节、工程动方、仙命等知识。原例缺柱或缺完整日时字段时如实保留，局部演算不冒充整套已定日课。
+
+原34章、160题、8项案例未改；学习记录仍用原存储键。项目笔记保存 `zp-*` 与具体步骤，能从共享全科笔记本回到出处；查完整知识讲解可回到当前项目步骤。已读只表示阅读，不自动判任务完成。
+
+新增 `audit_projects.py` 与 `tests_projects.js`，分别检查来源映射、原例字段、渲染内容和真实共享笔记/路由/旧记录共存。SW升为 `zeri-v27-project-learning`。构建、三项审计及课程26、项目13、笔记11、切换13、逐题12、复查20、旧规则19、SW5项回归通过。旧复查测试的首页总数文案断言改为检查恢复后的原章已读状态与实际存储，继续验证原有学习记录。
+
+独立Chrome检查360/390/820/1440宽度、共享Aa字号100/150%，六项目共48种阅读状态，包含步骤展开、内嵌知识表及横向滚动；另实走项目→知识→返回步骤，以及共享笔记保存→查页→回项目段落高亮。已查看手机普通/放大字号及桌面截图，属浏览器尺寸模拟。专用预览使用 `/zeri/` 路径以匹配共享笔记模块的科目识别，根路径预览不能代替笔记联调。

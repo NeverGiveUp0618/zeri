@@ -8,7 +8,7 @@ async function go(w,h){w.location.hash=h;await sleep(35)}
  let d=raw(w=>{w.YG={ready:new Promise(r=>w.restoreReady=r)}}),w=d.window;const pending=w.eval(source);
  t('镜像恢复完成前不写空进度',()=>{assert.equal(w.localStorage.getItem('zeri_course_v1'),null);assert(w.document.body.textContent.includes('正在读取'))});
  w.localStorage.setItem('zeri_course_v1',JSON.stringify({read:{'zr-09':true}}));w.restoreReady();await pending;
- t('初始化读取恢复后的已读记录',()=>assert(w.document.body.textContent.includes('已读 1/34')));w.close();
+ t('初始化读取恢复后的已读记录',()=>{assert(w.document.querySelector('.lesson[href="#zr-09"] .state.read'));assert(JSON.parse(w.localStorage.getItem('zeri_course_v1')).read['zr-09'])});w.close();
  d=await init(w=>{w.localStorage.setItem('zeri_course_v1','[]');w.localStorage.setItem('zeri_course_answers_v1','"broken"');w.localStorage.setItem('zeri_course_positions_v1','[]')});w=d.window;
  t('错误类型存储不会导致白屏',()=>assert.equal(w.document.querySelectorAll('.lesson').length,34));
  await go(w,'zr-22');let c=w.ZERI_COURSE.chapters.find(x=>x.id==='zr-22'),q=c.questions[0],q2=c.questions[1];

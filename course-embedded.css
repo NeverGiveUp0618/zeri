@@ -178,3 +178,20 @@
 :is(#course-view,#review-view) .quiz-result{padding:20px 0}
 :is(#course-view,#review-view) .quiz-result h3{font-size:1.15em;color:var(--gold)}
 :is(#course-view,#review-view) #course-reader .section,:is(#course-view,#review-view) #course-reader .question,:is(#course-view,#review-view) #course-reader #quiz{scroll-margin-top:var(--chart-anchor-gap,0px)}
+:is(#course-view,#review-view) .project-card{display:block;padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--card);margin:14px 0;color:var(--ink);text-decoration:none}
+:is(#course-view,#review-view) .project-number{font-size:14px;color:var(--gold)}
+:is(#course-view,#review-view) .project-card h2{font-size:22px;font-weight:550;line-height:1.5;margin:6px 0 10px}
+:is(#course-view,#review-view) .project-card p{margin:0 0 12px;color:var(--ink)}
+:is(#course-view,#review-view) .project-output{border-top:1px solid var(--line);padding-top:12px;margin:12px 0;color:var(--dim);font-size:15px;line-height:1.8}
+:is(#course-view,#review-view) .project-deliverable{border-left:3px solid var(--gold);background:#c9a45c0a;padding:14px 18px;margin:20px 0}
+:is(#course-view,#review-view) .project-deliverable strong{color:var(--gold)}
+:is(#course-view,#review-view) .project-deliverable p{margin:6px 0 0;line-height:1.8}
+:is(#course-view,#review-view) .knowledge-library{border-top:1px solid var(--line);margin-top:28px;padding-top:16px}
+:is(#course-view,#review-view) .knowledge-library>summary{color:var(--gold);font-size:19px;cursor:pointer;padding:10px 0}
+:is(#course-view,#review-view) .project-resource{margin:22px 0;border:1px solid var(--line);padding:12px 16px;border-radius:10px;background:#0c0d1280}
+:is(#course-view,#review-view) .project-resource>summary{cursor:pointer;font-size:16px;line-height:1.8;color:var(--gold)}
+:is(#course-view,#review-view) .project-resource[open]>summary{margin-bottom:16px}
+:is(#course-view,#review-view) .project-resource .meta{margin-bottom:12px}
+@media(max-width:520px){:is(#course-view,#review-view) .project-card{padding:18px 15px}
+:is(#course-view,#review-view) .project-card h2{font-size:21px}
+:is(#course-view,#review-view) .project-resource{padding:12px 10px}}

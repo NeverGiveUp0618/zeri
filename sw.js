@@ -1,5 +1,5 @@
 /* 择日学习 Service Worker —— 离线缓存 */
-const CACHE = 'zeri-v26-sticky-chart';
+const CACHE = 'zeri-v27-project-learning';
 const ASSETS = [
   './',
   './index.html',

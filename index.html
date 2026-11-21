@@ -381,7 +381,7 @@ function show(s){
   if(_viewState.v==='course'&&window.ZeriCourse)window.ZeriCourse.pause();
   ['home','learn','course'].forEach(v=>{const el=$('#v-'+v);if(el)el.classList.remove('on');});
   const isXue=s.v==='learn',isCourse=s.v==='course';let restoreScroll=true;
-  $('#site-section').textContent=isCourse?'系统课程':isXue?'练习':'课程速查';
+  $('#site-section').textContent=isCourse?'项目学习':isXue?'练习':'课程速查';
   $('#n-course').classList.toggle('on',isCourse);
   $('#n-cha').classList.toggle('on',!isXue&&!isCourse);
   $('#n-xue').classList.toggle('on',isXue);

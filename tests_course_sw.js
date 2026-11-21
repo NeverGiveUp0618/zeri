@@ -1,7 +1,7 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 const listeners={},store=new Map(),deleted=[];let claimed=false,skipped=false;
 const cache={addAll:async urls=>{for(const url of urls){assert(fs.existsSync(url==='./'?'index.html':url.slice(2)),url);store.set(url,{url})}},add:async url=>{store.set(url,{url})},put:async(url,res)=>store.set(url,res)};
-const ctx={self:{addEventListener:(k,f)=>listeners[k]=f,skipWaiting:async()=>{skipped=true},clients:{claim:async()=>{claimed=true}}},caches:{open:async()=>cache,keys:async()=>['zeri-v17','zeri-v26-sticky-chart','bazi-course-v192'],delete:async k=>deleted.push(k),match:async(req)=>store.get(typeof req==='string'?req:req.url.replace('https://example.test/zeri/','./').split('?')[0])},fetch:async()=>{throw Error('offline')},Response:{error:()=>({error:true})}};
+const ctx={self:{addEventListener:(k,f)=>listeners[k]=f,skipWaiting:async()=>{skipped=true},clients:{claim:async()=>{claimed=true}}},caches:{open:async()=>cache,keys:async()=>['zeri-v17','zeri-v27-project-learning','bazi-course-v192'],delete:async k=>deleted.push(k),match:async(req)=>store.get(typeof req==='string'?req:req.url.replace('https://example.test/zeri/','./').split('?')[0])},fetch:async()=>{throw Error('offline')},Response:{error:()=>({error:true})}};
 vm.createContext(ctx);vm.runInContext(fs.readFileSync('sw.js','utf8'),ctx);
 async function lifecycle(name){let done;listeners[name]({waitUntil:p=>done=p});await done}
 async function offline(url,mode='cors'){let response;listeners.fetch({request:{method:'GET',url:'https://example.test/zeri/'+url,mode},respondWith:p=>response=p});return await response}

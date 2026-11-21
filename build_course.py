@@ -7,7 +7,7 @@ ROOT=Path(__file__).resolve().parent
 def inline(t):
     t=html.escape(t)
     t=re.sub(r'\*\*(.+?)\*\*',r'<strong>\1</strong>',t)
-    t=re.sub(r'\[([^\]]+)\]\((#zr-\d{2}(?:~[\w-]+)?)\)',r'<a href="\2">\1</a>',t)
+    t=re.sub(r'\[([^\]]+)\]\((#(?:zr|zp)-\d{2}(?:~[\w-]+)?)\)',r'<a href="\2">\1</a>',t)
     t=re.sub(r'〔([^〕]+)〕',r'<span class="citation">〔\1〕</span>',t)
     return t
 
@@ -60,6 +60,31 @@ def render(text):
         else:i+=1
     return ''.join(out)
 
+def build_projects(chapters, cases):
+    items=json.loads((ROOT/'content/项目目录.json').read_text())
+    knowledge={c['id']:c for c in chapters}
+    assert len({p['id'] for p in items})==len(items)
+    for n,p in enumerate(items,1):
+        assert p['id']==f'zp-{n:02}' and p['n']==n
+        assert all(cid in knowledge for cid in p['sourceChapters'])
+        text=(ROOT/'content/项目'/p['file']).read_text()
+        assert text.splitlines()[0]==f"# 项目{n} {p['title']}"
+        parts=re.split(r'^## (.+)$',text,flags=re.M)
+        p['project']=True;p['stage']='项目学习';p['questions']=[]
+        p['intro']=render(parts[0]);p['text']=re.sub(r'[>#*|]','',text)
+        p['sections']=[dict(id=f"{p['id']}-s{(i+1)//2}",title=parts[i],html=render(parts[i+1])) for i in range(1,len(parts),2)]
+        assert len(p['sections'])>=6
+        for step,refs in p['resources'].items():
+            assert 1<=int(step)<=len(p['sections'])
+            for r in refs:
+                assert r['chapter'] in p['sourceChapters']
+                assert 1<=r['section']<=len(knowledge[r['chapter']]['sections'])
+                if 'table' in r:assert 0<=r['table']<knowledge[r['chapter']]['sections'][r['section']-1]['html'].count('class="table-frame')
+        if p.get('caseId'):assert any(c['id']==p['caseId'] for c in cases)
+        p['pages']=sorted({page for cid in p['sourceChapters'] for page in knowledge[cid]['refs']})
+    return items
+
+
 def build():
     catalog=json.loads((ROOT/'content/课程目录.json').read_text())
     key_names=dict(re.findall(r'id:\s*"([^"]+)".*?title:\s*"([^"]+)"',(ROOT/'data.js').read_text(),re.S))
@@ -95,11 +120,12 @@ def build():
     (ROOT/'data-mountain.js').write_text('/* 生成文件：来自content/二十四山原表.json，勿手改 */\nwindow.ZERI_MOUNTAINS='+json.dumps(mountain_rules,ensure_ascii=False,separators=(',',':'))+';\n')
     for item in cases:
         assert any(c['id']==item['chapter'] for c in catalog), item['id']
-    data=dict(chapters=catalog,cases=cases,mountains=mountains,route=render(route),characters=chars,questionCount=count)
+    projects=build_projects(catalog,cases)
+    data=dict(chapters=catalog,projects=projects,cases=cases,mountains=mountains,route=render(route),characters=chars,questionCount=count)
     data['built']=hashlib.sha256(json.dumps(data,ensure_ascii=False,sort_keys=True).encode()).hexdigest()[:12]
-    (ROOT/'data-course.js').write_text('/* 生成文件；编辑 content/教材 与 content/题目 后运行 build_course.py */\nwindow.ZERI_COURSE='+json.dumps(data,ensure_ascii=False,separators=(',',':'))+';\n')
-    (ROOT/'course-textbook.md').write_text(route+'\n\n'+'\n\n---\n\n'.join((ROOT/'content/教材'/c['stage']/(f"{c['n']:02}-{c['title']}.md")).read_text() for c in catalog))
-    print(f'课程构建：{len(catalog)}章，{count}题，{chars}字符；版本 {data["built"]}')
+    (ROOT/'data-course.js').write_text('/* 生成文件；编辑 content/项目、content/教材 与 content/题目 后运行 build_course.py */\nwindow.ZERI_COURSE='+json.dumps(data,ensure_ascii=False,separators=(',',':'))+';\n')
+    (ROOT/'course-textbook.md').write_text(route+'\n\n'+'\n\n---\n\n'.join((ROOT/'content/项目'/p['file']).read_text() for p in projects)+'\n\n---\n\n'+'\n\n---\n\n'.join((ROOT/'content/教材'/c['stage']/(f"{c['n']:02}-{c['title']}.md")).read_text() for c in catalog))
+    print(f'课程构建：{len(projects)}个项目，{len(catalog)}个知识章，{count}题；版本 {data["built"]}')
 
 if __name__=='__main__':
     build()

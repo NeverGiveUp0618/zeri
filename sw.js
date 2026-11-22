@@ -1,23 +1,9 @@
 /* 择日学习 Service Worker —— 离线缓存 */
-const CACHE = 'zeri-v31-input-review';
+const CACHE = 'zeri-v32-question-bank';
 const ASSETS = [
-  './',
-  './index.html',
-  './data.js',
-  './data-mountain.js',
-  './course.html',
-  './course.css',
-  './course-embedded.css',
-  './review.js',
-  './review.css',
-  './site-shell.css',
-  './course.js',
-  './data-course.js',
-  './course-textbook.md',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png',
-  './icon-180.png'
+  './', './index.html', './question-bank/app.css', './question-bank/data.js',
+  './question-bank/core.js', './question-bank/app.js', './manifest.json',
+  './icon-192.png', './icon-512.png', './icon-180.png'
 ];
 const SHARED = [
   'https://nevergiveup0618.github.io/all-project/notes.js',

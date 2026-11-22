@@ -1,5 +1,5 @@
 /* 择日学习 Service Worker —— 离线缓存 */
-const CACHE = 'zeri-v34-question-bank';
+const CACHE = 'zeri-v35-question-bank';
 const ASSETS = [
   './', './index.html', './question-bank/app.css', './question-bank/data.js',
   './question-bank/core.js', './question-bank/app.js', './manifest.json',

@@ -14,6 +14,7 @@ assert len(qs)==len({norm(q['q']) for q in qs})
 # 旧题完整性独立基准：追加题不修改原题及其稳定 ID、版本。
 assert hashlib.sha256(json.dumps(qs[:327],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()=='00bda8a2d3c67bf63546e36b2c09b6166c27bd6207bc00ef27647fa618ccb4f8'
 assert len([q for q in qs if q['id'].startswith('zq-detail-')])==283
+assert hashlib.sha256(json.dumps(qs[:610],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()=='49a529d35c79bd80f4e3a900e3c440dc226ee544d2536e7550824f81c6ee653f'
 byid={q['id']:q for q in qs}
 def answer(key,value):assert byid['zq-'+key]['a']==value,(key,value)
 for z,el in zip('子丑寅卯辰巳午未申酉戌亥','水土木木土火火土金金土水'):answer('branch-element-'+z,el)
@@ -39,3 +40,26 @@ for b in cat['books']:
  n=sum(q['book']==b['id'] for q in qs);ch={q['chapter'] for q in qs if q['book']==b['id']}
  print(b['title'],f'{n}题 / {len(ch)}个有题章节')
 print('原文核对：'+('已执行本地原页文字对照。' if pages else '本机无原页文字，未执行该层。'))
+
+# 第1/2课逐条问答的持久对账，不以总题数代替覆盖核验。
+review=json.loads((R/'question-bank/reviews/basic-01-02.json').read_text())
+units=review['units'];assert len(units)==117 and len({u['key'] for u in units})==117
+assert Counter(u['chapter'] for u in units)=={'basic-0119':49,'basic-0145':68}
+assert Counter(u['status'] for u in units)=={'covered':104,'held':9,'outside':4}
+covered=set(review['bodyQuestions'])
+for u in units:
+ assert ('basic-0119' if 136<=u['page']<=144 else 'basic-0145')==u['chapter']
+ if u['status']=='covered':
+  assert u['questionIds']
+  for qid in u['questionIds']:
+   q=byid[qid];assert q['chapter']==u['chapter'],qid
+   assert q['qaRef']==('136-1' if u['key']=='139-9' else u['key']),qid
+   covered.add(qid)
+ else:assert not u['questionIds'] and len(u['reason'])>10
+new={q['id'] for q in qs if q['id'].startswith('zq-qa12-')}
+assert new==covered and len(new)==review['addedQuestions']==121
+assert sum(len(byid[i]['a'])<min(map(len,byid[i]['w'])) for i in new)/len(new)<0.2,'新题正解过度偏短，需逐题重写同层次干扰项'
+# 独立核实际条件的答案，不只核原句是否存在。
+for ref,expected in [('138-7','碑向'),('140-18','定磉竖柱按坐山'),('141-26','壬癸水星'),('166-15','坐山兼中宫'),('167-22','有大吉星可搬'),('168-29','日时均论'),('172-62','出生年干支')]:
+ assert expected in {q['a'] for q in qs if q.get('qaRef')==ref},ref
+print('两课问答对账通过：117条逐项定位，104条有对应题；9条待核、4条非本轮范围；正文补充另列，无悬空题ID。')

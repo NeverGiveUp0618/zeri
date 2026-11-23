@@ -1,0 +1,1410 @@
+{
+  "date": "2026-11-23",
+  "baselineQuestions": 610,
+  "addedQuestions": 121,
+  "scope": [
+    "basic-0119",
+    "basic-0145"
+  ],
+  "sourceNote": "页码为合集文件页序。第1课原编号在第142页后退重排，用b区分后段重复号；含缺问句答复与插入条目，不称全部为独立完整问答。",
+  "units": [
+    {
+      "key": "136-1",
+      "chapter": "basic-0119",
+      "page": 136,
+      "number": "1",
+      "status": "covered",
+      "label": "择日方法的用途",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-c388a0330f9f"
+      ]
+    },
+    {
+      "key": "136-2",
+      "chapter": "basic-0119",
+      "page": 136,
+      "number": "2",
+      "status": "covered",
+      "label": "刑合并见",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-ffe61e9f132f"
+      ]
+    },
+    {
+      "key": "137-3",
+      "chapter": "basic-0119",
+      "page": 137,
+      "number": "3",
+      "status": "covered",
+      "label": "黄黑道辨字",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-4ab638e18f97"
+      ]
+    },
+    {
+      "key": "137-4",
+      "chapter": "basic-0119",
+      "page": 137,
+      "number": "4",
+      "status": "outside",
+      "label": "地域与流派评价",
+      "reason": "属于地域历史与流派评论，不考人物和地域优劣。",
+      "questionIds": []
+    },
+    {
+      "key": "137-5",
+      "chapter": "basic-0119",
+      "page": 137,
+      "number": "5",
+      "status": "covered",
+      "label": "碑文黄道的范围",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-5529f5680546",
+        "zq-qa12-9668868bf26c"
+      ]
+    },
+    {
+      "key": "138-6",
+      "chapter": "basic-0119",
+      "page": 138,
+      "number": "6",
+      "status": "covered",
+      "label": "修中宫",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-bba16311b479"
+      ]
+    },
+    {
+      "key": "138-7",
+      "chapter": "basic-0119",
+      "page": 138,
+      "number": "7",
+      "status": "covered",
+      "label": "立碑择日对象",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-4d61dc64c93f"
+      ]
+    },
+    {
+      "key": "138-8",
+      "chapter": "basic-0119",
+      "page": 138,
+      "number": "8",
+      "status": "covered",
+      "label": "改门的先后与方位",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-5fe0f5f3f8c4",
+        "zq-qa12-40584560a2bb"
+      ]
+    },
+    {
+      "key": "139-9",
+      "chapter": "basic-0119",
+      "page": 139,
+      "number": "9",
+      "status": "covered",
+      "label": "丛辰方法的实际用途",
+      "reason": "原问为课程方法名称，不另出记名称题；并入实际用途题。",
+      "questionIds": [
+        "zq-qa12-c388a0330f9f"
+      ]
+    },
+    {
+      "key": "139-10",
+      "chapter": "basic-0119",
+      "page": 139,
+      "number": "10",
+      "status": "covered",
+      "label": "天坑的制化条件",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-68da20fde025"
+      ]
+    },
+    {
+      "key": "139-11",
+      "chapter": "basic-0119",
+      "page": 139,
+      "number": "11",
+      "status": "covered",
+      "label": "嫁娶的时间节点",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-33f5700bd9ca",
+        "zq-qa12-49b054d73fab"
+      ]
+    },
+    {
+      "key": "139-12",
+      "chapter": "basic-0119",
+      "page": 139,
+      "number": "12",
+      "status": "covered",
+      "label": "太岁与三煞的坐向",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-82704339eba4"
+      ]
+    },
+    {
+      "key": "139-13",
+      "chapter": "basic-0119",
+      "page": 139,
+      "number": "13",
+      "status": "covered",
+      "label": "十二黄道起例",
+      "reason": "原问句缺失；按本页明确答复和正文第134页起例整理，未冒称复原原问句。",
+      "questionIds": [
+        "zq-qa12-e3f1707402c9"
+      ]
+    },
+    {
+      "key": "139-14",
+      "chapter": "basic-0119",
+      "page": 139,
+      "number": "14",
+      "status": "held",
+      "label": "两屋间缝隙填补",
+      "reason": "原答仅要求了解具体情况，没有给出足以唯一判断的施工条件。",
+      "questionIds": []
+    },
+    {
+      "key": "139-15",
+      "chapter": "basic-0119",
+      "page": 139,
+      "number": "15",
+      "status": "covered",
+      "label": "仙命的出生信息",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-721ef7d78906"
+      ]
+    },
+    {
+      "key": "139-16",
+      "chapter": "basic-0119",
+      "page": 139,
+      "number": "16",
+      "status": "covered",
+      "label": "整宅翻新",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-9d4a99731268"
+      ]
+    },
+    {
+      "key": "139-17",
+      "chapter": "basic-0119",
+      "page": 139,
+      "number": "17",
+      "status": "covered",
+      "label": "葬事神煞",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-60222d943137"
+      ]
+    },
+    {
+      "key": "140-18",
+      "chapter": "basic-0119",
+      "page": 140,
+      "number": "18",
+      "status": "covered",
+      "label": "过门石的事项归类",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-62be6582f077"
+      ]
+    },
+    {
+      "key": "140-19",
+      "chapter": "basic-0119",
+      "page": 140,
+      "number": "19",
+      "status": "covered",
+      "label": "造宅的施工节点",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-4a093300f84d",
+        "zq-qa12-44bc6c0a9d38"
+      ]
+    },
+    {
+      "key": "140-20",
+      "chapter": "basic-0119",
+      "page": 140,
+      "number": "20",
+      "status": "covered",
+      "label": "年五黄与修方",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-b2ab0beb93d3"
+      ]
+    },
+    {
+      "key": "140-21",
+      "chapter": "basic-0119",
+      "page": 140,
+      "number": "21",
+      "status": "covered",
+      "label": "审课不能倒推结果",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-dde3b01a3576"
+      ]
+    },
+    {
+      "key": "140-22",
+      "chapter": "basic-0119",
+      "page": 140,
+      "number": "22",
+      "status": "outside",
+      "label": "商品房厨房厕所布局",
+      "reason": "主要是家居规划答复，没有提供本项择日起法。",
+      "questionIds": []
+    },
+    {
+      "key": "141-23",
+      "chapter": "basic-0119",
+      "page": 141,
+      "number": "23",
+      "status": "covered",
+      "label": "血葬与骨葬的取忌",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-dbc2579d8afd"
+      ]
+    },
+    {
+      "key": "141-24",
+      "chapter": "basic-0119",
+      "page": 141,
+      "number": "24",
+      "status": "covered",
+      "label": "四季重丧的民俗处理",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-917ba4ab8ba4"
+      ]
+    },
+    {
+      "key": "141-25",
+      "chapter": "basic-0119",
+      "page": 141,
+      "number": "25",
+      "status": "covered",
+      "label": "岁破装修的房型条件",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-4b84a4dc5f9a"
+      ]
+    },
+    {
+      "key": "141-26",
+      "chapter": "basic-0119",
+      "page": 141,
+      "number": "26",
+      "status": "covered",
+      "label": "独火的制化对象",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-ecaed9bd027c"
+      ]
+    },
+    {
+      "key": "141-27",
+      "chapter": "basic-0119",
+      "page": 141,
+      "number": "27",
+      "status": "covered",
+      "label": "重丧的事项范围",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-79343d46cbc8"
+      ]
+    },
+    {
+      "key": "142-28",
+      "chapter": "basic-0119",
+      "page": 142,
+      "number": "28",
+      "status": "covered",
+      "label": "三煞方位的细化",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-34276ed2d8f4"
+      ]
+    },
+    {
+      "key": "142-29",
+      "chapter": "basic-0119",
+      "page": 142,
+      "number": "29",
+      "status": "covered",
+      "label": "五黄的时间层次",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-461686423ad1"
+      ]
+    },
+    {
+      "key": "142-30",
+      "chapter": "basic-0119",
+      "page": 142,
+      "number": "30",
+      "status": "covered",
+      "label": "三煞的坐山与修方",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-43fce5105084"
+      ]
+    },
+    {
+      "key": "142-31",
+      "chapter": "basic-0119",
+      "page": 142,
+      "number": "31",
+      "status": "covered",
+      "label": "寄葬的含义",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-d7b5da3aa7fd"
+      ]
+    },
+    {
+      "key": "142-32",
+      "chapter": "basic-0119",
+      "page": 142,
+      "number": "32",
+      "status": "covered",
+      "label": "四维兼山的轻重",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-1a5cda31a136"
+      ]
+    },
+    {
+      "key": "142-33",
+      "chapter": "basic-0119",
+      "page": 142,
+      "number": "33",
+      "status": "covered",
+      "label": "葬煞轻重比较",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-90463bb2db7e"
+      ]
+    },
+    {
+      "key": "142-34",
+      "chapter": "basic-0119",
+      "page": 142,
+      "number": "34",
+      "status": "covered",
+      "label": "安香火的方向",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-f25e5a2da696"
+      ]
+    },
+    {
+      "key": "142-25b",
+      "chapter": "basic-0119",
+      "page": 142,
+      "number": "25b",
+      "status": "held",
+      "label": "拆建同法的插入陈述",
+      "reason": "只有笼统陈述，未分独立拆旧或拆建连续流程；后文另分施工节点，不扩大为全部宜忌相同。",
+      "questionIds": []
+    },
+    {
+      "key": "142-26b",
+      "chapter": "basic-0119",
+      "page": 142,
+      "number": "26b",
+      "status": "covered",
+      "label": "通书造葬栏目",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-cc5896e926f1",
+        "zq-qa12-cadc85ee5563"
+      ]
+    },
+    {
+      "key": "143-27b",
+      "chapter": "basic-0119",
+      "page": 143,
+      "number": "27b",
+      "status": "covered",
+      "label": "仙命带禄的层次",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-1425c78c591d"
+      ]
+    },
+    {
+      "key": "143-28b",
+      "chapter": "basic-0119",
+      "page": 143,
+      "number": "28b",
+      "status": "covered",
+      "label": "邻近凶方施工的条件",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-c47ab8a79321"
+      ]
+    },
+    {
+      "key": "143-29b",
+      "chapter": "basic-0119",
+      "page": 143,
+      "number": "29b",
+      "status": "covered",
+      "label": "入伙资料是否齐全",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-c51dae903ee9"
+      ]
+    },
+    {
+      "key": "143-30b",
+      "chapter": "basic-0119",
+      "page": 143,
+      "number": "30b",
+      "status": "outside",
+      "label": "起坟骨殖变化",
+      "reason": "原答讨论地形与凹风，非本次择日规则，不出事故或骨殖结果题。",
+      "questionIds": []
+    },
+    {
+      "key": "143-31b",
+      "chapter": "basic-0119",
+      "page": 143,
+      "number": "31b",
+      "status": "covered",
+      "label": "三煞的两个对象",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-5f01c3027a0e"
+      ]
+    },
+    {
+      "key": "143-32b",
+      "chapter": "basic-0119",
+      "page": 143,
+      "number": "32b",
+      "status": "outside",
+      "label": "辅星水法适用",
+      "reason": "属于水法应用范围，不混入本轮择日题。",
+      "questionIds": []
+    },
+    {
+      "key": "143-33b",
+      "chapter": "basic-0119",
+      "page": 143,
+      "number": "33b",
+      "status": "covered",
+      "label": "小项与综合择日",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-59f3070f3ade"
+      ]
+    },
+    {
+      "key": "143-34b",
+      "chapter": "basic-0119",
+      "page": 143,
+      "number": "34b",
+      "status": "covered",
+      "label": "兼家三煞的实例",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-39ca127da873"
+      ]
+    },
+    {
+      "key": "144-35",
+      "chapter": "basic-0119",
+      "page": 144,
+      "number": "35",
+      "status": "covered",
+      "label": "新址动工",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-0c91116c033f"
+      ]
+    },
+    {
+      "key": "144-36",
+      "chapter": "basic-0119",
+      "page": 144,
+      "number": "36",
+      "status": "covered",
+      "label": "大利方位不是全部禁忌",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-73ac7eb597be"
+      ]
+    },
+    {
+      "key": "144-37",
+      "chapter": "basic-0119",
+      "page": 144,
+      "number": "37",
+      "status": "covered",
+      "label": "避过三煞还须查什么",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-5f96c05c482f"
+      ]
+    },
+    {
+      "key": "144-38",
+      "chapter": "basic-0119",
+      "page": 144,
+      "number": "38",
+      "status": "covered",
+      "label": "搬家综合审课",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-53acfb2258f6"
+      ]
+    },
+    {
+      "key": "144-39",
+      "chapter": "basic-0119",
+      "page": 144,
+      "number": "39",
+      "status": "covered",
+      "label": "方位随年重新核",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-5ee6db892deb"
+      ]
+    },
+    {
+      "key": "162-1",
+      "chapter": "basic-0145",
+      "page": 162,
+      "number": "1",
+      "status": "covered",
+      "label": "真灭没修造的条件",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-4b210d54b3e4"
+      ]
+    },
+    {
+      "key": "163-2",
+      "chapter": "basic-0145",
+      "page": 163,
+      "number": "2",
+      "status": "covered",
+      "label": "安香的先后",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-53b543ecec42"
+      ]
+    },
+    {
+      "key": "163-3",
+      "chapter": "basic-0145",
+      "page": 163,
+      "number": "3",
+      "status": "covered",
+      "label": "祭主与登位回避",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-e4c5828ca04e"
+      ]
+    },
+    {
+      "key": "163-4",
+      "chapter": "basic-0145",
+      "page": 163,
+      "number": "4",
+      "status": "covered",
+      "label": "嫁娶俗忌的取用",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-ffc5a6ae4178"
+      ]
+    },
+    {
+      "key": "164-5",
+      "chapter": "basic-0145",
+      "page": 164,
+      "number": "5",
+      "status": "covered",
+      "label": "动土与破土",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-15f5f43ba359"
+      ]
+    },
+    {
+      "key": "164-6",
+      "chapter": "basic-0145",
+      "page": 164,
+      "number": "6",
+      "status": "covered",
+      "label": "月冲年与候选月",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-e10f0a40d82b"
+      ]
+    },
+    {
+      "key": "164-7",
+      "chapter": "basic-0145",
+      "page": 164,
+      "number": "7",
+      "status": "covered",
+      "label": "新丧与日后祭祀",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-09e4f3660585"
+      ]
+    },
+    {
+      "key": "165-8",
+      "chapter": "basic-0145",
+      "page": 165,
+      "number": "8",
+      "status": "covered",
+      "label": "广义与狭义黄道",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-de4479fe3ed0",
+        "zq-qa12-4643dfc4646b"
+      ]
+    },
+    {
+      "key": "166-9",
+      "chapter": "basic-0145",
+      "page": 166,
+      "number": "9",
+      "status": "covered",
+      "label": "岁末俗忌",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-400817f417ff"
+      ]
+    },
+    {
+      "key": "166-10",
+      "chapter": "basic-0145",
+      "page": 166,
+      "number": "10",
+      "status": "held",
+      "label": "岁破后验断语",
+      "reason": "缺完整日课且答复涉及事故后是否还会出事，不编成未来结果保证。",
+      "questionIds": []
+    },
+    {
+      "key": "166-11",
+      "chapter": "basic-0145",
+      "page": 166,
+      "number": "11",
+      "status": "covered",
+      "label": "五行口径与仙命",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-74b6da8e12d1"
+      ]
+    },
+    {
+      "key": "166-12",
+      "chapter": "basic-0145",
+      "page": 166,
+      "number": "12",
+      "status": "covered",
+      "label": "偷修与安门",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-e38dab822a75"
+      ]
+    },
+    {
+      "key": "166-13",
+      "chapter": "basic-0145",
+      "page": 166,
+      "number": "13",
+      "status": "covered",
+      "label": "狭义黄道与阴宅",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-6f5900e23119"
+      ]
+    },
+    {
+      "key": "166-14",
+      "chapter": "basic-0145",
+      "page": 166,
+      "number": "14",
+      "status": "covered",
+      "label": "来水与去水",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-b38339e565ee"
+      ]
+    },
+    {
+      "key": "166-15",
+      "chapter": "basic-0145",
+      "page": 166,
+      "number": "15",
+      "status": "covered",
+      "label": "旧宅修缮的兼查",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-2283ae6c673a"
+      ]
+    },
+    {
+      "key": "166-16",
+      "chapter": "basic-0145",
+      "page": 166,
+      "number": "16",
+      "status": "covered",
+      "label": "移香炉的修方",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-ec1e03a07f9d"
+      ]
+    },
+    {
+      "key": "166-17",
+      "chapter": "basic-0145",
+      "page": 166,
+      "number": "17",
+      "status": "covered",
+      "label": "造葬方法的主次",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-1c358f15b48d"
+      ]
+    },
+    {
+      "key": "167-18",
+      "chapter": "basic-0145",
+      "page": 167,
+      "number": "18",
+      "status": "covered",
+      "label": "年命的破与冲",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-448aa76ea5f3"
+      ]
+    },
+    {
+      "key": "167-19",
+      "chapter": "basic-0145",
+      "page": 167,
+      "number": "19",
+      "status": "covered",
+      "label": "坟边树木是否动土",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-b911be5d8d9e",
+        "zq-qa12-ec407ffb8e95"
+      ]
+    },
+    {
+      "key": "167-20",
+      "chapter": "basic-0145",
+      "page": 167,
+      "number": "20",
+      "status": "covered",
+      "label": "入宅小煞的条件",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-0ee3e3502628"
+      ]
+    },
+    {
+      "key": "167-21",
+      "chapter": "basic-0145",
+      "page": 167,
+      "number": "21",
+      "status": "covered",
+      "label": "碑向与坟向",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-27e17d0a3c71"
+      ]
+    },
+    {
+      "key": "167-22",
+      "chapter": "basic-0145",
+      "page": 167,
+      "number": "22",
+      "status": "covered",
+      "label": "执日搬家的例外",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-6937fb9dc628"
+      ]
+    },
+    {
+      "key": "167-23",
+      "chapter": "basic-0145",
+      "page": 167,
+      "number": "23",
+      "status": "covered",
+      "label": "月忌的轻重",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-b8c03335a6db"
+      ]
+    },
+    {
+      "key": "167-24",
+      "chapter": "basic-0145",
+      "page": 167,
+      "number": "24",
+      "status": "covered",
+      "label": "重日与重丧",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-8d5ecc834579"
+      ]
+    },
+    {
+      "key": "167-25",
+      "chapter": "basic-0145",
+      "page": 167,
+      "number": "25",
+      "status": "covered",
+      "label": "俗忌的分类",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-a531a4f36b3e"
+      ]
+    },
+    {
+      "key": "167-26",
+      "chapter": "basic-0145",
+      "page": 167,
+      "number": "26",
+      "status": "covered",
+      "label": "通书用事的识别",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-a1fa395ea93f"
+      ]
+    },
+    {
+      "key": "168-27",
+      "chapter": "basic-0145",
+      "page": 168,
+      "number": "27",
+      "status": "covered",
+      "label": "事主冲太岁的现实条件",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-1bc48262ea7e"
+      ]
+    },
+    {
+      "key": "168-28",
+      "chapter": "basic-0145",
+      "page": 168,
+      "number": "28",
+      "status": "covered",
+      "label": "先审日家再相主",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-5029658fd70b"
+      ]
+    },
+    {
+      "key": "168-29",
+      "chapter": "basic-0145",
+      "page": 168,
+      "number": "29",
+      "status": "covered",
+      "label": "嫁娶男命忌项的层次",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-5914cb3ccb0f"
+      ]
+    },
+    {
+      "key": "168-30",
+      "chapter": "basic-0145",
+      "page": 168,
+      "number": "30",
+      "status": "covered",
+      "label": "大黄道与小黄道",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-d4fb11c5375c"
+      ]
+    },
+    {
+      "key": "168-31",
+      "chapter": "basic-0145",
+      "page": 168,
+      "number": "31",
+      "status": "covered",
+      "label": "合葬坐向的前提",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-96b2eb1a3508"
+      ]
+    },
+    {
+      "key": "168-32",
+      "chapter": "basic-0145",
+      "page": 168,
+      "number": "32",
+      "status": "covered",
+      "label": "课内冲的重点",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-8ba0609605e7"
+      ]
+    },
+    {
+      "key": "168-33",
+      "chapter": "basic-0145",
+      "page": 168,
+      "number": "33",
+      "status": "covered",
+      "label": "兼家岁破",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-09a714540588"
+      ]
+    },
+    {
+      "key": "168-34",
+      "chapter": "basic-0145",
+      "page": 168,
+      "number": "34",
+      "status": "covered",
+      "label": "迁坟的分段安排",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-ab7bf79df705"
+      ]
+    },
+    {
+      "key": "169-35",
+      "chapter": "basic-0145",
+      "page": 169,
+      "number": "35",
+      "status": "held",
+      "label": "宝日制日伐日",
+      "reason": "仅答为一种神煞，没有讲定义与起算；名词专项另有定义，暂不虚构本课细则。",
+      "questionIds": []
+    },
+    {
+      "key": "169-36",
+      "chapter": "basic-0145",
+      "page": 169,
+      "number": "36",
+      "status": "covered",
+      "label": "偷修与实际用事方",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-f0c80fa71d81"
+      ]
+    },
+    {
+      "key": "169-37",
+      "chapter": "basic-0145",
+      "page": 169,
+      "number": "37",
+      "status": "covered",
+      "label": "偷修不能代替嫁娶宜项",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-0cee77ead46b"
+      ]
+    },
+    {
+      "key": "169-38",
+      "chapter": "basic-0145",
+      "page": 169,
+      "number": "38",
+      "status": "covered",
+      "label": "太阳到山的含义",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-528583ce91cf"
+      ]
+    },
+    {
+      "key": "169-39",
+      "chapter": "basic-0145",
+      "page": 169,
+      "number": "39",
+      "status": "covered",
+      "label": "黑道日与用事宜项",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-109674f02d7e"
+      ]
+    },
+    {
+      "key": "169-40",
+      "chapter": "basic-0145",
+      "page": 169,
+      "number": "40",
+      "status": "covered",
+      "label": "通书九宫栏的读法",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-09f36d8b60f6"
+      ]
+    },
+    {
+      "key": "169-41",
+      "chapter": "basic-0145",
+      "page": 169,
+      "number": "41",
+      "status": "covered",
+      "label": "立碑俗期与实际择日",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-b8c6156b87d5"
+      ]
+    },
+    {
+      "key": "170-42",
+      "chapter": "basic-0145",
+      "page": 170,
+      "number": "42",
+      "status": "held",
+      "label": "天罡与勾绞",
+      "reason": "没有说明天罡具体层次，不能直接并成天罡四煞或本命真煞。",
+      "questionIds": []
+    },
+    {
+      "key": "170-43",
+      "chapter": "basic-0145",
+      "page": 170,
+      "number": "43",
+      "status": "covered",
+      "label": "仙命与启攒输入",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-ae64d17de962"
+      ]
+    },
+    {
+      "key": "170-44",
+      "chapter": "basic-0145",
+      "page": 170,
+      "number": "44",
+      "status": "held",
+      "label": "坤方申向安门",
+      "reason": "原问问取方还是取向，原答只评位置，未直接回答择日取参，不代写结论。",
+      "questionIds": []
+    },
+    {
+      "key": "170-45",
+      "chapter": "basic-0145",
+      "page": 170,
+      "number": "45",
+      "status": "held",
+      "label": "山泄仙命",
+      "reason": "仅给仙命地支与山向，没有完整年干纳音和比较口径，不由不泄的个案反推通则。",
+      "questionIds": []
+    },
+    {
+      "key": "170-46",
+      "chapter": "basic-0145",
+      "page": 170,
+      "number": "46",
+      "status": "held",
+      "label": "未识别的神煞字词",
+      "reason": "原文以拼音chansi记录，尚不能可靠确定煞名，不猜起法或效果。",
+      "questionIds": []
+    },
+    {
+      "key": "170-47",
+      "chapter": "basic-0145",
+      "page": 170,
+      "number": "47",
+      "status": "covered",
+      "label": "婚礼用事词义",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-684f91b53440"
+      ]
+    },
+    {
+      "key": "170-48",
+      "chapter": "basic-0145",
+      "page": 170,
+      "number": "48",
+      "status": "covered",
+      "label": "开门放水的动作",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-d277464e4eb2"
+      ]
+    },
+    {
+      "key": "170-49",
+      "chapter": "basic-0145",
+      "page": 170,
+      "number": "49",
+      "status": "covered",
+      "label": "冲太岁与破太岁",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-7f48fe88cf68",
+        "zq-qa12-85a9905e9812"
+      ]
+    },
+    {
+      "key": "170-50",
+      "chapter": "basic-0145",
+      "page": 170,
+      "number": "50",
+      "status": "covered",
+      "label": "合葬先核人物与地形",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-de9c6bca53c0"
+      ]
+    },
+    {
+      "key": "171-51",
+      "chapter": "basic-0145",
+      "page": 171,
+      "number": "51",
+      "status": "covered",
+      "label": "流年三煞与山向",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-ddec4ee89a89"
+      ]
+    },
+    {
+      "key": "171-52",
+      "chapter": "basic-0145",
+      "page": 171,
+      "number": "52",
+      "status": "covered",
+      "label": "入宅生火的节点",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-3d3a386294c8"
+      ]
+    },
+    {
+      "key": "171-53",
+      "chapter": "basic-0145",
+      "page": 171,
+      "number": "53",
+      "status": "covered",
+      "label": "旧坟取骨与新地",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-2ba9104121ae",
+        "zq-qa12-f7616c49d5a3"
+      ]
+    },
+    {
+      "key": "171-54",
+      "chapter": "basic-0145",
+      "page": 171,
+      "number": "54",
+      "status": "covered",
+      "label": "相害与嫁娶取用",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-a66dc286ab83"
+      ]
+    },
+    {
+      "key": "171-55",
+      "chapter": "basic-0145",
+      "page": 171,
+      "number": "55",
+      "status": "covered",
+      "label": "二次葬的衔接",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-6b08ff695e23"
+      ]
+    },
+    {
+      "key": "171-56",
+      "chapter": "basic-0145",
+      "page": 171,
+      "number": "56",
+      "status": "covered",
+      "label": "都天要对准用事",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-e53c18f9e990"
+      ]
+    },
+    {
+      "key": "171-57",
+      "chapter": "basic-0145",
+      "page": 171,
+      "number": "57",
+      "status": "covered",
+      "label": "立碑不是只有日课",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-a0f5a5a255a5"
+      ]
+    },
+    {
+      "key": "171-58",
+      "chapter": "basic-0145",
+      "page": 171,
+      "number": "58",
+      "status": "covered",
+      "label": "后土碑的含义",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-a39152c9cbe6"
+      ]
+    },
+    {
+      "key": "172-59",
+      "chapter": "basic-0145",
+      "page": 172,
+      "number": "59",
+      "status": "covered",
+      "label": "月冲太岁与入宅",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-a098eb098ae4"
+      ]
+    },
+    {
+      "key": "172-60",
+      "chapter": "basic-0145",
+      "page": 172,
+      "number": "60",
+      "status": "covered",
+      "label": "向上开门的归类",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-36465867f47a"
+      ]
+    },
+    {
+      "key": "172-61",
+      "chapter": "basic-0145",
+      "page": 172,
+      "number": "61",
+      "status": "covered",
+      "label": "公司搬迁的节点",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-6537d976a551"
+      ]
+    },
+    {
+      "key": "172-62",
+      "chapter": "basic-0145",
+      "page": 172,
+      "number": "62",
+      "status": "covered",
+      "label": "仙命输入与死亡年",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-1525172f3f36"
+      ]
+    },
+    {
+      "key": "172-63",
+      "chapter": "basic-0145",
+      "page": 172,
+      "number": "63",
+      "status": "held",
+      "label": "某年丁山癸向立碑",
+      "reason": "仅答可以选好日子，没有实际可用课，不设能否用某个日期的唯一答案。",
+      "questionIds": []
+    },
+    {
+      "key": "172-64",
+      "chapter": "basic-0145",
+      "page": 172,
+      "number": "64",
+      "status": "covered",
+      "label": "损碑重做的安排",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-39e0615fa2ca"
+      ]
+    },
+    {
+      "key": "172-65",
+      "chapter": "basic-0145",
+      "page": 172,
+      "number": "65",
+      "status": "covered",
+      "label": "后土与连续新作",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-44690bd0ae2e"
+      ]
+    },
+    {
+      "key": "172-66",
+      "chapter": "basic-0145",
+      "page": 172,
+      "number": "66",
+      "status": "covered",
+      "label": "流年大利与具体选日",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-b24702d7ac3d"
+      ]
+    },
+    {
+      "key": "172-67",
+      "chapter": "basic-0145",
+      "page": 172,
+      "number": "67",
+      "status": "covered",
+      "label": "开市也需坐向输入",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-42cf68f4e49e"
+      ]
+    },
+    {
+      "key": "172-68",
+      "chapter": "basic-0145",
+      "page": 172,
+      "number": "68",
+      "status": "covered",
+      "label": "修坟取土方位",
+      "reason": "已按原答条件整理为选择题；多条件分题。",
+      "questionIds": [
+        "zq-qa12-9138dcd5eb7b"
+      ]
+    }
+  ],
+  "bodyQuestions": [
+    "zq-qa12-d67ef0b59439",
+    "zq-qa12-6fe79659a824",
+    "zq-qa12-c0924231d3ab",
+    "zq-qa12-228db14f9d04",
+    "zq-qa12-b23fbb00b3d2",
+    "zq-qa12-bbaf4e3ca7b8",
+    "zq-qa12-5d6ada9b29b6",
+    "zq-qa12-624a6db4bf22",
+    "zq-qa12-1f09a5a2ec3f"
+  ]
+}

@@ -28,6 +28,6 @@ for q in D['questions']:
  assert not re.search(r'/Users/|file://|待补|TODO|某例|例中',json.dumps(q,ensure_ascii=False)),q['id']
 longest=sum(len(q['a'])>max(map(len,q['w'])) for q in D['questions'])
 assert longest/len(D['questions'])<0.25,'长度提示过多'
-old=json.loads((ROOT/'question-bank/questions.json').read_text());assert len(old)==327
-print(f"通过：{len(D['terms'])}词与{len(D['questions'])}题，可训练词一对一；结构、出处短据、别名干扰项、禁词、术语层次与争议边界；原题327未变。")
+old=json.loads((ROOT/'question-bank/questions.json').read_text());assert len(old)==610
+print(f"通过：{len(D['terms'])}词与{len(D['questions'])}题，可训练词一对一；结构、出处短据、别名干扰项、禁词、术语层次与争议边界；教材题库610题，名词数据另行核验。")
 print(f'长度提示抽查：正解独自最长{longest}题（{longest/len(D["questions"]):.1%}），不是多数。题目只考词义与条件识别，不据争议判断日课吉凶。')

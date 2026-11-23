@@ -11,6 +11,9 @@ pages=json.loads((R/'_src/pages.json').read_text()) if (R/'_src/pages.json').exi
 assets=json.loads((R/'question-bank/page-assets.json').read_text())
 assert len(qs)==len({q['id'] for q in qs})
 assert len(qs)==len({norm(q['q']) for q in qs})
+# 旧题完整性独立基准：追加题不修改原题及其稳定 ID、版本。
+assert hashlib.sha256(json.dumps(qs[:327],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()=='00bda8a2d3c67bf63546e36b2c09b6166c27bd6207bc00ef27647fa618ccb4f8'
+assert len([q for q in qs if q['id'].startswith('zq-detail-')])==283
 byid={q['id']:q for q in qs}
 def answer(key,value):assert byid['zq-'+key]['a']==value,(key,value)
 for z,el in zip('子丑寅卯辰巳午未申酉戌亥','水土木木土火火土金金土水'):answer('branch-element-'+z,el)

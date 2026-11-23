@@ -1,0 +1,52 @@
+const fs=require('fs'),assert=require('assert'),{JSDOM,VirtualConsole}=require('jsdom');
+const terms=JSON.parse(fs.readFileSync('question-bank/glossary/terms.json')),questions=JSON.parse(fs.readFileSync('question-bank/glossary/questions.json'));
+let n=0;const t=(name,fn)=>{fn();n++;console.log('✓ '+name)},sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function browser(saved={},hash='#terms'){
+ const html=fs.readFileSync('index.html','utf8').replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,'');const errors=[],vc=new VirtualConsole();vc.on('jsdomError',e=>errors.push(e));
+ const dom=new JSDOM(html,{url:'https://nevergiveup0618.github.io/zeri/'+hash,runScripts:'dangerously',pretendToBeVisual:true,virtualConsole:vc}),w=dom.window;
+ w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=function(){};w.HTMLDialogElement.prototype.showModal=function(){this.open=true};w.HTMLDialogElement.prototype.close=function(){this.open=false};
+ for(const[k,v]of Object.entries(saved))w.localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v));
+ for(const f of ['question-bank/data.js','question-bank/core.js','question-bank/glossary/data.js','question-bank/glossary/app.js','question-bank/app.js'])w.eval(fs.readFileSync(f,'utf8'));
+ return {dom,w,errors,$:s=>w.document.querySelector(s)};
+}
+(async()=>{
+ let b=browser({'zeri_course_v1':'legacy'}),w=b.w,$=b.$;await sleep(25);const go=async h=>{w.ZeriQuiz.go(h);await sleep(10)};
+ t('底栏有独立名词解释与名词训练，原题库仍为327题',()=>{assert($('[data-view="terms"]'));assert($('[data-view="term-training"]'));assert.equal(w.ZERI_BANK.questions.length,327);assert.equal(w.ZERI_TERMS.terms.length,237);assert.equal(w.ZERI_TERMS.questions.length,237)});
+ t('名词目录13类默认折叠，不全屏铺开',()=>{assert.equal(w.document.querySelectorAll('.term-group').length,13);assert.equal(w.document.querySelectorAll('.term-group[open]').length,0)});
+ $('#term-search').value='入厝';$('#term-search').dispatchEvent(new w.Event('input'));
+ t('俗称与异体字可搜到对应词，搜索时展开结果',()=>{assert($('.term-card').textContent.includes('入宅'));assert($('.term-group').open)});
+ $('#term-search').value='';$('#term-search').dispatchEvent(new w.Event('input'));$('#term-category').value='build';$('#term-category').dispatchEvent(new w.Event('change'));
+ t('分类筛选只显示相关名词，清词仍保留分类',()=>{assert($('.term-group').textContent.includes('修造'));assert.equal(w.document.querySelectorAll('.term-group').length,1)});
+ for(const term of terms){await go('term/'+term.id);assert($('.term-detail h1').textContent===term.title);assert.equal(w.document.querySelectorAll('.term-detail .explanation').length,3);assert($('.term-sources').textContent.includes('核对出处'));assert($('.term-sources a')||$('.term-ref'));}
+ t('237个名词逐条可达，均有解释、实际情境、区别和可定位来源',()=>assert.equal(b.errors.length,0));
+ await go('term/zt-动土');const loc=JSON.parse(JSON.stringify(w.YGN_HOOK.loc()));
+ t('全科笔记记录稳定名词ID，不借用原题ID',()=>{assert.deepEqual(loc,{v:'zeri-term',id:'zt-动土'});assert(w.YGN_HOOK.label().includes('动土'))});
+ await go('bank');w.YGN_HOOK.go(loc);await sleep(15);
+ t('全科笔记可以返回同一名词解释',()=>assert($('.term-detail h1').textContent==='动土'));
+ // 原题组与名词组同时存在，两种状态均须保持。
+ await go('bank');$('[data-action="mixed"]').click();await sleep(15);const oldId=w.ZeriQuiz.state.active.id,oldQueue=JSON.stringify(w.ZeriQuiz.state.active.queue);
+ await go('term/zt-动土');$('[data-term-practice]').click();await sleep(15);let s=w.ZeriTerms.state.active,q=w.ZeriTerms.qb[s.queue[0].id];
+ t('词条可开始专练，当前原题组及选项完全保留',()=>{assert.equal(s.base.length,1);assert(q.term==='zt-动土');assert.equal(w.ZeriQuiz.state.active.id,oldId);assert.equal(JSON.stringify(w.ZeriQuiz.state.active.queue),oldQueue)});
+ t('答前一次一题，没有解析、答案提示或名词标题泄露',()=>{assert.equal(w.document.querySelectorAll('.question-card').length,1);assert(!$('.feedback'));assert(!$('.source-link'));assert.equal($('.badge').textContent,'修造与土工');assert(!$('.quiz-head').textContent.includes(q.a))});
+ $('[data-term-answer="'+s.queue[0].opts.indexOf(q.w[0])+'"]').click();await sleep(10);
+ t('答错立即存名词错题、禁用选项，原错题数据不混入',()=>{assert(w.ZeriTerms.state.wrong[q.id].active);assert.equal(w.document.querySelectorAll('.option:disabled').length,4);assert($('.feedback').textContent.includes(q.e));assert(!w.ZeriQuiz.state.wrong[q.id]);assert.equal(s.queue.length,2)});
+ $('.source-link').click();await sleep(15);t('答后可回词条出处，未完组仍停在已答题',()=>{assert($('.term-detail'));assert.equal(s.index,0);assert(s.answers[0])});
+ $('.back-row a').click();await sleep(15);t('词条返回名词原题，答案与进度保留',()=>assert($('.feedback')));
+ const saved=Object.fromEntries(Object.keys(w.localStorage).map(k=>[k,w.localStorage.getItem(k)])),id=q.id,opts=JSON.stringify(s.queue[0].opts);
+ b.dom.window.close();b=browser(saved,'#term-quiz');w=b.w;$=b.$;await sleep(25);s=w.ZeriTerms.state.active;q=w.ZeriTerms.qb[id];
+ t('刷新恢复同题同选项同答案；原题组和旧课程记录保留',()=>{assert.equal(s.queue[0].id,id);assert.equal(JSON.stringify(s.queue[0].opts),opts);assert($('.feedback.incorrect'));assert.equal(w.ZeriQuiz.state.active.id,oldId);assert.equal(w.localStorage.getItem('zeri_course_v1'),'legacy')});
+ $('[data-term-next]').click();await sleep(15);t('手动下一题才进入组末回炉，无重复首答',()=>{assert.equal(s.index,1);assert(s.queue[1].retry);assert.equal(w.ZeriTerms.state.seen[id].attempts,1)});
+ $('[data-term-answer="'+s.queue[1].opts.indexOf(q.a)+'"]').click();await sleep(15);$('[data-term-next]').click();await sleep(15);
+ t('回炉答对仍保留错题，完成仅一条记录且首答0/1',()=>{assert(w.ZeriTerms.state.wrong[id].active);assert.equal(w.ZeriTerms.state.sessions.length,1);assert.equal(w.ZeriTerms.state.sessions[0].correct,0);assert.equal(w.ZeriTerms.state.sessions[0].total,1);assert.equal(w.ZeriTerms.state.seen[id].attempts,1)});
+ await go('terms-wrong');$('#term-wrong-category').value='build';$('#term-wrong-category').dispatchEvent(new w.Event('change'));
+ t('名词错题按分类筛选，有错项、解析和解释链接',()=>{assert($('.wrong-card'));assert($('.wrong-card').textContent.includes(q.w[0]));assert($('.wrong-card a').href.includes('term/'));$('.wrong-card .explanation').click();assert.equal(w.YGN_HOOK.loc().id,q.term)});
+ $('[data-term-resolve]').click();t('手动订正可逆，不删除历史',()=>{assert(!w.ZeriTerms.state.wrong[id].active);$('[data-term-wrong-status="resolved"]').click();$('[data-term-resolve]').click();assert(w.ZeriTerms.state.wrong[id].active)});
+ await go('term-training');$('[data-term-start="all"]').click();await sleep(15);const active=w.ZeriTerms.state.active.id;await go('term/zt-破土');$('[data-term-practice]').click();
+ t('切新名词组前保留未完组，可选择继续原组',()=>{assert($('#switch-dialog').open);assert.equal(w.ZeriTerms.state.active.id,active);$('#keep-round').click()});await sleep(15);
+ await go('term-records');t('名词训练记录有独立入口与统计',()=>{assert($('#app').textContent.includes('名词首答正确率'));assert($('#app').textContent.includes('0/1'))});
+ await go('wrong');t('共用错题入口能进入名词错题，原错题不被合并',()=>assert($('a[href="#terms-wrong"]').textContent.includes('1')));
+ t('无脚本错误、所有来源为有效HTTPS地址',()=>{assert.equal(b.errors.length,0);assert(Object.values(w.ZERI_TERMS.sources).every(s=>s.url.startsWith('https://')))});
+ b.dom.window.close();b=browser({'zeri_terms_v1':'{bad','zeri_qbank_v1':saved.zeri_qbank_v1},'#term-training');await sleep(20);
+ t('名词损坏存储单独回退，原题组仍能续做',()=>{assert.equal(b.w.ZeriTerms.state.v,1);assert.equal(b.w.ZeriQuiz.state.active.id,oldId)});b.dom.window.close();
+ console.log('通过 '+n+' 项名词解释、训练及跨模块保护检查');
+})().catch(e=>{console.error(e);process.exitCode=1});

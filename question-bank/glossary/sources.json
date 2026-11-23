@@ -1,0 +1,101 @@
+{
+  "checked": "2026-11-23",
+  "sources": {
+    "yunlin": {
+      "title": "云林县政府公开农民历·择日用事术语解",
+      "url": "https://ws.yunlin.gov.tw/001/Upload/522/ebook/ebook_133825/pdf/full.pdf",
+      "locator": "PDF第36页（书内第34页），已核看原页",
+      "kind": "政府历书"
+    },
+    "classic": {
+      "title": "《协纪辨方书》卷十一·用事",
+      "url": "https://zh.wikisource.org/zh/欽定協紀辨方書_(四庫全書本)/卷11",
+      "locator": "用事分类与宜忌目录；仅作古籍语境对照",
+      "kind": "古籍原文"
+    },
+    "police": {
+      "title": "香港警务处·语文天地：解读通胜",
+      "url": "https://www.police.gov.hk/offbeat/1016/chi/1550.html",
+      "locator": "通书称谓与用事词表",
+      "kind": "政府语文资料"
+    },
+    "marriage": {
+      "title": "台中市政府公开地方志·结婚礼俗",
+      "url": "https://www.taichung.gov.tw/media/270399/55119323471.pdf",
+      "locator": "“贰、结婚礼俗”：古婚俗六礼与今昔变化",
+      "kind": "地方民俗"
+    },
+    "nacai": {
+      "title": "教育部辞典·纳采",
+      "url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=56243&la=0&powerMode=0",
+      "locator": "释义：古代六礼第一礼",
+      "kind": "辞典"
+    },
+    "hejin": {
+      "title": "教育部辞典·合卺",
+      "url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=79429&la=0&powerMode=0",
+      "locator": "释义：新人交杯共饮",
+      "kind": "辞典"
+    },
+    "kaiguang": {
+      "title": "台湾文献馆民俗文物辞典·制作仪式与禁忌",
+      "url": "https://dict.th.gov.tw/detailPage.aspx?ID=2375",
+      "locator": "神像开斧、入神与开光点眼",
+      "kind": "民俗辞典"
+    },
+    "folklore": {
+      "title": "台湾文献馆民俗文物辞典·合炉",
+      "url": "https://dict.th.gov.tw/detailPage.aspx?ID=1066",
+      "locator": "合炉含义与泉漳习俗差别",
+      "kind": "民俗辞典"
+    },
+    "funeral": {
+      "title": "台北市公开资料·百日、对年与合炉",
+      "url": "https://www-ws.gov.taipei/001/Upload/416/relfile/20609/7357221/78141692277.pdf",
+      "locator": "百日、对年、合炉及换金；地方习俗非全国统一流程",
+      "kind": "政府礼俗资料"
+    },
+    "hko-calendar": {
+      "title": "香港天文台·二十四节气",
+      "url": "https://www.hko.gov.hk/tc/gts/time/24solarterms.htm",
+      "locator": "节、中气及太阳黄经",
+      "kind": "历法天文"
+    },
+    "hko-year": {
+      "title": "香港天文台·今夕是何年",
+      "url": "https://www.hko.gov.hk/tc/education/astronomy-and-time/time-service/00506-what-year-is-it-today.html",
+      "locator": "农历月、闰月与农历年干支交替；注意与术数分年口径区别",
+      "kind": "历法天文"
+    },
+    "hko-time": {
+      "title": "香港天文台·授时的基本术语",
+      "url": "https://www.hko.gov.hk/tc/gts/time/item_list.htm",
+      "locator": "视太阳时、平太阳时、公历、闰年、香港标准时间",
+      "kind": "历法天文"
+    },
+    "hko-almanac": {
+      "title": "香港天文台年历2026·视太阳时计算",
+      "url": "https://www.hko.gov.hk/en/gts/astron2026/files/HKO_almanac_2026.pdf",
+      "locator": "平太阳时、视太阳时与均时差",
+      "kind": "历法天文"
+    },
+    "hko-stems": {
+      "title": "香港天文台·天干和地支",
+      "url": "https://www.weather.gov.hk/tc/gts/time/stemsandbranches.htm",
+      "locator": "干支六十循环、时辰及年月日时推干表",
+      "kind": "历法天文"
+    },
+    "ruccu": {
+      "title": "教育部教育百科·入厝",
+      "url": "https://pedia.cloud.edu.tw/Entry/Detail/?search=入厝&title=入厝",
+      "locator": "台湾台语常用词辞典的入厝义",
+      "kind": "辞典"
+    },
+    "reading-labels": {
+      "title": "农民历术语：宜忌栏与限制语释义",
+      "url": "https://nongminli.tw/terms",
+      "locator": "历注用语与该站的字面解读，非统一神煞算法",
+      "kind": "历注释读"
+    }
+  }
+}

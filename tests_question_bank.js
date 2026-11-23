@@ -25,12 +25,12 @@ function browser(saved={},hash=''){
  const dom=new JSDOM(html,{url:'https://nevergiveup0618.github.io/zeri/'+hash,runScripts:'dangerously',pretendToBeVisual:true,virtualConsole:vc});const w=dom.window;
  w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=function(){};w.HTMLDialogElement.prototype.showModal=function(){this.open=true};w.HTMLDialogElement.prototype.close=function(){this.open=false};
  for(const [k,v]of Object.entries(saved))w.localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v));
- for(const f of ['question-bank/data.js','question-bank/core.js','question-bank/app.js'])w.eval(fs.readFileSync(f,'utf8'));
+ for(const f of ['question-bank/data.js','question-bank/core.js','question-bank/glossary/data.js','question-bank/glossary/app.js','question-bank/app.js'])w.eval(fs.readFileSync(f,'utf8'));
  return {dom,w,$:sel=>w.document.querySelector(sel),errors};
 }
 (async()=>{
  let b=browser({'zeri_course_v1':'{"read":{"zp-01":true}}'}),{w,$}=b;await sleep(30);
- t('默认只有题库、错题本、记录，旧课程不作入口',()=>{assert.equal($('title').textContent,'择日题库');assert.equal(w.document.querySelectorAll('.nav button').length,3);assert(!$('#course-view'));assert(!w.document.querySelector('script[src="data-course.js"]'));assert.equal(w.localStorage.getItem('zeri_course_v1'),'{"read":{"zp-01":true}}')});
+ t('新增名词解释与训练，保留题库错题记录且无旧课程入口',()=>{assert.equal($('title').textContent,'择日题库');assert.equal(w.document.querySelectorAll('.nav button').length,5);assert(!$('#course-view'));assert(!w.document.querySelector('script[src="data-course.js"]'));assert.equal(w.localStorage.getItem('zeri_course_v1'),'{"read":{"zp-01":true}}')});
  t('每本教材和每个有题原课时都可达',()=>{const D=w.ZERI_BANK;assert.equal(w.document.querySelectorAll('.book').length,D.catalog.books.length);assert.equal(w.document.querySelectorAll('[data-chapter]').length,new Set(DATA.map(q=>q.chapter)).size)});
  $('#book-search').value='安床';$('#book-search').dispatchEvent(new w.Event('input'));t('搜索按章节和考点过滤，展开匹配教材',()=>{assert(w.document.querySelectorAll('[data-chapter]').length>0);assert([...w.document.querySelectorAll('.book')].every(x=>x.open))});
  const go=async h=>{w.ZeriQuiz.go(h);await sleep(25)};

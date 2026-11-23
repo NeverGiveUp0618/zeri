@@ -2,7 +2,7 @@
 from pathlib import Path
 import hashlib,json,re
 ROOT=Path(__file__).resolve().parent;BASE=ROOT/'question-bank/glossary'
-CATEGORIES=[('reading','读通书与用事'),('calendar','历法与时间'),('home','搬家与家居'),('build','修造与土工'),('marriage','婚嫁礼俗'),('funeral','丧葬礼俗'),('ritual','祭祀与仪式'),('business','工商与财货'),('daily','日常与农牧'),('space','山向与空间'),('relations','五行与干支关系'),('shensha','日值与神煞'),('methods','择日方法与斗首')]
+CATEGORIES=[('reading','读通书与用事'),('calendar','历法与时间'),('annual','卷首年景与节俗'),('home','搬家与家居'),('build','修造与土工'),('marriage','婚嫁礼俗'),('funeral','丧葬礼俗'),('ritual','祭祀与仪式'),('business','工商与财货'),('daily','日常与农牧'),('space','山向与空间'),('relations','五行与干支关系'),('shensha','日值与神煞'),('methods','择日方法与斗首')]
 def norm(x):return re.sub(r'\s+','',x)
 def build():
  T=json.loads((BASE/'terms.json').read_text());Q=json.loads((BASE/'questions.json').read_text());S=json.loads((BASE/'sources.json').read_text());by={t['id']:t for t in T};cats=dict(CATEGORIES)
@@ -16,6 +16,9 @@ def build():
    assert 1<=r['page']<=1832 and r['quote'].strip(),t['id']
    if P is not None:assert norm(r['quote']) in norm(P[r['page']-1]),('原文定位失效',t['id'])
   for x in t['related']:assert x in by,x
+  if t.get('derivation'):
+   d=t['derivation'];assert d.get('basis') and len(d.get('steps',[]))>=2 and d.get('example'),t['id']
+  if t.get('pinyin'):assert re.fullmatch(r"[a-zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜüêńňḿ\s'-]+",t['pinyin']),t['id']
  assert len({q['id'] for q in Q})==len(Q) and len({q['q'] for q in Q})==len(Q)
  for q in Q:
   t=by[q['term']];assert q['rev']>=1 and q['category']==t['category']

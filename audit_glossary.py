@@ -18,7 +18,8 @@ for title,words in checks.items():
 assert '甲己土、乙庚金、丙辛水、丁壬木、戊癸火' in T['化气']['definition']
 for title in ['阴府','山运','胎元','白虎','天狗','截路空亡']:
  assert any(w in T[title]['distinguish'] for w in ['争议','不同','分开','异文','差异','两','跨表','同名不能同算','同名条目']),title
-assert set(Q)=={t['id'] for t in D['terms']},'词题覆盖不齐'
+assert set(Q)=={t['id'] for t in D['terms'] if not t.get('trainingUnavailable')},'可训练词题覆盖不齐'
+assert all(t.get('trainingUnavailable') or t['id'] in Q for t in D['terms'])
 assert all(len(t['sources'])+len(t['refs']) for t in D['terms'])
 # 词条已有的别名不能被当作另一个错误选项。
 for q in D['questions']:
@@ -28,5 +29,5 @@ for q in D['questions']:
 longest=sum(len(q['a'])>max(map(len,q['w'])) for q in D['questions'])
 assert longest/len(D['questions'])<0.25,'长度提示过多'
 old=json.loads((ROOT/'question-bank/questions.json').read_text());assert len(old)==327
-print(f"通过：{len(D['terms'])}词与{len(D['questions'])}题一对一；结构、出处短据、别名干扰项、禁词、术语层次与争议边界；原题327未变。")
+print(f"通过：{len(D['terms'])}词与{len(D['questions'])}题，可训练词一对一；结构、出处短据、别名干扰项、禁词、术语层次与争议边界；原题327未变。")
 print(f'长度提示抽查：正解独自最长{longest}题（{longest/len(D["questions"]):.1%}），不是多数。题目只考词义与条件识别，不据争议判断日课吉凶。')

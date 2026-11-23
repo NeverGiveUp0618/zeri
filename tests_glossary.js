@@ -11,14 +11,28 @@ function browser(saved={},hash='#terms'){
 }
 (async()=>{
  let b=browser({'zeri_course_v1':'legacy'}),w=b.w,$=b.$;await sleep(25);const go=async h=>{w.ZeriQuiz.go(h);await sleep(10)};
- t('底栏有独立名词解释与名词训练，原题库仍为327题',()=>{assert($('[data-view="terms"]'));assert($('[data-view="term-training"]'));assert.equal(w.ZERI_BANK.questions.length,327);assert.equal(w.ZERI_TERMS.terms.length,237);assert.equal(w.ZERI_TERMS.questions.length,237)});
- t('名词目录13类默认折叠，不全屏铺开',()=>{assert.equal(w.document.querySelectorAll('.term-group').length,13);assert.equal(w.document.querySelectorAll('.term-group[open]').length,0)});
+ t('底栏合并名词与训练，原题库仍为327题',()=>{assert($('[data-view="terms"]'));assert(!$('[data-view="term-training"]'));assert.equal(w.document.querySelectorAll('.nav button').length,4);assert.equal(w.ZERI_BANK.questions.length,327);assert.equal(w.ZERI_TERMS.terms.length,303);assert.equal(w.ZERI_TERMS.questions.length,299)});
+ t('名词目录14类默认折叠，不全屏铺开',()=>{assert.equal(w.document.querySelectorAll('.term-group').length,14);assert.equal(w.document.querySelectorAll('.term-group[open]').length,0)});
  $('#term-search').value='入厝';$('#term-search').dispatchEvent(new w.Event('input'));
  t('俗称与异体字可搜到对应词，搜索时展开结果',()=>{assert($('.term-card').textContent.includes('入宅'));assert($('.term-group').open)});
  $('#term-search').value='';$('#term-search').dispatchEvent(new w.Event('input'));$('#term-category').value='build';$('#term-category').dispatchEvent(new w.Event('change'));
  t('分类筛选只显示相关名词，清词仍保留分类',()=>{assert($('.term-group').textContent.includes('修造'));assert.equal(w.document.querySelectorAll('.term-group').length,1)});
- for(const term of terms){await go('term/'+term.id);assert($('.term-detail h1').textContent===term.title);assert.equal(w.document.querySelectorAll('.term-detail .explanation').length,3);assert($('.term-sources').textContent.includes('核对出处'));assert($('.term-sources a')||$('.term-ref'));}
- t('237个名词逐条可达，均有解释、实际情境、区别和可定位来源',()=>assert.equal(b.errors.length,0));
+ for(const term of terms){await go('term/'+term.id);assert($('.term-detail h1').textContent===term.title);assert(w.document.querySelectorAll('.term-detail .explanation').length>=3);assert($('.term-sources').textContent.includes('核对出处'));assert($('.term-sources a')||$('.term-ref'));}
+ t('303个名词逐条可达，均有解释、实际情境、区别和可定位来源',()=>assert.equal(b.errors.length,0));
+
+ await go('terms');$('#term-search').value='';$('#term-search').dispatchEvent(new w.Event('input'));$('#term-category').value='annual';$('#term-category').dispatchEvent(new w.Event('change'));
+ $('[data-term-link="zt-芒神"]').click();await sleep(20);
+ t('从目录按分类连续学，详情上下均有翻页按钮且练习在解释后',()=>{assert.equal(w.document.querySelectorAll('[data-term-turn]').length,4);assert($('.term-paging').textContent.includes('2 / 18'));assert($('.term-practice'));assert.equal(w.document.querySelector('[aria-current="page"]').dataset.view,'terms');assert($('.term-pinyin').textContent.includes('máng'));assert($('.term-derivation').textContent.includes('前8日'))});
+ $('[data-term-turn="zt-春牛图"]').click();await sleep(15);$('.back-row a').click();await sleep(35);
+ t('翻页后返回目录保留分类，展开并定位刚学的词',()=>{assert.equal($('#term-category').value,'annual');assert($('#term-card-zt-春牛图').closest('details').open);assert($('#term-card-zt-春牛图').classList.contains('term-return'))});
+ const readerSaved=JSON.parse(w.localStorage.getItem('zeri_terms_v1')).reader;
+ t('阅读范围、最后名词、展开状态已持久保存',()=>{assert.equal(readerSaved.lastId,'zt-春牛图');assert.equal(readerSaved.order.length,18);assert.equal(readerSaved.category,'annual')});
+ await go('bank');await go('terms');await sleep(30);
+ t('切去题库再返回也保留刚学名词，不被其他界面清掉目录状态',()=>assert($('#term-card-zt-春牛图').classList.contains('term-return')));
+ await go('term/zt-厚土');
+ t('未取得专门起法的栏目只解释范围，不编唯一训练答案',()=>{assert(!$('#app [data-term-practice]'));assert($('.term-practice').textContent.includes('完整起法'))});
+ await go('term/zt-天德');
+ t('天德推导保留月家起例和借支异法，生僻字有读音',()=>{assert($('.term-derivation').textContent.includes('寅月丁'));assert($('.term-derivation').textContent.includes('借支'));assert(w.ZeriTerms.by['zt-安碓磑'].pinyin.includes('wèi'));assert(w.ZeriTerms.by['zt-起攒'].pinyin.includes('cuán'))});
  await go('term/zt-动土');const loc=JSON.parse(JSON.stringify(w.YGN_HOOK.loc()));
  t('全科笔记记录稳定名词ID，不借用原题ID',()=>{assert.deepEqual(loc,{v:'zeri-term',id:'zt-动土'});assert(w.YGN_HOOK.label().includes('动土'))});
  await go('bank');w.YGN_HOOK.go(loc);await sleep(15);

@@ -96,6 +96,126 @@
       "url": "https://nongminli.tw/terms",
       "locator": "历注用语与该站的字面解读，非统一神煞算法",
       "kind": "历注释读"
+    },
+    "spring-art": {
+      "title": "国家文化典藏·春牛图",
+      "url": "https://collections.culture.tw/Object?RNO=MjAxNy4wMTUuMDEzMQ%3D%3D&SYSUID=11",
+      "locator": "博物馆藏品说明：春牛、芒神与五色；旧年图作文化参照",
+      "kind": "原始资料"
+    },
+    "spring-rule": {
+      "title": "台南市政府·春牛制作规则",
+      "url": "https://www.tainan.gov.tw/News_Content.aspx?n=13371&s=8721033",
+      "locator": "2025年实例分列年干、年支、年纳音与立春日干支；只采用此文所述规则",
+      "kind": "原始资料"
+    },
+    "spring-classic": {
+      "title": "《类编历法通书大全》卷一",
+      "url": "https://www.shidianguji.com/zh/book/CADAL02094403/chapter/1l5gfcc9xaib6",
+      "locator": "春牛经式、芒神闲忙等；异本不混用",
+      "kind": "原始资料"
+    },
+    "mangshen-dict": {
+      "title": "教育部辞典·芒神",
+      "url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=30336&la=0&powerMode=0",
+      "locator": "读音与神名释义",
+      "kind": "原始资料"
+    },
+    "annual-custom": {
+      "title": "马祖日报·怎样阅读农民历",
+      "url": "https://www.matsu-news.gov.tw/news/article/110593",
+      "locator": "岁时纪事、几龙治水等栏目释读；不是天气预报",
+      "kind": "原始资料"
+    },
+    "spring-food": {
+      "title": "农业部·节气食农知识",
+      "url": "https://fae.moa.gov.tw/theme_data.php?id=38&sub_theme=knowledge&theme=topics",
+      "locator": "立春迎春、鞭牛与农事民俗",
+      "kind": "原始资料"
+    },
+    "she-day": {
+      "title": "教育百科·春社",
+      "url": "https://pedia.cloud.edu.tw/Entry/Detail?title=春社",
+      "locator": "立春后第五戊日；秋社对照地方博物馆资料",
+      "kind": "原始资料"
+    },
+    "she-museum": {
+      "title": "新北市淡水古迹博物馆·社日",
+      "url": "https://www.tshs.ntpc.gov.tw/files/file_pool/1/0I150564582296067073/04_簡有慶_博物淡水第9期-瀏覽檔.pdf",
+      "locator": "春社、秋社的戊日推法",
+      "kind": "原始资料"
+    },
+    "fu-day": {
+      "title": "新华社·三伏起算说明",
+      "url": "https://www.xinhuanet.com/politics/20260713/a93592d5e64c4592a555b0876f471483/c.html",
+      "locator": "夏至日起数庚，初伏、中伏、末伏；2026年核对例",
+      "kind": "原始资料"
+    },
+    "nine-day": {
+      "title": "台北医学大学附设医院·数九节令介绍",
+      "url": "https://www.tmuh.org.tw/UploadFile/FILE/20151118134821937_104年冬季三九貼改善過敏氣喘的好幫手.pdf",
+      "locator": "仅用冬至起数九的文化计日法，不引医疗结论",
+      "kind": "原始资料"
+    },
+    "tide": {
+      "title": "香港天文台·潮汐说明",
+      "url": "https://my.weather.gov.hk/sc/tide/enotes.htm",
+      "locator": "大潮、小潮、地点和潮时预测",
+      "kind": "原始资料"
+    },
+    "seasons": {
+      "title": "国立天文台历计算室·七十二候",
+      "url": "https://eco.mtk.nao.ac.jp/koyomi/wiki/B5A8C0E12FBCB7BDBDC6F3B8F5.html",
+      "locator": "候的划分与中日版本变迁，非本地天气保证",
+      "kind": "原始资料"
+    },
+    "jft2026": {
+      "title": "《天星集福堂》2026年公开目录",
+      "url": "https://www.syngfs.com/newsinfo/8806356.html",
+      "locator": "已见公开目录，未取得全书内页；仅核栏目名与目录术语，不据此编造专门算法",
+      "kind": "原始资料"
+    },
+    "jft2024": {
+      "title": "《天星集福堂》2024年公开说明",
+      "url": "https://www.syngfs.com/newsinfo/6824288.html",
+      "locator": "区分历注与俗忌的书方说明；未据其宣传作天文事实",
+      "kind": "原始资料"
+    },
+    "classic6": {
+      "title": "《协纪辨方书》卷六",
+      "url": "https://zh.wikisource.org/zh/欽定協紀辨方書_(四庫全書本)/卷06",
+      "locator": "月神与日类的起例原文",
+      "kind": "原始资料"
+    },
+    "classic7": {
+      "title": "《协纪辨方书》卷七",
+      "url": "https://zh.wikisource.org/zh-hans/欽定協紀辨方書_(四庫全書本)/卷07",
+      "locator": "黄黑道、喜神、吉时与空亡",
+      "kind": "原始资料"
+    },
+    "classic8": {
+      "title": "《协纪辨方书》卷八",
+      "url": "https://zh.wikisource.org/zh/欽定協紀辨方書_(四庫全書本)/卷08",
+      "locator": "岁禄、飞宫、修方神煞；异说照辨",
+      "kind": "原始资料"
+    },
+    "fetal-custom": {
+      "title": "客家委员会公开礼俗资料",
+      "url": "https://cloud.hakka.gov.tw/Attachment/1/0381655471.pdf",
+      "locator": "胎神方位的地方信仰记载，仅解释民俗含义",
+      "kind": "原始资料"
+    },
+    "dict-an-dui": {
+      "title": "教育部辞典·安碓磑字词索引",
+      "url": "https://dict.revised.moe.edu.tw/searchR.jsp?ID=-1&ID=112&ID=5&la=0&powerMode=0&word=%E7%A2%93",
+      "locator": "安碓磑读ān duì wèi",
+      "kind": "字音依据"
+    },
+    "dict-cuan": {
+      "title": "汉典·攢的丧葬义与读音",
+      "url": "https://zdic.net/hant/%E6%94%A2",
+      "locator": "cuán义项含停棺待葬、待葬的棺柩；不同于积攒的zǎn",
+      "kind": "字音依据"
     }
   }
 }

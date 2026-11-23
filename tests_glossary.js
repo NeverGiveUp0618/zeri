@@ -11,14 +11,14 @@ function browser(saved={},hash='#terms'){
 }
 (async()=>{
  let b=browser({'zeri_course_v1':'legacy'}),w=b.w,$=b.$;await sleep(25);const go=async h=>{w.ZeriQuiz.go(h);await sleep(10)};
- t('底栏合并名词与训练，原题库仍为327题',()=>{assert($('[data-view="terms"]'));assert(!$('[data-view="term-training"]'));assert.equal(w.document.querySelectorAll('.nav button').length,4);assert.equal(w.ZERI_BANK.questions.length,327);assert.equal(w.ZERI_TERMS.terms.length,321);assert.equal(w.ZERI_TERMS.questions.length,317)});
+ t('底栏合并名词与训练，原题库仍为327题',()=>{assert($('[data-view="terms"]'));assert(!$('[data-view="term-training"]'));assert.equal(w.document.querySelectorAll('.nav button').length,4);assert.equal(w.ZERI_BANK.questions.length,327);assert.equal(w.ZERI_TERMS.terms.length,373);assert.equal(w.ZERI_TERMS.questions.length,369)});
  t('名词目录14类默认折叠，不全屏铺开',()=>{assert.equal(w.document.querySelectorAll('.term-group').length,14);assert.equal(w.document.querySelectorAll('.term-group[open]').length,0)});
  $('#term-search').value='入厝';$('#term-search').dispatchEvent(new w.Event('input'));
  t('俗称与异体字可搜到对应词，搜索时展开结果',()=>{assert($('.term-card').textContent.includes('入宅'));assert($('.term-group').open)});
  $('#term-search').value='';$('#term-search').dispatchEvent(new w.Event('input'));$('#term-category').value='build';$('#term-category').dispatchEvent(new w.Event('change'));
  t('分类筛选只显示相关名词，清词仍保留分类',()=>{assert($('.term-group').textContent.includes('修造'));assert.equal(w.document.querySelectorAll('.term-group').length,1)});
  for(const term of terms){await go('term/'+term.id);assert($('.term-detail h1').textContent===term.title);assert(w.document.querySelectorAll('.term-detail .explanation').length>=3);assert($('.term-sources').textContent.includes('核对出处'));assert($('.term-sources a')||$('.term-ref'));}
- t('321个名词逐条可达，均有解释、实际情境、区别和可定位来源',()=>assert.equal(b.errors.length,0));
+ t('373个名词逐条可达，均有解释、实际情境、区别和可定位来源',()=>assert.equal(b.errors.length,0));
 
  await go('terms');$('#term-search').value='';$('#term-search').dispatchEvent(new w.Event('input'));$('#term-category').value='annual';$('#term-category').dispatchEvent(new w.Event('change'));
  $('[data-term-link="zt-芒神"]').click();await sleep(20);

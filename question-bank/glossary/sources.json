@@ -234,6 +234,48 @@
       "url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=111350&q=1&word=",
       "locator": "出生一岁，过新年加岁；不同于周岁。",
       "kind": "辞典释义"
+    },
+    "classic5": {
+      "title": "《协纪辨方书》卷5·义例",
+      "url": "https://zh.wikisource.org/zh/欽定協紀辨方書_(四庫全書本)/卷05",
+      "locator": "义例三：天德合、月空、四相、时德、天愿、四耗四忌四穷、九空九坎九焦、宝义制专伐、重日复日、解神除神。与CADAL原书扫描相互核对；转录字形有疑处以书页为准。",
+      "kind": "古籍正文与原书扫描核读"
+    },
+    "classic11": {
+      "title": "《协纪辨方书》卷11·用事",
+      "url": "https://zh.wikisource.org/zh/欽定協紀辨方書_(四庫全書本)/卷11",
+      "locator": "用事：御用、民用和通书所列事项；按实际生活含义释读，不照搬帝制事项。与CADAL原书扫描相互核对；转录字形有疑处以书页为准。",
+      "kind": "古籍正文与原书扫描核读"
+    },
+    "xieji-cadal": {
+      "title": "《协纪辨方书》四库本·馆藏扫描分册目录",
+      "url": "https://ctext.org/library.pl?if=gb&res=6135",
+      "locator": "目录标明浙江大学图书馆/CADAL来源，链接Archive.org的06067679.cn至06067700.cn，共取得22个PDF分册；本轮重点核卷五、六、十一，不表示36卷全文已逐字校毕。",
+      "kind": "扫描来源与分册定位"
+    },
+    "classic5-scan": {
+      "title": "《协纪辨方书》卷5原书扫描",
+      "url": "https://archive.org/download/06067683.cn/06067683.cn.pdf",
+      "locator": "PDF卷五：天愿校例51、宝义制专伐103—105、重日五合五离除神113—117等；PDF页序不是古籍叶码。 CADAL馆藏扫描的公开镜像，分册来源见馆藏扫描目录。",
+      "kind": "可读原书内页"
+    },
+    "classic6-scan": {
+      "title": "《协纪辨方书》卷6原书扫描",
+      "url": "https://archive.org/download/06067684.cn/06067684.cn.pdf",
+      "locator": "PDF卷六：金堂图75、九神总论93、归忌127—129、气往亡135等；PDF页序不是古籍叶码。 CADAL馆藏扫描的公开镜像，分册来源见馆藏扫描目录。",
+      "kind": "可读原书内页"
+    },
+    "classic11-scan": {
+      "title": "《协纪辨方书》卷11原书扫描",
+      "url": "https://archive.org/download/06067687.cn/06067687.cn.pdf",
+      "locator": "PDF卷十一至十二合册：卷十一用事项目8—10；PDF页序不是古籍叶码。 CADAL馆藏扫描的公开镜像，分册来源见馆藏扫描目录。",
+      "kind": "可读原书内页"
+    },
+    "dict-shan": {
+      "title": "汉典·苫的名物义与覆盖动作义",
+      "url": "https://zdic.net/hans/苫",
+      "locator": "shān草编覆盖物；shàn编茅盖屋、以席布覆盖。兼载国语辞典shān覆盖义，词条注明读音差别。",
+      "kind": "字音字义依据"
     }
   }
 }

@@ -11,14 +11,14 @@ function browser(saved={},hash='#terms'){
 }
 (async()=>{
  let b=browser({'zeri_course_v1':'legacy'}),w=b.w,$=b.$;await sleep(25);const go=async h=>{w.ZeriQuiz.go(h);await sleep(10)};
- t('底栏合并名词与训练，原题库仍为327题',()=>{assert($('[data-view="terms"]'));assert(!$('[data-view="term-training"]'));assert.equal(w.document.querySelectorAll('.nav button').length,4);assert.equal(w.ZERI_BANK.questions.length,327);assert.equal(w.ZERI_TERMS.terms.length,303);assert.equal(w.ZERI_TERMS.questions.length,299)});
+ t('底栏合并名词与训练，原题库仍为327题',()=>{assert($('[data-view="terms"]'));assert(!$('[data-view="term-training"]'));assert.equal(w.document.querySelectorAll('.nav button').length,4);assert.equal(w.ZERI_BANK.questions.length,327);assert.equal(w.ZERI_TERMS.terms.length,321);assert.equal(w.ZERI_TERMS.questions.length,317)});
  t('名词目录14类默认折叠，不全屏铺开',()=>{assert.equal(w.document.querySelectorAll('.term-group').length,14);assert.equal(w.document.querySelectorAll('.term-group[open]').length,0)});
  $('#term-search').value='入厝';$('#term-search').dispatchEvent(new w.Event('input'));
  t('俗称与异体字可搜到对应词，搜索时展开结果',()=>{assert($('.term-card').textContent.includes('入宅'));assert($('.term-group').open)});
  $('#term-search').value='';$('#term-search').dispatchEvent(new w.Event('input'));$('#term-category').value='build';$('#term-category').dispatchEvent(new w.Event('change'));
  t('分类筛选只显示相关名词，清词仍保留分类',()=>{assert($('.term-group').textContent.includes('修造'));assert.equal(w.document.querySelectorAll('.term-group').length,1)});
  for(const term of terms){await go('term/'+term.id);assert($('.term-detail h1').textContent===term.title);assert(w.document.querySelectorAll('.term-detail .explanation').length>=3);assert($('.term-sources').textContent.includes('核对出处'));assert($('.term-sources a')||$('.term-ref'));}
- t('303个名词逐条可达，均有解释、实际情境、区别和可定位来源',()=>assert.equal(b.errors.length,0));
+ t('321个名词逐条可达，均有解释、实际情境、区别和可定位来源',()=>assert.equal(b.errors.length,0));
 
  await go('terms');$('#term-search').value='';$('#term-search').dispatchEvent(new w.Event('input'));$('#term-category').value='annual';$('#term-category').dispatchEvent(new w.Event('change'));
  $('[data-term-link="zt-芒神"]').click();await sleep(20);
@@ -33,6 +33,11 @@ function browser(saved={},hash='#terms'){
  t('未取得专门起法的栏目只解释范围，不编唯一训练答案',()=>{assert(!$('#app [data-term-practice]'));assert($('.term-practice').textContent.includes('完整起法'))});
  await go('term/zt-天德');
  t('天德推导保留月家起例和借支异法，生僻字有读音',()=>{assert($('.term-derivation').textContent.includes('寅月丁'));assert($('.term-derivation').textContent.includes('借支'));assert(w.ZeriTerms.by['zt-安碓磑'].pinyin.includes('wèi'));assert(w.ZeriTerms.by['zt-起攒'].pinyin.includes('cuán'))});
+
+ await go('term/zt-天厨贵人');
+ t('新内页贵人表可读，明确是宗睦堂预览并保留完整天干输入',()=>{assert($('.term-sources').textContent.includes('2025宗睦堂'));assert($('.term-derivation').textContent.includes('丙→子'));assert($('.term-derivation').textContent.includes('己→申'));assert($('.term-derivation').textContent.includes('集福堂单堂版本'))});
+ await go('term/zt-二十八宿');
+ t('二十八宿全称可搜索且读音、值日与宿度分清',()=>{assert(w.ZeriTerms.by['zt-二十八宿'].aliases.includes('氐土貉'));assert($('.term-derivation').textContent.includes('zī huǒ hóu'));assert($('.term-detail').textContent.includes('罗经宿度'))});
  await go('term/zt-动土');const loc=JSON.parse(JSON.stringify(w.YGN_HOOK.loc()));
  t('全科笔记记录稳定名词ID，不借用原题ID',()=>{assert.deepEqual(loc,{v:'zeri-term',id:'zt-动土'});assert(w.YGN_HOOK.label().includes('动土'))});
  await go('bank');w.YGN_HOOK.go(loc);await sleep(15);

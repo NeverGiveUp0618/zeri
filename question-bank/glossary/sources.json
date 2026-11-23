@@ -216,6 +216,24 @@
       "url": "https://zdic.net/hant/%E6%94%A2",
       "locator": "cuán义项含停棺待葬、待葬的棺柩；不同于积攒的zǎn",
       "kind": "字音依据"
+    },
+    "luojia25-inner": {
+      "title": "《罗家推算通书》2025宗睦堂公开内页",
+      "url": "https://www.guoxueziyuan.com/28498.html",
+      "locator": "公开PDF预览13页已渲染逐页查看：预览7=印页1百岁图、预览10=印页25贵人表、预览13=印页125逐日历注。不是集福堂单堂版本或全本208页。",
+      "kind": "已目读公开预览内页"
+    },
+    "luojia26-inner": {
+      "title": "《罗家推算通书》2026宗睦堂公开内页",
+      "url": "https://xueyizone.com/download/fengshui/16346.html",
+      "locator": "封面为宗睦堂，列集福堂等合参；目录与正文预览图已查看，含印页19宿图、25贵人表及逐日历注。不是单独集福堂版全本。",
+      "kind": "已目读公开预览内页"
+    },
+    "age-dict": {
+      "title": "教育部辞典·虚岁",
+      "url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=111350&q=1&word=",
+      "locator": "出生一岁，过新年加岁；不同于周岁。",
+      "kind": "辞典释义"
     }
   }
 }

@@ -18,3 +18,5 @@ dialog{max-width:min(90vw,500px);border:1px solid var(--line);border-radius:16px
 @media(max-width:600px){.term-paging{gap:8px}.term-paging .btn{font-size:13px;padding:9px;max-width:43%}.term-derivation{padding-left:12px;padding-right:10px}}
 
 .term-derivation .term-ganzhi{white-space:nowrap;overflow-wrap:normal}
+
+.term-judgement-badge{display:inline-block!important;vertical-align:middle;font-size:12px!important;line-height:1.5!important;padding:2px 8px;border:1px solid currentColor;border-radius:20px;font-weight:500;white-space:nowrap;margin:0 4px 0 0!important}.term-judgement-badge.good{color:#e6bb69;background:#d4a64e12}.term-judgement-badge.bad{color:#ef9c9c;background:#db6c6c14}.term-judgement-badge.mixed{color:#a9b8d5;background:#a9b8d510}.term-judgement{border:1px solid var(--line);border-radius:10px;margin:20px 0;padding:0 16px 15px}.term-judgement h2{margin-top:16px}.term-judgement summary{cursor:pointer;color:var(--muted);font-size:14px}.term-judgement blockquote{margin:10px 0;overflow-wrap:anywhere}.term-judgement li{line-height:1.85;margin:8px 0}

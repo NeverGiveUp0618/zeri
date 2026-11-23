@@ -18,6 +18,14 @@ def build():
   for x in t['related']:assert x in by,x
   if t.get('derivation'):
    d=t['derivation'];assert d.get('basis') and len(d.get('steps',[]))>=2 and d.get('example'),t['id']
+  if t['category']=='shensha':assert t.get('judgement'),('神煞缺吉凶说明',t['id'])
+  if t.get('judgement'):
+   j=t['judgement'];assert j['nature'] in ['吉','凶','随用事','参数','吉凶总称','宜静忌动'] and j['basis'] and j['scope'],t['id']
+   assert j.get('level','') in ['','大吉','小吉','大凶','小凶','中煞','次凶'],t['id']
+   for sid in j['sources']:assert sid in S['sources'] and sid in t['sources'],t['id']
+   for r in j['refs']:
+    assert r in t['refs'],t['id']
+   if j.get('level'):assert j['sources'] or j['refs'],('分级缺依据',t['id'])
   if t.get('pinyin'):assert re.fullmatch(r"[a-zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜüêńňḿ\s'-]+",t['pinyin']),t['id']
  assert len({q['id'] for q in Q})==len(Q) and len({q['q'] for q in Q})==len(Q)
  for q in Q:

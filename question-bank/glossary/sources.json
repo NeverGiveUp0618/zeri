@@ -276,6 +276,36 @@
       "url": "https://zdic.net/hans/苫",
       "locator": "shān草编覆盖物；shàn编茅盖屋、以席布覆盖。兼载国语辞典shān覆盖义，词条注明读音差别。",
       "kind": "字音字义依据"
+    },
+    "almanac-app": {
+      "title": "择日软件公开黄历·日家栏目",
+      "url": "https://www.zgzeri.com/huangli/day",
+      "locator": "实际核对2026年1—5月各8日、23日及11月23日日页的吉神、凶神栏目。软件栏目只证明名称和其分类，不能证明独立算法或统一轻重。",
+      "kind": "软件公开栏目核对"
+    },
+    "classic4": {
+      "title": "《协纪辨方书》卷四·义例二",
+      "url": "https://zh.wikisource.org/zh/欽定協紀辨方書_(四庫全書本)/卷04",
+      "locator": "建除同位异名、阴阳不将及行狠等；同位神名仍按具体用事分别解释。",
+      "kind": "古籍正文"
+    },
+    "classic10": {
+      "title": "《协纪辨方书》卷十·宜忌",
+      "url": "https://zh.wikisource.org/zh/欽定協紀辨方書_(四庫全書本)/卷10",
+      "locator": "所宜、所忌及逐条按语；德合赦愿与轻微吉神有别，不能把一个吉凶字当全事总断。",
+      "kind": "古籍正文"
+    },
+    "yaolue": {
+      "title": "《选择要略》上·吉凶神表",
+      "url": "https://zh.wikisource.org/wiki/選擇要略/上",
+      "locator": "日吉凶神、四时吉凶日等表。凡与《协纪》或教材起例不同，不混成一张通表。",
+      "kind": "古籍正文"
+    },
+    "jicheng683": {
+      "title": "《古今图书集成》艺术典第683卷·选择部",
+      "url": "https://zh.wikisource.org/wiki/欽定古今圖書集成/博物彙編/藝術典/第683卷",
+      "locator": "吉神、凶神及用事释义；用于核字义与旧宜忌，不保证当代效果。",
+      "kind": "古籍正文"
     }
   }
 }

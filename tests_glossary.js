@@ -11,14 +11,27 @@ function browser(saved={},hash='#terms'){
 }
 (async()=>{
  let b=browser({'zeri_course_v1':'legacy'}),w=b.w,$=b.$;await sleep(25);const go=async h=>{w.ZeriQuiz.go(h);await sleep(10)};
- t('底栏合并名词与训练，原题库仍为327题',()=>{assert($('[data-view="terms"]'));assert(!$('[data-view="term-training"]'));assert.equal(w.document.querySelectorAll('.nav button').length,4);assert.equal(w.ZERI_BANK.questions.length,327);assert.equal(w.ZERI_TERMS.terms.length,373);assert.equal(w.ZERI_TERMS.questions.length,369)});
+ t('底栏合并名词与训练，原题库仍为327题',()=>{assert($('[data-view="terms"]'));assert(!$('[data-view="term-training"]'));assert.equal(w.document.querySelectorAll('.nav button').length,4);assert.equal(w.ZERI_BANK.questions.length,327);assert.equal(w.ZERI_TERMS.terms.length,452);assert.equal(w.ZERI_TERMS.questions.length,446)});
  t('名词目录14类默认折叠，不全屏铺开',()=>{assert.equal(w.document.querySelectorAll('.term-group').length,14);assert.equal(w.document.querySelectorAll('.term-group[open]').length,0)});
  $('#term-search').value='入厝';$('#term-search').dispatchEvent(new w.Event('input'));
  t('俗称与异体字可搜到对应词，搜索时展开结果',()=>{assert($('.term-card').textContent.includes('入宅'));assert($('.term-group').open)});
  $('#term-search').value='';$('#term-search').dispatchEvent(new w.Event('input'));$('#term-category').value='build';$('#term-category').dispatchEvent(new w.Event('change'));
  t('分类筛选只显示相关名词，清词仍保留分类',()=>{assert($('.term-group').textContent.includes('修造'));assert.equal(w.document.querySelectorAll('.term-group').length,1)});
+ await go('term/zt-天德');
+ t('大吉标签有具体分级依据，返回只写返回',()=>{assert.equal($('.term-judgement-badge').textContent,'大吉');assert($('.term-judgement').textContent.includes('PDF第176页'));assert.equal($('.back-row a').textContent,'返回')});
+ await go('term/zt-五黄');
+ t('中煞保留原等级及工程适用范围',()=>{assert.equal($('.term-judgement-badge').textContent,'中煞');assert($('.term-judgement').textContent.includes('新建'))});
+ await go('term/zt-重丧');
+ t('重丧按葬法分别显示大凶小凶',()=>{const x=$('.term-judgement').textContent;assert(x.includes('血葬')&&x.includes('筋骨葬')&&x.includes('大凶')&&x.includes('小凶'))});
+ await go('term/zt-阴府');
+ t('阴府保留大煞中煞两种原文，不强定一个等级',()=>{assert.equal($('.term-judgement-badge').textContent,'凶');assert($('.term-judgement').textContent.includes('中煞')&&$('.term-judgement').textContent.includes('大煞'))});
+ await go('term/zt-廉子');
+ t('斗首小吉有独立原文依据，不迁移到日家',()=>{assert.equal($('.term-judgement-badge').textContent,'小吉');assert($('.term-judgement').textContent.includes('斗首'))});
+ await go('term/zt-鼓轮煞');
+ t('仅确认软件栏目者标凶并保留未核边界，不编训练',()=>{assert.equal($('.term-judgement-badge').textContent,'凶');assert(!$('[data-term-practice]'));assert($('.term-detail').textContent.includes('未取得'))});
+ t('所有日值神煞有分类，等级均附依据且旧369题不因标签改写',()=>{assert(terms.filter(t=>t.category==='shensha').every(t=>t.judgement));assert(terms.filter(t=>t.judgement?.level).every(t=>t.judgement.refs.length||t.judgement.sources.length))});
  for(const term of terms){await go('term/'+term.id);assert($('.term-detail h1').textContent===term.title);assert(w.document.querySelectorAll('.term-detail .explanation').length>=3);assert($('.term-sources').textContent.includes('核对出处'));assert($('.term-sources a')||$('.term-ref'));}
- t('373个名词逐条可达，均有解释、实际情境、区别和可定位来源',()=>assert.equal(b.errors.length,0));
+ t('452个名词逐条可达，均有解释、实际情境、区别和可定位来源',()=>assert.equal(b.errors.length,0));
 
  await go('terms');$('#term-search').value='';$('#term-search').dispatchEvent(new w.Event('input'));$('#term-category').value='annual';$('#term-category').dispatchEvent(new w.Event('change'));
  $('[data-term-link="zt-芒神"]').click();await sleep(20);

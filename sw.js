@@ -1,5 +1,5 @@
 /* 择日学习 Service Worker —— 离线缓存 */
-const CACHE = 'zeri-v39-glossary-classic-pages';
+const CACHE = 'zeri-v40-glossary-god-grades';
 const ASSETS = [
   './', './index.html', './question-bank/app.css', './question-bank/data.js',
   './question-bank/core.js', './question-bank/app.js', './question-bank/glossary/data.js',

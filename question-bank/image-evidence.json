@@ -1,0 +1,65 @@
+{
+  "scan1630-order": {
+    "page": 1630,
+    "image": "question-bank/pages/p1630.webp",
+    "sha256": "bfa4aeb8b6f769d836554a270948cbb037a3a8332b96d41a49cf8e91206dd360",
+    "method": "原图逐字核读",
+    "date": "2026-11-24",
+    "text": "甲子顺排乙丑，丙寅等为前。\n甲子逆点癸亥，壬戌等为后。",
+    "note": "只录已目读清楚的摘句，不是对整张扫描表的全文转录。"
+  },
+  "scan1630-numbers": {
+    "page": 1630,
+    "image": "question-bank/pages/p1630.webp",
+    "sha256": "bfa4aeb8b6f769d836554a270948cbb037a3a8332b96d41a49cf8e91206dd360",
+    "method": "原图逐字核读",
+    "date": "2026-11-24",
+    "text": "1表示一白坎\n2表示二黑坤\n3表示三碧震\n4表示四绿巽\n5表示五黄中宫\n6表示六白乾\n7表示七赤兑\n8表示八白艮\n9表示九紫离",
+    "note": "只录已目读清楚的摘句，不是对整张扫描表的全文转录。"
+  },
+  "scan1630-season": {
+    "page": 1630,
+    "image": "question-bank/pages/p1630.webp",
+    "sha256": "bfa4aeb8b6f769d836554a270948cbb037a3a8332b96d41a49cf8e91206dd360",
+    "method": "原图逐字核读",
+    "date": "2026-11-24",
+    "text": "冬至后是第一数\n夏至后是第二数",
+    "note": "只录已目读清楚的摘句，不是对整张扫描表的全文转录。"
+  },
+  "scan1630-center": {
+    "page": 1630,
+    "image": "question-bank/pages/p1630.webp",
+    "sha256": "bfa4aeb8b6f769d836554a270948cbb037a3a8332b96d41a49cf8e91206dd360",
+    "method": "原图逐字核读",
+    "date": "2026-11-24",
+    "text": "表中数字“中”为该行的干支入中位",
+    "note": "只录已目读清楚的摘句，不是对整张扫描表的全文转录。"
+  },
+  "scan1630-xinsi": {
+    "page": 1630,
+    "image": "question-bank/pages/p1630.webp",
+    "sha256": "bfa4aeb8b6f769d836554a270948cbb037a3a8332b96d41a49cf8e91206dd360",
+    "method": "原图逐字核读",
+    "date": "2026-11-24",
+    "text": "辛巳年以丁酉为禄元，庚寅为阳贵人，甲午为阴贵人，己亥为马元。",
+    "note": "只录已目读清楚的摘句，不是对整张扫描表的全文转录。"
+  },
+  "scan1630-time": {
+    "page": 1630,
+    "image": "question-bank/pages/p1630.webp",
+    "sha256": "bfa4aeb8b6f769d836554a270948cbb037a3a8332b96d41a49cf8e91206dd360",
+    "method": "原图逐字核读",
+    "date": "2026-11-24",
+    "text": "应用此表快速寻找出禄马贵人到山方的干支。",
+    "note": "只录已目读清楚的摘句，不是对整张扫描表的全文转录。"
+  },
+  "scan1630-life-year": {
+    "page": 1630,
+    "image": "question-bank/pages/p1630.webp",
+    "sha256": "bfa4aeb8b6f769d836554a270948cbb037a3a8332b96d41a49cf8e91206dd360",
+    "method": "原图逐字核读",
+    "date": "2026-11-24",
+    "text": "太岁入中寻命贵，月建入中寻岁贵。",
+    "note": "只录已目读清楚的摘句，不是对整张扫描表的全文转录。"
+  }
+}

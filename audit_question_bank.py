@@ -2,7 +2,7 @@
 from pathlib import Path
 from collections import Counter
 import hashlib,json,re
-from build_question_bank import norm
+from build_question_bank import norm,_evidence
 
 R=Path(__file__).resolve().parent
 qs=json.loads((R/'question-bank/questions.json').read_text())
@@ -27,7 +27,7 @@ for q in qs:
  assert not re.search(r'视频|中观|奇门|六爻|杨筠松|王进武|蒋大鸿',json.dumps(q,ensure_ascii=False)),q['id']
  assert not re.search(r'哪位讲者|谁说的|来自哪份|哪个版本|下句|接龙|比喻',q['q']),q['id']
  assert len(q['quote'])>=3,q['id']
- if pages:assert norm(q['quote']) in norm(pages[q['page']-1]),q['id']
+ _evidence.check_quote(q,pages,assets)
  assert len(q['a'])<=max(map(len,q['w'])),q['id']
  a=assets[str(q['page'])];p=R/a['file'];assert p.exists(),p
  assert hashlib.sha256(p.read_bytes()).hexdigest()==a['sha256'],p
@@ -39,7 +39,7 @@ print('通过：地支五行、五组都天、倒家煞、女命大利月、斗�
 for b in cat['books']:
  n=sum(q['book']==b['id'] for q in qs);ch={q['chapter'] for q in qs if q['book']==b['id']}
  print(b['title'],f'{n}题 / {len(ch)}个有题章节')
-print('原文核对：'+('已执行本地原页文字对照。' if pages else '本机无原页文字，未执行该层。'))
+print(f"原文核对：{sum(not q.get('evidenceRef') for q in qs)}题"+('已执行文字层对照；' if pages else '本机无文字层，跳过该层；')+f"{sum(bool(q.get('evidenceRef')) for q in qs)}题核已登记的原图短段及图片哈希。")
 
 # 第1/2课逐条问答的持久对账，不以总题数代替覆盖核验。
 review=json.loads((R/'question-bank/reviews/basic-01-02.json').read_text())
@@ -63,3 +63,38 @@ assert sum(len(byid[i]['a'])<min(map(len,byid[i]['w'])) for i in new)/len(new)<0
 for ref,expected in [('138-7','碑向'),('140-18','定磉竖柱按坐山'),('141-26','壬癸水星'),('166-15','坐山兼中宫'),('167-22','有大吉星可搬'),('168-29','日时均论'),('172-62','出生年干支')]:
  assert expected in {q['a'] for q in qs if q.get('qaRef')==ref},ref
 print('两课问答对账通过：117条逐项定位，104条有对应题；9条待核、4条非本轮范围；正文补充另列，无悬空题ID。')
+
+# 后续71章采用逐项记录，基准题不得随扩题改写或串号。
+round3=json.loads((R/'question-bank/reviews/all-courses-round3.json').read_text())
+assert round3['baselineQuestions']==731
+assert hashlib.sha256(json.dumps(qs[:731],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()==round3['baselineSha256']
+expected={c['id'] for b in cat['books'] for c in b['chapters']}-{ 'basic-0119','basic-0145'}
+assert set(round3['scope'])==expected and len(round3['scope'])==71
+assert {c['id'] for c in round3['chapters']}==expected
+new3={q['id'] for q in qs if q['id'].startswith('zq-r3-')}
+assert len(new3)==round3['addedQuestions'] and new3=={q['id'] for q in qs[731:]}
+linked=set();counts=Counter();chapter_meta={c['id']:c for b in cat['books'] for c in b['chapters']}
+for c in round3['chapters']:
+ meta=chapter_meta[c['id']]
+ assert c['reviewedPages'] and c['units'],c['id']
+ assert all(meta['start']<=p<=meta['end'] for p in c['reviewedPages']),c['id']
+ assert len(c['units'])==len({u['key'] for u in c['units']}),c['id']
+ for u in c['units']:
+  assert meta['start']<=u['page']<=meta['end'] and u['reason'],u['key']
+  assert u['status'] in ['covered','held','outside'];counts[u['status']]+=1
+  if u['status']=='covered':
+   assert u['questionIds'],u['key']
+   for qid in u['questionIds']:
+    assert qid in byid and byid[qid]['chapter']==c['id'],(u['key'],qid)
+    linked.add(qid)
+  else:assert not u['questionIds'],u['key']
+assert new3<=linked,('新题未对账',new3-linked)
+for book in {byid[i]['book'] for i in new3}:
+ cohort=[byid[i] for i in new3 if byid[i]['book']==book]
+ assert sum(len(q['a'])<min(map(len,q['w'])) for q in cohort)/len(cohort)<.2,('答案偏短',book)
+# 本轮特别容易混淆的实际条件：不能只核引文是否存在。
+for suffix,expected_answer in [('9d5f4c7b222f','开忌葬闭可葬'),('dc510bbc70c9','火'),('3d07b80d837b','水')]:
+ q=byid['zq-r3-theory-'+suffix];assert expected_answer in q['a'],q['id']
+q=byid['zq-r3-applied-0b495a017c4f'];assert '子山' in q['q'] and '子、辰' in q['q'] and '半合' in q['a']
+assert not any(i.endswith('92dc229a7c59') for i in new3),'天官偏冲异文未解不得入题'
+print(f"后续71章对账通过：新增{len(new3)}题、原731题基准不变；条目{dict(counts)}。")

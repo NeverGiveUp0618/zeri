@@ -30,7 +30,7 @@ function browser(saved={},hash='#terms'){
  await go('term/zt-鼓轮煞');
  t('仅确认软件栏目者标凶并保留未核边界，不编训练',()=>{assert.equal($('.term-judgement-badge').textContent,'凶');assert(!$('[data-term-practice]'));assert($('.term-detail').textContent.includes('未取得'))});
  t('所有日值神煞有分类，等级均附依据且旧369题不因标签改写',()=>{assert(terms.filter(t=>t.category==='shensha').every(t=>t.judgement));assert(terms.filter(t=>t.judgement?.level).every(t=>t.judgement.refs.length||t.judgement.sources.length))});
- for(const term of terms){await go('term/'+term.id);assert($('.term-detail h1').textContent===term.title);assert(w.document.querySelectorAll('.term-detail .explanation').length>=3);assert($('.term-sources').textContent.includes('核对出处'));assert($('.term-sources a')||$('.term-ref'));}
+ for(const term of terms){await go('term/'+term.id);assert($('.term-detail h1').textContent===term.title);assert(w.document.querySelectorAll('.term-detail .explanation').length>=3);assert($('.term-sources').textContent.includes('核对出处'));assert($('.term-sources a')||$('.term-ref'));if(term.derivation){const d=$('.term-derivation');assert(d,term.title);assert(d.textContent.includes(term.derivation.example),term.title);assert.equal(d.querySelectorAll('ol li').length,term.derivation.steps.length);}}
  t('452个名词逐条可达，均有解释、实际情境、区别和可定位来源',()=>assert.equal(b.errors.length,0));
 
  await go('terms');$('#term-search').value='';$('#term-search').dispatchEvent(new w.Event('input'));$('#term-category').value='annual';$('#term-category').dispatchEvent(new w.Event('change'));

@@ -37,7 +37,7 @@ node tests_question_sw.js
 
 旧34章、16项目、160题及全部原课程源码保留，旧笔记可由钩子打开`archive-course.html`回原章；主站不列旧课程或速查入口。完整旧站恢复点为`bb63fe6`，本地分支`archive/course-20261121`；详见[旧站接续说明](旧站接续说明.md)。旧课程回归脚本保留供历史维护，不作为本轮新入口的验收脚本。
 
-SW为`zeri-v44-term-algorithms`，只预缓存新题库核心及可选共享模块；只删除`zeri-`旧缓存，不删个人记录或其他科目缓存。内容或脚本变化必须继续升缓存版本。
+SW为`zeri-v45-calculation-practice`，只预缓存新题库核心及可选共享模块；只删除`zeri-`旧缓存，不删个人记录或其他科目缓存。内容或脚本变化必须继续升缓存版本。
 
 ## 名词解释与名词训练（2026-11-23）
 
@@ -72,3 +72,20 @@ NODE_PATH=../bazi-course/node_modules node tests_glossary.js
 后续先运行`python3 find_question_candidates.py`，从本地原页生成`_src/question-candidates.json`和摘要；只读取候选对应页补核，脚本不自动改题库、不将相似匹配当整问已覆盖。回归运行`python3 tests_question_candidates.py`与`python3 tests_image_evidence.py`，然后执行上面的构建、审计与界面测试。
 
 2026-11-25：既有93词补入起算、查表与完整跟算例，推导覆盖120→213词；包括干支/节气与时差、五行分表、禄马贵人、山家及主命煞、婚嫁参数、斗首五星番化等。洪范分组、山运冬至、阴府死活等异文不硬合。新增内容及保护哈希见 `question-bank/glossary/算法补充复核.json`；运行 `python3 audit_term_algorithms.py` 复核关键算例及旧题保护。词条ID、原释义、446名词题及1413原教材题保持。
+
+
+## 推算练习（2026-11-25）
+
+题库首页、名词目录均可进入 `#calculation`。首批130题、40种起法、6类：历法与起遁31、五行与干支18、禄马与贵人28、日值与神煞27、婚嫁参数15、斗首与番化11。题干给出具体输入，四选一求结果；答后列分步推算和依据，回看词条可返回原题。词条有对应题时增加“练这个起法”。
+
+按分类、单起法、综合随机、未做、到期复习练习，每组10/20/40题，不足按实际题量；手动下一题。独立错题本、组末回炉、两组订正、记录和刷新续做复用原 `core.js` 规则。原教材、名词及推算的三个未完组可并存。推算状态键 `zeri_calc_v1`，在既有 `zeri_` 存储镜像保护范围内；笔记稳定定位 `{v:'zeri-calc',id:'zc-…'}`，返回题目和解析。底栏仍保留4项，从共用错题和记录页进入推算分库。
+
+源为 `question-bank/calculation/questions.json`，`build_calculation.py` 生成 `data.js`，不在浏览器临时生成无ID随机题。每题有起法词ID、输入参数、分步解析及依据；词条保留原参考链接和原页回查。未核起法、山运冬至及阴府死活争议暂不设唯一结果题，未将213个带推导词条全部编题。`baseline.json` 锁定原1413题、446名词题和452词内容哈希，未改旧作答映射。
+
+```sh
+python3 build_calculation.py
+python3 audit_calculation.py
+NODE_PATH=../bazi-course/node_modules node tests_calculation.js
+```
+
+仍运行名词、原题库和离线回归；缓存版本为 `zeri-v45-calculation-practice`，预缓存推算两脚本。首批范围与验收详见 `question-bank/calculation/首批复核.md`。

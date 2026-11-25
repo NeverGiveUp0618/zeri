@@ -6,7 +6,7 @@ function browser(saved={},hash='#terms'){
  const dom=new JSDOM(html,{url:'https://nevergiveup0618.github.io/zeri/'+hash,runScripts:'dangerously',pretendToBeVisual:true,virtualConsole:vc}),w=dom.window;
  w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=function(){};w.HTMLDialogElement.prototype.showModal=function(){this.open=true};w.HTMLDialogElement.prototype.close=function(){this.open=false};
  for(const[k,v]of Object.entries(saved))w.localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v));
- for(const f of ['question-bank/data.js','question-bank/core.js','question-bank/glossary/data.js','question-bank/glossary/app.js','question-bank/app.js'])w.eval(fs.readFileSync(f,'utf8'));
+ for(const f of ['question-bank/data.js','question-bank/core.js','question-bank/glossary/data.js','question-bank/glossary/app.js','question-bank/calculation/data.js','question-bank/calculation/app.js','question-bank/app.js'])w.eval(fs.readFileSync(f,'utf8'));
  return {dom,w,errors,$:s=>w.document.querySelector(s)};
 }
 (async()=>{

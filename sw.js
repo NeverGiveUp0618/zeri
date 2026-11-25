@@ -1,9 +1,9 @@
 /* 择日学习 Service Worker —— 离线缓存 */
-const CACHE = 'zeri-v44-term-algorithms';
+const CACHE = 'zeri-v45-calculation-practice';
 const ASSETS = [
   './', './index.html', './question-bank/app.css', './question-bank/data.js',
   './question-bank/core.js', './question-bank/app.js', './question-bank/glossary/data.js',
-  './question-bank/glossary/app.js', './manifest.json',
+  './question-bank/glossary/app.js', './question-bank/calculation/data.js', './question-bank/calculation/app.js', './manifest.json',
   './icon-192.png', './icon-512.png', './icon-180.png'
 ];
 const SHARED = [

@@ -306,6 +306,12 @@
       "url": "https://zh.wikisource.org/wiki/欽定古今圖書集成/博物彙編/藝術典/第683卷",
       "locator": "吉神、凶神及用事释义；用于核字义与旧宜忌，不保证当代效果。",
       "kind": "古籍正文"
+    },
+    "tongshu2024": {
+      "title": "《2024甲辰版通书》",
+      "url": "https://zh.wikisource.org/zh/欽定協紀辨方書_(四庫全書本)",
+      "locator": "本地《2024甲辰版通书完整版.pdf》对应页码，已核原书正文",
+      "kind": "通书文献"
     }
   }
 }

@@ -9,7 +9,7 @@ def build():
  assert len(by)==len(T) and len({t['title'] for t in T})==len(T)
  P=json.loads((ROOT/'_src/pages.json').read_text()) if (ROOT/'_src/pages.json').exists() else None
  for t in T:
-  assert t['category'] in cats and all(t.get(x) for x in ['definition','example','distinguish']),t['id']
+  assert t['category'] in cats and all(t.get(x) for x in ['plain','definition','example','distinguish']),t['id']
   assert t['sources'] or t['refs'],('没有来源',t['id'])
   for s in t['sources']:assert s in S['sources'],s
   for r in t['refs']:

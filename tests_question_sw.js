@@ -1,5 +1,5 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
-const listeners={},store=new Map(),deleted=[],current='zeri-v46-glossary-plain';let offline=true,claimed=false,skipped=false;
+const listeners={},store=new Map(),deleted=[],current='zeri-v47-jifutang-terms';let offline=true,claimed=false,skipped=false;
 const key=x=>(typeof x==='string'?x:x.url).replace('https://example.test/zeri/','./').split('?')[0];
 const cache={addAll:async urls=>{for(const u of urls){assert(fs.existsSync(u==='./'?'index.html':u.slice(2)),u);store.set(u,{url:u})}},add:async u=>store.set(u,{url:u}),put:async(u,v)=>store.set(key(u),v)};
 const ctx={self:{addEventListener:(k,f)=>listeners[k]=f,skipWaiting:async()=>skipped=true,clients:{claim:async()=>claimed=true}},caches:{open:async()=>cache,keys:async()=>['zeri-v31-input-review',current,'bazi-v64','notes-v1'],delete:async k=>deleted.push(k),match:async x=>store.get(key(x))},fetch:async req=>{if(offline)throw Error('offline');return {ok:true,url:key(req),clone(){return this}}},Response:{error:()=>({error:true})}};

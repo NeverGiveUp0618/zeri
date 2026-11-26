@@ -11,7 +11,7 @@ function browser(saved={},hash='#terms'){
 }
 (async()=>{
  let b=browser({'zeri_course_v1':'legacy'}),w=b.w,$=b.$;await sleep(25);const go=async h=>{w.ZeriQuiz.go(h);await sleep(10)};
- t('底栏合并名词与训练，教材题库与题目源同步',()=>{assert($('[data-view="terms"]'));assert(!$('[data-view="term-training"]'));assert.equal(w.document.querySelectorAll('.nav button').length,4);assert.equal(w.ZERI_BANK.questions.length,JSON.parse(fs.readFileSync('question-bank/questions.json','utf8')).length);assert.equal(w.ZERI_TERMS.terms.length,452);assert.equal(w.ZERI_TERMS.questions.length,446)});
+ t('底栏合并名词与训练，教材题库与题目源同步',()=>{assert($('[data-view="terms"]'));assert(!$('[data-view="term-training"]'));assert.equal(w.document.querySelectorAll('.nav button').length,4);assert.equal(w.ZERI_BANK.questions.length,JSON.parse(fs.readFileSync('question-bank/questions.json','utf8')).length);assert.equal(w.ZERI_TERMS.terms.length,463);assert.equal(w.ZERI_TERMS.questions.length,457)});
  t('名词目录14类默认折叠，不全屏铺开；卡片先看大白话，点进才看专业解释',()=>{assert.equal(w.document.querySelectorAll('.term-group').length,14);assert.equal(w.document.querySelectorAll('.term-group[open]').length,0);const c=w.document.querySelector('#term-card-zt-祭祀 span').textContent;assert(c===terms[0].plain&&c!==terms[0].definition)});
  $('#term-search').value='入厝';$('#term-search').dispatchEvent(new w.Event('input'));
  t('俗称与异体字可搜到对应词，搜索时展开结果',()=>{assert($('.term-card').textContent.includes('入宅'));assert($('.term-group').open)});

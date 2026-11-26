@@ -1,5 +1,5 @@
 /* 择日学习 Service Worker —— 离线缓存 */
-const CACHE = 'zeri-v46-glossary-plain';
+const CACHE = 'zeri-v47-jifutang-terms';
 const ASSETS = [
   './', './index.html', './question-bank/app.css', './question-bank/data.js',
   './question-bank/core.js', './question-bank/app.js', './question-bank/glossary/data.js',
